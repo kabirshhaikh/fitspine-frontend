@@ -14,32 +14,50 @@ import {
   FormControlLabel,
   Checkbox,
   useTheme,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  OutlinedInput,
+  FormHelperText,
+  Divider,
 } from '@mui/material';
-import { HealthAndSafety, Visibility, VisibilityOff } from '@mui/icons-material';
+import { HealthAndSafety, Visibility, VisibilityOff, Add, Remove } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
 import '../auth/Auth.css'; // Import Auth-specific CSS
 
 const Register = () => {
+  const GENDERS = ['MALE','FEMALE','OTHER'];
+  const DISC_LEVEL = ['C1_C2','C2_C3','C3_C4','C4_C5','C5_C6','C6_C7','C7_T1','T1_T2','T2_T3','T3_T4','T4_T5','T5_T6','T6_T7','T7_T8','T8_T9','T9_T10','T10_T11', 'T11_T12','T12_L1','L1_L2','L2_L3','L3_L4','L4_L5','L5_S1','OTHER'];
+  const INJURY_TYPE = ['HERNIATED_DISC','BULGING_DISC','SCIATICA','SPINAL_STENOSIS','DEGENERATIVE_DISC_DISEASE','ANNULAR_TEAR', 'FACET_JOINT_SYNDROME','SPONDYLOLISTHESIS','CERVICAL_RADICULOPATHY','THORACIC_DISC_HERNIATION','LUMBAR_RADICULOPATHY','DISC_EXTRUSION','DISC_SEQUESTRATION','SPINAL_FRACTURE','SPINAL_TUMOR','SPINAL_INFECTION','POST_SURGICAL_PAIN', 'NON_SPECIFIC_LOWER_BACK_PAIN','NON_SPECIFIC_NECK_PAIN','OTHER'];
+  const SURGERY_TYPE = ['MICRODISCECTOMY','LAMINECTOMY','SPINAL_FUSION','ARTIFICIAL_DISC_REPLACEMENT','FORAMINOTOMY','FACET_JOINT_FUSION','VERTEBROPLASTY','KYPHOPLASTY','DISC_NUCLEOPLASTY','DECOMPRESSION_SURGERY','POSTERIOR_CERVICAL_FUSION','ANTERIOR_CERVICAL_DISCECTOMY_FUSION','ANTERIOR_LUMBAR_INTERBODY_FUSION','LATERAL_LUMBAR_INTERBODY_FUSION','POSTERIOR_LUMBAR_INTERBODY_FUSION','TRANSFORAMINAL_LUMBAR_INTERBODY_FUSION','SPINAL_TUMOR_REMOVAL','SPINAL_DEFORMITY_CORRECTION','SPINAL_REVISION_SURGERY','OTHER'];
+
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
+    fullName: '',
     email: '',
+    age: '',
     password: '',
-    confirmPassword: '',
-    agreeToTerms: false,
+    gender: '',
+    profilePicture: null,
+    surgeryHistory: false,
+    isResearchOpt: false,
+    userInjuries: [],
+    userSurgeries: [],
+    userDiscIssues: []
   });
+
   const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const theme = useTheme();
   const navigate = useNavigate();
   const { register, loading, error, clearError } = useAuth();
 
   const handleChange = (e) => {
-    const { name, value, checked } = e.target;
+    const { name, value, checked, type } = e.target;
     setFormData(prev => ({
       ...prev,
-      [name]: name === 'agreeToTerms' ? checked : value
+      [name]: type === 'checkbox' ? checked : value
     }));
     
     // Clear error when user starts typing
@@ -59,18 +77,20 @@ const Register = () => {
   const validateForm = () => {
     const newErrors = {};
     
-    if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
-    }
-    
-    if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = 'Full name is required';
     }
     
     if (!formData.email) {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
+    }
+    
+    if (!formData.age) {
+      newErrors.age = 'Age is required';
+    } else if (isNaN(formData.age) || parseInt(formData.age) < 0) {
+      newErrors.age = 'Age must be a valid non-negative number';
     }
     
     if (!formData.password) {
@@ -81,14 +101,8 @@ const Register = () => {
       newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, and one number';
     }
     
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password';
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match';
-    }
-    
-    if (!formData.agreeToTerms) {
-      newErrors.agreeToTerms = 'You must agree to the terms and conditions';
+    if (!formData.gender) {
+      newErrors.gender = 'Gender is required';
     }
     
     setErrors(newErrors);
@@ -97,26 +111,46 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!validateForm()) {
-      return;
-    }
-    
+    if (!validateForm()) return;
+  
     try {
-      const userData = {
-        firstName: formData.firstName.trim(),
-        lastName: formData.lastName.trim(),
-        email: formData.email,
-        password: formData.password,
-      };
-      
-      await register(userData);
+      const fd = new FormData();
+      fd.append('fullName', formData.fullName.trim());
+      fd.append('email', formData.email);
+      fd.append('age', String(parseInt(formData.age, 10)));
+      fd.append('password', formData.password);
+      fd.append('gender', formData.gender);
+  
+      fd.append('surgeryHistory', String(formData.surgeryHistory));
+      fd.append('isResearchOpt', String(formData.isResearchOpt));
+  
+      if (formData.profilePicture) {
+        fd.append('profilePicture', formData.profilePicture); // MultipartFile
+      }
+  
+      // ---- Lists (CRITICAL) ----
+      // userInjuries: List<UserInjuryDto> with field "injuryType"
+      formData.userInjuries.forEach((injuryType, i) => {
+        fd.append(`userInjuries[${i}].injuryType`, injuryType);
+      });
+  
+      // userSurgeries: List<UserSurgeryDto> with field "surgeryType"
+      formData.userSurgeries.forEach((surgeryType, i) => {
+        fd.append(`userSurgeries[${i}].surgeryType`, surgeryType);
+      });
+  
+      // userDiscIssues: List<UserDiscIssueDto> with field "discLevel"
+      formData.userDiscIssues.forEach((discLevel, i) => {
+        fd.append(`userDiscIssues[${i}].discLevel`, discLevel);
+      });
+  
+      await register(fd);
       navigate('/dashboard');
     } catch (err) {
-      // Error is handled by the auth context
       console.error('Registration failed:', err);
     }
   };
+  
 
   return (
     <Box
@@ -128,7 +162,7 @@ const Register = () => {
         py: 4,
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="lg">
         <Box sx={{ textAlign: 'center', mb: 4 }}>
           <HealthAndSafety
             sx={{
@@ -164,6 +198,7 @@ const Register = () => {
             p: { xs: 3, md: 4 },
             borderRadius: 3,
             border: '1px solid #E5E7EB',
+            backgroundColor: 'background.paper',
           }}
         >
           {error && (
@@ -173,164 +208,372 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit}>
-            <Grid container spacing={2} sx={{ mb: 3 }}>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="First Name"
-                  name="firstName"
-                  value={formData.firstName}
-                  onChange={handleChange}
-                  error={!!errors.firstName}
-                  helperText={errors.firstName}
-                  required
-                  autoComplete="given-name"
-                  autoFocus
-                />
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  fullWidth
-                  label="Last Name"
-                  name="lastName"
-                  value={formData.lastName}
-                  onChange={handleChange}
-                  error={!!errors.lastName}
-                  helperText={errors.lastName}
-                  required
-                  autoComplete="family-name"
-                />
-              </Grid>
-            </Grid>
-
-            <TextField
-              fullWidth
-              label="Email Address"
-              name="email"
-              type="email"
-              value={formData.email}
-              onChange={handleChange}
-              error={!!errors.email}
-              helperText={errors.email}
-              margin="normal"
-              required
-              autoComplete="email"
-              sx={{ mb: 2 }}
-            />
-
-            <TextField
-              fullWidth
-              label="Password"
-              name="password"
-              type={showPassword ? 'text' : 'password'}
-              value={formData.password}
-              onChange={handleChange}
-              error={!!errors.password}
-              helperText={errors.password}
-              margin="normal"
-              required
-              autoComplete="new-password"
-              InputProps={{
-                endAdornment: (
-                  <Button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    sx={{
-                      minWidth: 'auto',
-                      p: 1,
-                      color: 'text.secondary',
-                      '&:hover': {
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
-                  </Button>
-                ),
-              }}
-              sx={{ mb: 2 }}
-            />
-
-            <TextField
-              fullWidth
-              label="Confirm Password"
-              name="confirmPassword"
-              type={showConfirmPassword ? 'text' : 'password'}
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={!!errors.confirmPassword}
-              helperText={errors.confirmPassword}
-              margin="normal"
-              required
-              autoComplete="new-password"
-              InputProps={{
-                endAdornment: (
-                  <Button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    sx={{
-                      minWidth: 'auto',
-                      p: 1,
-                      color: 'text.secondary',
-                      '&:hover': {
-                        backgroundColor: 'transparent',
-                      },
-                    }}
-                  >
-                    {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                  </Button>
-                ),
-              }}
-              sx={{ mb: 3 }}
-            />
-
-            <FormControlLabel
-              control={
-                <Checkbox
-                  name="agreeToTerms"
-                  checked={formData.agreeToTerms}
-                  onChange={handleChange}
-                  color="primary"
-                />
-              }
-              label={
-                <Typography variant="body2" sx={{ color: 'text.secondary' }}>
-                  I agree to the{' '}
-                  <Link
-                    href="#"
-                    sx={{
-                      color: 'primary.main',
-                      textDecoration: 'none',
-                      '&:hover': {
-                        textDecoration: 'underline',
-                      },
-                    }}
-                  >
-                    Terms of Service
-                  </Link>{' '}
-                  and{' '}
-                  <Link
-                    href="#"
-                    sx={{
-                      color: 'primary.main',
-                      textDecoration: 'none',
-                      '&:hover': {
-                        textDecoration: 'underline',
-                      },
-                    }}
-                  >
-                    Privacy Policy
-                  </Link>
-                </Typography>
-              }
-              sx={{ mb: 3 }}
-            />
-            
-            {errors.agreeToTerms && (
-              <Typography variant="body2" color="error" sx={{ mb: 2 }}>
-                {errors.agreeToTerms}
+            {/* Personal Information Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h5" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+                Personal Information
               </Typography>
-            )}
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Full Name"
+                    name="fullName"
+                    value={formData.fullName}
+                    onChange={handleChange}
+                    error={!!errors.fullName}
+                    helperText={errors.fullName}
+                    required
+                    autoComplete="name"
+                    autoFocus
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  />
+                </Grid>
+                
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Email Address"
+                    name="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    error={!!errors.email}
+                    helperText={errors.email}
+                    required
+                    autoComplete="email"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  />
+                </Grid>
+                
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Age"
+                    name="age"
+                    type="number"
+                    value={formData.age}
+                    onChange={handleChange}
+                    error={!!errors.age}
+                    helperText={errors.age}
+                    required
+                    autoComplete="age"
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  />
+                </Grid>
+                
+                                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    select
+                    label="Gender"
+                    name="gender"
+                    value={formData.gender}
+                    onChange={handleChange}
+                    error={!!errors.gender}
+                    helperText={errors.gender}
+                    required
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  >
+                    {GENDERS.map((gender) => (
+                      <MenuItem key={gender} value={gender}>
+                        {gender.replace('_', ' ')}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+              </Grid>
+              
+              <Grid container spacing={3} sx={{ mt: 2 }}>
+                <Grid item xs={12}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, height: 56 }}>
+                    <Typography variant="body2" sx={{ color: 'text.secondary', whiteSpace: 'nowrap' }}>
+                      Profile Picture (Optional)
+                    </Typography>
+
+                    <input
+                      accept="image/*"
+                      id="profile-picture-upload"
+                      type="file"
+                      hidden
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setFormData(prev => ({ ...prev, profilePicture: file }));
+                      }}
+                    />
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      htmlFor="profile-picture-upload"
+                      sx={{ height: 56, borderRadius: 2 }}
+                    >
+                      {formData.profilePicture ? formData.profilePicture.name : 'Choose File'}
+                    </Button>
+                  </Box>
+                </Grid>
+
+              </Grid>
+            </Box>
+
+            <Divider sx={{ my: 4 }} />
+
+            {/* Account Security Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h5" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+                Account Security
+              </Typography>
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Password"
+                    name="password"
+                    type={showPassword ? 'text' : 'password'}
+                    value={formData.password}
+                    onChange={handleChange}
+                    error={!!errors.password}
+                    helperText={errors.password}
+                    required
+                    autoComplete="new-password"
+                    InputProps={{
+                      endAdornment: (
+                        <Button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          sx={{
+                            minWidth: 'auto',
+                            p: 1,
+                            color: 'text.secondary',
+                            '&:hover': {
+                              backgroundColor: 'transparent',
+                            },
+                          }}
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </Button>
+                      ),
+                    }}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Divider sx={{ my: 4 }} />
+
+            {/* Preferences Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h5" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+                Preferences
+              </Typography>
+              
+              <Grid container spacing={3}>
+                <Grid item xs={12} sm={6}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="surgeryHistory"
+                        checked={formData.surgeryHistory}
+                        onChange={handleChange}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                        Surgery History
+                      </Typography>
+                    }
+                    sx={{
+                      p: 2,
+                      border: '1px solid #E5E7EB',
+                      borderRadius: 2,
+                      backgroundColor: 'background.default',
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      }
+                    }}
+                  />
+                </Grid>
+                
+                <Grid item xs={12} sm={6}>
+                  <FormControlLabel
+                    control={
+                      <Checkbox
+                        name="isResearchOpt"
+                        checked={formData.isResearchOpt}
+                        onChange={handleChange}
+                        color="primary"
+                      />
+                    }
+                    label={
+                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                        Research Opt-in
+                      </Typography>
+                    }
+                    sx={{
+                      p: 2,
+                      border: '1px solid #E5E7EB',
+                      borderRadius: 2,
+                      backgroundColor: 'background.default',
+                      '&:hover': {
+                        backgroundColor: 'action.hover',
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+            </Box>
+
+            <Divider sx={{ my: 4 }} />
+
+            {/* Medical Information Section */}
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h5" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+                Medical Information
+              </Typography>
+              
+              {/* User Injuries Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: 'text.primary', fontWeight: 600 }}>
+                  Injuries
+                </Typography>
+                <FormControl fullWidth>
+                  <InputLabel>Select Injuries</InputLabel>
+                  <Select
+                    multiple
+                    value={formData.userInjuries}
+                    onChange={(e) => setFormData(prev => ({ ...prev, userInjuries: e.target.value }))}
+                    label="Select Injuries"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip 
+                            key={value} 
+                            label={value.replace(/_/g, ' ')} 
+                            size="small"
+                            sx={{ backgroundColor: 'primary.light', color: 'primary.contrastText' }}
+                          />
+                        ))}
+                      </Box>
+                    )}
+                    sx={{
+                      borderRadius: 2,
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  >
+                    {INJURY_TYPE.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type.replace(/_/g, ' ')}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+
+              {/* User Surgeries Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: 'text.primary', fontWeight: 600 }}>
+                  Surgeries
+                </Typography>
+                <FormControl fullWidth>
+                  <InputLabel>Select Surgeries</InputLabel>
+                  <Select
+                    multiple
+                    value={formData.userSurgeries}
+                    onChange={(e) => setFormData(prev => ({ ...prev, userSurgeries: e.target.value }))}
+                    label="Select Surgeries"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip 
+                            key={value} 
+                            label={value.replace(/_/g, ' ')} 
+                            size="small"
+                            sx={{ backgroundColor: 'secondary.light', color: 'secondary.contrastText' }}
+                          />
+                        ))}
+                      </Box>
+                    )}
+                    sx={{
+                      borderRadius: 2,
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  >
+                    {SURGERY_TYPE.map((type) => (
+                      <MenuItem key={type} value={type}>
+                        {type.replace(/_/g, ' ')}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+
+              {/* User Disc Issues Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography variant="h6" sx={{ mb: 2, color: 'text.primary', fontWeight: 600 }}>
+                  Disc Issues
+                </Typography>
+                <FormControl fullWidth>
+                  <InputLabel>Select Disc Levels</InputLabel>
+                  <Select
+                    multiple
+                    value={formData.userDiscIssues}
+                    onChange={(e) => setFormData(prev => ({ ...prev, userDiscIssues: e.target.value }))}
+                    label="Select Disc Levels"
+                    renderValue={(selected) => (
+                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                        {selected.map((value) => (
+                          <Chip 
+                            key={value} 
+                            label={value.replace(/_/g, ' ')} 
+                            size="small"
+                            sx={{ backgroundColor: 'info.light', color: 'info.contrastText' }}
+                          />
+                        ))}
+                      </Box>
+                    )}
+                    sx={{
+                      borderRadius: 2,
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                      }
+                    }}
+                  >
+                    {DISC_LEVEL.map((level) => (
+                      <MenuItem key={level} value={level}>
+                        {level.replace(/_/g, ' ')}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Box>
+            </Box>
 
             <Button
               type="submit"
@@ -339,11 +582,16 @@ const Register = () => {
               size="large"
               disabled={loading}
               sx={{
-                py: 1.5,
+                py: 2,
                 fontSize: '1.1rem',
                 textTransform: 'none',
                 fontWeight: 600,
                 mb: 3,
+                borderRadius: 2,
+                boxShadow: 2,
+                '&:hover': {
+                  boxShadow: 4,
+                }
               }}
             >
               {loading ? (

@@ -1,4 +1,5 @@
 import api from './api';
+import axios from 'axios'; // Added missing import for axios
 
 class AuthService {
   async login(email, password) {
@@ -18,7 +19,19 @@ class AuthService {
 
   async register(userData) {
     try {
-      const response = await api.post('/api/auth/register', userData);
+      // Check if userData is FormData (has file upload) or regular object
+      const isFormData = userData instanceof FormData;
+      
+      // Create a new axios instance for this request to override default headers
+      const registerApi = axios.create({
+        baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
+        timeout: 10000,
+        headers: isFormData 
+          ? { 'Content-Type': 'multipart/form-data' }
+          : { 'Content-Type': 'application/json' }
+      });
+
+      const response = await registerApi.post('/api/user/register', userData);
       const { token, user } = response.data;
       
       // Store token and user data

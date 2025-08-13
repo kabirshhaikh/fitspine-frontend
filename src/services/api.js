@@ -1,34 +1,39 @@
+// src/services/api.js
 import axios from 'axios';
 
-// Create axios instance
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080',
   timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-  },
 });
 
-// Request interceptor to add auth token
-api.interceptors.request.use(
-  (config) => {
-    const token = localStorage.getItem('authToken');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
-);
+const AUTH_WHITELIST = ['/api/user/login', '/api/user/register'];
 
-// Response interceptor to handle auth errors
+api.interceptors.request.use((config) => {
+  // Don’t add Authorization on auth endpoints
+  const isAuthEndpoint = AUTH_WHITELIST.some(path => (config.url || '').startsWith(path));
+  if (!isAuthEndpoint) {
+    const token = localStorage.getItem('authToken');
+    if (token) config.headers.Authorization = `Bearer ${token}`;
+  } else {
+    delete config.headers.Authorization;
+  }
+
+  // Let the browser set the boundary for FormData
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  } else {
+    // default JSON for non-multipart requests
+    if (!config.headers['Content-Type']) {
+      config.headers['Content-Type'] = 'application/json';
+    }
+  }
+  return config;
+}, (error) => Promise.reject(error));
+
 api.interceptors.response.use(
-  (response) => response,
+  (res) => res,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired or invalid
       localStorage.removeItem('authToken');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -36,21 +41,5 @@ api.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-// Utility functions
-export const setAuthToken = (token) => {
-  if (token) {
-    localStorage.setItem('authToken', token);
-    api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    localStorage.removeItem('authToken');
-    delete api.defaults.headers.common['Authorization'];
-  }
-};
-
-export const clearAuthToken = () => {
-  localStorage.removeItem('authToken');
-  delete api.defaults.headers.common['Authorization'];
-};
 
 export default api;
