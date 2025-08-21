@@ -1,22 +1,28 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import CssBaseline from '@mui/material/CssBaseline';
-import { AuthProvider } from './context/AuthContext';
-import Login from './pages/auth/Login';
-import Register from './pages/auth/Register';
+import React from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import { AuthProvider } from "./context/AuthContext";
+import Login from "./pages/auth/Login";
+import Register from "./pages/auth/Register";
+import Dashboard from "./pages/Dashboard";
 
 // Create a simple theme
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#2E7D8A',
+      main: "#2E7D8A",
     },
     secondary: {
-      main: '#1B5A66',
+      main: "#1B5A66",
     },
     background: {
-      default: '#f5f5f5',
+      default: "#f5f5f5",
     },
   },
   typography: {
@@ -35,6 +41,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Navigate to="/login" replace />} />
             <Route path="*" element={<Navigate to="/login" replace />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Router>
       </AuthProvider>
