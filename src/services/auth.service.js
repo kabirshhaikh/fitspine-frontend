@@ -4,11 +4,11 @@ class AuthService {
   async login(email, password) {
     try {
       const { data } = await api.post('/api/user/login', { email, password });
-      // data = { token, email, fullName, profilePicture }
-      const { token, email: em, fullName, profilePicture } = data;
+      // data = { token, email, fullName, profilePicture, id }
+      const { token, email: em, fullName, profilePicture, id } = data;
 
       // Build a minimal user object for the app
-      const user = { email: em, fullName, profilePicture };
+      const user = { email: em, fullName, profilePicture, id };
 
       if (token) localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -27,8 +27,8 @@ class AuthService {
       const { data } = await api.post('/api/user/register', formData);
 
       // If your register endpoint returns the SAME shape as login:
-      const { token, email: em, fullName, profilePicture } = data;
-      const user = { email: em, fullName, profilePicture };
+      const { token, email: em, fullName, profilePicture, id } = data;
+      const user = { email: em, fullName, profilePicture, id };
 
       if (token) localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(user));

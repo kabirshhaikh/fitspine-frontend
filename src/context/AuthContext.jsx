@@ -66,6 +66,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
+  const updateUserFromResponse = (userResponse) => {
+    // Update user with response data from API
+    const updatedUser = {
+      ...user,
+      ...userResponse,
+    };
+    setUser(updatedUser);
+    localStorage.setItem('user', JSON.stringify(updatedUser));
+  };
+
   const clearError = () => {
     setError(null);
   };
@@ -78,6 +88,7 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     updateUser,
+    updateUserFromResponse,
     clearError,
     isAuthenticated: !!user,
   };
