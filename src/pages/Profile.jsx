@@ -144,16 +144,17 @@ const Profile = () => {
         try {
           const response = await api.get('/api/user/me');
           const profileData = response.data;
-          console.log(profileData);
+          console.log('Profile data from backend:', profileData);
+          console.log('Role value:', profileData.role);
           
           setUserProfile(profileData);
           setFormData({
             age: profileData.age || '',
             gender: profileData.gender || '',
             profilePicture: null,
-            surgeryHistory: profileData.surgeryHistory || false,
-            isResearchOpt: profileData.isResearchOpt || false,
-            isWearableConnected: profileData.isWearableConnected || false,
+            surgeryHistory: Boolean(profileData.surgeryHistory),
+            isResearchOpt: Boolean(profileData.isResearchOpt),
+            isWearableConnected: Boolean(profileData.isWearableConnected),
             wearableType: profileData.wearableType || '',
             userInjuries: profileData.userInjuries?.map(injury => injury.injuryType) || [],
             userSurgeries: profileData.userSurgeries?.map(surgery => surgery.surgeryType) || [],
@@ -237,9 +238,7 @@ const Profile = () => {
       
       formDataToSend.append('surgeryHistory', String(formData.surgeryHistory));
       formDataToSend.append('isResearchOpt', String(formData.isResearchOpt));
-      formDataToSend.append('isWearableConnected', String(formData.isWearableConnected));
-      
-      if (formData.wearableType) formDataToSend.append('wearableType', formData.wearableType);
+      // Note: isWearableConnected and wearableType are now managed from Dashboard
 
       // Add lists
       formData.userInjuries.forEach((injuryType, i) => {
@@ -260,15 +259,13 @@ const Profile = () => {
         gender: formData.gender,
         surgeryHistory: formData.surgeryHistory,
         isResearchOpt: formData.isResearchOpt,
-        isWearableConnected: formData.isWearableConnected,
-        wearableType: formData.wearableType,
         userInjuries: formData.userInjuries,
         userSurgeries: formData.userSurgeries,
         userDiscIssues: formData.userDiscIssues
       });
 
       // Make API call
-      const response = await api.put(`/api/user/${user.id}`, formDataToSend);
+      const response = await api.patch('/api/user/me', formDataToSend);
       
       // Debug: Log the response
       console.log('Update response:', response.data);
@@ -415,6 +412,28 @@ const Profile = () => {
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
+                    label="Full Name"
+                    name="fullName"
+                    value={userProfile?.fullName || ''}
+                    disabled
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Email"
+                    name="email"
+                    value={userProfile?.email || ''}
+                    disabled
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                  />
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
                     label="Age"
                     name="age"
                     type="number"
@@ -442,6 +461,17 @@ const Profile = () => {
                       </MenuItem>
                     ))}
                   </TextField>
+                </Grid>
+
+                <Grid item xs={12} sm={6}>
+                  <TextField
+                    fullWidth
+                    label="Role"
+                    name="role"
+                    value={userProfile?.role || user?.role || 'USER'}
+                    disabled
+                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                  />
                 </Grid>
               </Grid>
             </Box>
@@ -512,7 +542,7 @@ const Profile = () => {
                       <Checkbox
                         name="isWearableConnected"
                         checked={formData.isWearableConnected}
-                        onChange={handleChange}
+                        disabled
                         color="primary"
                       />
                     }
@@ -524,6 +554,9 @@ const Profile = () => {
                       backgroundColor: 'background.default',
                     }}
                   />
+                  <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
+                    Manage wearable connection from Dashboard
+                  </Typography>
                 </Grid>
 
                 {formData.isWearableConnected && (
@@ -534,9 +567,7 @@ const Profile = () => {
                       label="Wearable Type"
                       name="wearableType"
                       value={formData.wearableType}
-                      onChange={handleChange}
-                      error={!!errors.wearableType}
-                      helperText={errors.wearableType}
+                      disabled
                       sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
                     >
                       {WEARABLE_TYPES.map((type) => (
