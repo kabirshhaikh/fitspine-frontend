@@ -90,48 +90,165 @@ const Login = () => {
     <Box
       sx={{
         minHeight: '100vh',
-        backgroundColor: 'background.default',
+        background: `
+          radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+          radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
+          linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%)
+        `,
         display: 'flex',
         alignItems: 'center',
         py: 4,
+        position: 'relative',
+        overflow: 'hidden',
       }}
     >
-      <Container maxWidth="sm">
-        <Box sx={{ textAlign: 'center', mb: 4 }}>
-          <HealthAndSafety
+      {/* Animated Background Particles */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.2), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(255,255,255,0.4), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(255,255,255,0.2), transparent)
+          `,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 200px',
+          animation: 'sparkle 20s linear infinite',
+          zIndex: 1,
+        }}
+      />
+      
+      {/* Floating Orbs */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '10%',
+          left: '10%',
+          width: 300,
+          height: 300,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(120, 119, 198, 0.1) 0%, transparent 70%)',
+          animation: 'float 15s ease-in-out infinite',
+          filter: 'blur(1px)',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          bottom: '20%',
+          right: '15%',
+          width: 200,
+          height: 200,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(255, 119, 198, 0.1) 0%, transparent 70%)',
+          animation: 'float 12s ease-in-out infinite reverse',
+          filter: 'blur(1px)',
+        }}
+      />
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '60%',
+          left: '70%',
+          width: 150,
+          height: 150,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(120, 219, 255, 0.1) 0%, transparent 70%)',
+          animation: 'float 18s ease-in-out infinite',
+          filter: 'blur(1px)',
+        }}
+      />
+      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+        <Box sx={{ textAlign: 'center', mb: 6 }}>
+          <Box
             sx={{
-              fontSize: 64,
-              color: 'primary.main',
-              mb: 2,
-            }}
-          />
-          <Typography
-            variant="h3"
-            sx={{
-              fontWeight: 700,
-              mb: 1,
-              color: 'text.primary',
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              borderRadius: '24px',
+              p: 4,
+              mb: 4,
+              boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+              position: 'relative',
+              overflow: 'hidden',
+              animation: 'morphing 15s ease-in-out infinite',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+              },
             }}
           >
-            Welcome Back
-          </Typography>
-          <Typography
-            variant="h6"
-            sx={{
-              color: 'text.secondary',
-              fontWeight: 400,
-            }}
-          >
-            Sign in to continue protecting your spine
-          </Typography>
+            <HealthAndSafety
+              sx={{
+                fontSize: 80,
+                color: '#4fc3f7',
+                mb: 3,
+                filter: 'drop-shadow(0 0 20px rgba(79, 195, 247, 0.5))',
+              }}
+            />
+            <Typography
+              variant="h2"
+              sx={{
+                fontWeight: 900,
+                mb: 2,
+                background: 'linear-gradient(135deg, #ffffff 0%, #a8edea 50%, #fed6e3 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                textShadow: '0 0 30px rgba(255,255,255,0.3)',
+                letterSpacing: '-0.02em',
+                fontSize: { xs: '2.5rem', md: '3.5rem' },
+              }}
+            >
+              Welcome Back
+            </Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                color: 'rgba(255, 255, 255, 0.8)',
+                fontWeight: 300,
+                fontSize: '1.2rem',
+                textShadow: '0 2px 4px rgba(0,0,0,0.3)',
+              }}
+            >
+              Sign in to continue protecting your spine
+            </Typography>
+          </Box>
         </Box>
 
         <Paper
           elevation={0}
           sx={{
-            p: { xs: 3, md: 4 },
-            borderRadius: 3,
-            border: '1px solid #E5E7EB',
+            p: { xs: 4, md: 6 },
+            borderRadius: '24px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+            position: 'relative',
+            overflow: 'hidden',
+            animation: 'morphing 12s ease-in-out infinite',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+            },
           }}
         >
           {error && (
@@ -154,7 +271,30 @@ const Login = () => {
               required
               autoComplete="email"
               autoFocus
-              sx={{ mb: 2 }}
+              sx={{ 
+                mb: 2,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  "& fieldset": {
+                    border: "none",
+                  },
+                  "&:hover fieldset": {
+                    border: "1px solid rgba(79, 195, 247, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    border: "1px solid rgba(79, 195, 247, 0.5)",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                },
+                "& .MuiInputBase-input": {
+                  color: "white",
+                },
+              }}
             />
 
             <TextField
@@ -177,7 +317,7 @@ const Login = () => {
                     sx={{
                       minWidth: 'auto',
                       p: 1,
-                      color: 'text.secondary',
+                      color: 'rgba(255, 255, 255, 0.7)',
                       '&:hover': {
                         backgroundColor: 'transparent',
                       },
@@ -187,7 +327,30 @@ const Login = () => {
                   </Button>
                 ),
               }}
-              sx={{ mb: 3 }}
+              sx={{ 
+                mb: 3,
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: "12px",
+                  background: "rgba(255, 255, 255, 0.05)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  "& fieldset": {
+                    border: "none",
+                  },
+                  "&:hover fieldset": {
+                    border: "1px solid rgba(79, 195, 247, 0.3)",
+                  },
+                  "&.Mui-focused fieldset": {
+                    border: "1px solid rgba(79, 195, 247, 0.5)",
+                  },
+                },
+                "& .MuiInputLabel-root": {
+                  color: "rgba(255, 255, 255, 0.7)",
+                },
+                "& .MuiInputBase-input": {
+                  color: "white",
+                },
+              }}
             />
 
             <Button
@@ -197,11 +360,40 @@ const Login = () => {
               size="large"
               disabled={loading}
               sx={{
-                py: 1.5,
-                fontSize: '1.1rem',
+                py: 2,
+                fontSize: '1.2rem',
                 textTransform: 'none',
                 fontWeight: 600,
                 mb: 3,
+                borderRadius: '50px',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                boxShadow: '0 10px 40px rgba(102, 126, 234, 0.4)',
+                border: '1px solid rgba(255, 255, 255, 0.2)',
+                position: 'relative',
+                overflow: 'hidden',
+                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                zIndex: 1,
+                cursor: 'pointer',
+                '&::before': {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: '-100%',
+                  width: '100%',
+                  height: '100%',
+                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                  transition: 'left 0.5s',
+                  zIndex: -1,
+                  pointerEvents: 'none',
+                },
+                '&:hover': {
+                  transform: 'translateY(-3px) scale(1.02)',
+                  boxShadow: '0 20px 60px rgba(102, 126, 234, 0.6)',
+                  background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
+                  '&::before': {
+                    left: '100%',
+                  },
+                },
               }}
             >
               {loading ? (
@@ -280,6 +472,66 @@ const Login = () => {
           </Typography>
         </Box>
       </Container>
+
+      {/* CSS Animations */}
+      <style>
+        {`
+          @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-30px) rotate(5deg); }
+          }
+          
+          @keyframes sparkle {
+            0% { transform: translateX(0) translateY(0); }
+            25% { transform: translateX(100px) translateY(-50px); }
+            50% { transform: translateX(-50px) translateY(100px); }
+            75% { transform: translateX(50px) translateY(-25px); }
+            100% { transform: translateX(0) translateY(0); }
+          }
+          
+          @keyframes morphing {
+            0%, 100% { 
+              border-radius: 24px;
+              transform: rotate(0deg);
+            }
+            25% { 
+              border-radius: 30px;
+              transform: rotate(1deg);
+            }
+            50% { 
+              border-radius: 18px;
+              transform: rotate(-1deg);
+            }
+            75% { 
+              border-radius: 28px;
+              transform: rotate(0.5deg);
+            }
+          }
+          
+          /* Smooth scrolling */
+          html {
+            scroll-behavior: smooth;
+          }
+          
+          /* Custom scrollbar */
+          ::-webkit-scrollbar {
+            width: 8px;
+          }
+          
+          ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+          }
+          
+          ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 4px;
+          }
+          
+          ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+          }
+        `}
+      </style>
     </Box>
   );
 };
