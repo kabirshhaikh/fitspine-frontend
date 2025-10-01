@@ -4,11 +4,26 @@ class AuthService {
   async login(email, password) {
     try {
       const { data } = await api.post('/api/user/login', { email, password });
-      // data = { token, email, fullName, profilePicture, id }
-      const { token, email: em, fullName, profilePicture, id } = data;
+      // data = { token, email, fullName, profilePicture, id, isWearableConnected, wearableType }
+      const { 
+        token, 
+        email: em, 
+        fullName, 
+        profilePicture, 
+        id,
+        isWearableConnected,
+        wearableType
+      } = data;
 
-      // Build a minimal user object for the app
-      const user = { email: em, fullName, profilePicture, id };
+      // Build a user object for the app
+      const user = { 
+        email: em, 
+        fullName, 
+        profilePicture, 
+        id,
+        isWearableConnected,
+        wearableType
+      };
 
       if (token) localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(user));
@@ -21,23 +36,35 @@ class AuthService {
 
   async register(formData) {
     try {
-      // Decide what your backend returns on register:
-      // A) same as login (recommended), or
-      // B) just created user (then you’d call login afterwards)
       const { data } = await api.post('/api/user/register', formData);
 
-      // If your register endpoint returns the SAME shape as login:
-      const { token, email: em, fullName, profilePicture, id } = data;
-      const user = { email: em, fullName, profilePicture, id };
+      // Register endpoint returns user data but no token
+      // We need to extract the wearable connection info
+      const { 
+        id, 
+        email: em, 
+        fullName, 
+        profilePicture,
+        isWearableConnected,
+        wearableType
+      } = data;
+      
+      // Build user object (without token since register doesn't return one)
+      const user = { 
+        id,
+        email: em, 
+        fullName, 
+        profilePicture,
+        isWearableConnected,
+        wearableType
+      };
 
-      if (token) localStorage.setItem('authToken', token);
+      // Store user data (but no token since user needs to login)
       localStorage.setItem('user', JSON.stringify(user));
 
-      return { token, user };
+      return { user };
 
-      // If your register currently returns something else (e.g., no token),
-      // do this instead:
-      // await this.login(formData.get('email'), formData.get('password'));
+      // Note: User will need to login after registration to get token
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Registration failed');
     }
@@ -62,6 +89,27 @@ class AuthService {
 
   isAuthenticated() {
     return !!this.getToken();
+  }
+
+  async refreshUserData() {
+    try {
+      // Get current user email from stored user data
+      const currentUser = this.getCurrentUser();
+      if (!currentUser?.email) {
+        throw new Error('No user data found');
+      }
+
+      // For now, we'll need to call login again to get updated user data
+      // In a real app, you'd have a separate /api/user/profile endpoint
+      // But since we don't have that, we'll simulate a refresh
+      // The user would need to login again to get updated data
+      
+      console.log('User data needs to be refreshed. Please login again to see updated Fitbit connection status.');
+      return currentUser;
+    } catch (error) {
+      console.error('Failed to refresh user data:', error);
+      return null;
+    }
   }
 }
 

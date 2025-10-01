@@ -23,6 +23,18 @@ export const AuthProvider = ({ children }) => {
       setUser(currentUser);
     }
     setLoading(false);
+
+    // Listen for user updates (e.g., after OAuth callback)
+    const handleUserUpdate = (event) => {
+      const updatedUser = event.detail;
+      setUser(updatedUser);
+    };
+
+    window.addEventListener('userUpdated', handleUserUpdate);
+
+    return () => {
+      window.removeEventListener('userUpdated', handleUserUpdate);
+    };
   }, []);
 
   const login = async (email, password) => {
