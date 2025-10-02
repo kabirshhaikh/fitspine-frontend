@@ -138,6 +138,15 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
     }, 300);
   };
 
+  const handlePainLocationToggle = (location) => {
+    setFormData(prev => ({
+      ...prev,
+      painLocations: prev.painLocations.includes(location)
+        ? prev.painLocations.filter(loc => loc !== location)
+        : [...prev.painLocations, location]
+    }));
+  };
+
 
   const renderStepContent = (step) => {
     switch (step) {
@@ -190,21 +199,25 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
               <Typography variant="h6" sx={{ mb: 2, color: '#ff6b6b' }}>Any symptoms today?</Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
                 {[
-                  { field: 'flareUpToday', label: '🔥 Flare-up', value: true },
-                  { field: 'numbnessTingling', label: '⚡ Numbness', value: true },
-                  { field: 'stretchingDone', label: '🧘 Stretching', value: true },
-                  { field: 'liftingOrStrain', label: '💪 Heavy lifting', value: true }
+                  { field: 'flareUpToday', label: '🔥 Flare-up' },
+                  { field: 'numbnessTingling', label: '⚡ Numbness' },
+                  { field: 'stretchingDone', label: '🧘 Stretching' },
+                  { field: 'liftingOrStrain', label: '💪 Heavy lifting' }
                 ].map((symptom) => (
                   <Chip
                     key={symptom.field}
                     label={symptom.label}
-                    onClick={() => handleInputChange(symptom.field, symptom.value)}
+                    onClick={() => handleInputChange(symptom.field, !formData[symptom.field])}
                     variant={formData[symptom.field] ? 'filled' : 'outlined'}
                     sx={{
                       background: formData[symptom.field] ? '#ff6b6b' : 'transparent',
                       border: '2px solid #ff6b6b',
                       color: formData[symptom.field] ? 'white' : '#ff6b6b',
-                      '&:hover': { background: '#ff6b6b', color: 'white' }
+                      '&:hover': { 
+                        background: formData[symptom.field] ? '#ff5252' : '#ff6b6b', 
+                        color: 'white',
+                        transform: 'scale(1.05)'
+                      }
                     }}
                   />
                 ))}
@@ -266,6 +279,94 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                       border: '2px solid #4facfe',
                       color: formData.sittingTime === option.value ? 'white' : '#4facfe',
                       '&:hover': { background: '#4facfe', color: 'white' }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#667eea' }}>How much did you stand today?</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                {[
+                  { value: 'LESS_THAN_TWO_HOURS', label: '🪑 < 2h' },
+                  { value: 'TWO_TO_FOUR_HOURS', label: '🚶‍♂️ 2-4h' },
+                  { value: 'FOUR_TO_SIX_HOURS', label: '🏃‍♂️ 4-6h' },
+                  { value: 'SIX_TO_EIGHT_HOURS', label: '🏃‍♂️ 6-8h' },
+                  { value: 'GREATER_THAN_EIGHT_HOURS', label: '🏃‍♂️ 8h+' }
+                ].map((option) => (
+                  <Chip
+                    key={option.value}
+                    label={option.label}
+                    onClick={() => handleQuickSelect('standingTime', option.value)}
+                    variant={formData.standingTime === option.value ? 'filled' : 'outlined'}
+                    sx={{
+                      background: formData.standingTime === option.value ? '#667eea' : 'transparent',
+                      border: '2px solid #667eea',
+                      color: formData.standingTime === option.value ? 'white' : '#667eea',
+                      '&:hover': { background: '#667eea', color: 'white' }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#ff9800' }}>Morning stiffness level?</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                {[
+                  { value: 'NONE', label: '😌 None', color: '#4caf50' },
+                  { value: 'MILD', label: '😐 Mild', color: '#ff9800' },
+                  { value: 'MODERATE', label: '😟 Moderate', color: '#ff5722' },
+                  { value: 'SEVERE', label: '😰 Severe', color: '#f44336' }
+                ].map((option) => (
+                  <Chip
+                    key={option.value}
+                    label={option.label}
+                    onClick={() => handleQuickSelect('morningStiffness', option.value)}
+                    variant={formData.morningStiffness === option.value ? 'filled' : 'outlined'}
+                    sx={{
+                      background: formData.morningStiffness === option.value ? option.color : 'transparent',
+                      border: `2px solid ${option.color}`,
+                      color: formData.morningStiffness === option.value ? 'white' : option.color,
+                      '&:hover': { 
+                        background: option.color, 
+                        color: 'white',
+                        transform: 'scale(1.05)'
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#ff9800' }}>Where did you feel pain?</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                {[
+                  { value: 'LOW_BACK', label: '🫥 Low Back', color: '#ff5722' },
+                  { value: 'MID_BACK', label: '🫥 Mid Back', color: '#ff9800' },
+                  { value: 'NECK', label: '🫥 Neck', color: '#ff5722' },
+                  { value: 'LEG', label: '🦵 Leg', color: '#ff9800' },
+                  { value: 'ARM', label: '💪 Arm', color: '#ff5722' },
+                  { value: 'BUTTOCK', label: '🍑 Buttock', color: '#ff9800' },
+                  { value: 'SHOULDER', label: '🤷‍♂️ Shoulder', color: '#ff5722' },
+                  { value: 'OTHER', label: '❓ Other', color: '#9e9e9e' }
+                ].map((location) => (
+                  <Chip
+                    key={location.value}
+                    label={location.label}
+                    onClick={() => handlePainLocationToggle(location.value)}
+                    variant={formData.painLocations.includes(location.value) ? 'filled' : 'outlined'}
+                    sx={{
+                      background: formData.painLocations.includes(location.value) ? location.color : 'transparent',
+                      border: `2px solid ${location.color}`,
+                      color: formData.painLocations.includes(location.value) ? 'white' : location.color,
+                      '&:hover': { 
+                        background: location.color, 
+                        color: 'white',
+                        transform: 'scale(1.05)'
+                      }
                     }}
                   />
                 ))}

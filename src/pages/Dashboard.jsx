@@ -30,6 +30,7 @@ export default function Dashboard() {
   const [connecting, setConnecting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
+  const [logMessage, setLogMessage] = useState({ show: false, type: '', text: '' });
   const location = useLocation();
 
   // Check for OAuth callback success
@@ -75,8 +76,33 @@ export default function Dashboard() {
     try {
       const result = await dailyLogService.createDailyLog(logData);
       console.log('Daily log saved:', result);
+      
+      // Show success message
+      setLogMessage({
+        show: true,
+        type: 'success',
+        text: 'Daily log saved successfully! 🎉'
+      });
+      
+      // Hide message after 5 seconds
+      setTimeout(() => {
+        setLogMessage({ show: false, type: '', text: '' });
+      }, 5000);
+      
     } catch (error) {
       console.error('Failed to save log:', error);
+      
+      // Show error message
+      setLogMessage({
+        show: true,
+        type: 'error',
+        text: error.message || 'Failed to save daily log. Please try again.'
+      });
+      
+      // Hide message after 7 seconds (longer for errors)
+      setTimeout(() => {
+        setLogMessage({ show: false, type: '', text: '' });
+      }, 7000);
     }
   };
 
@@ -85,7 +111,7 @@ export default function Dashboard() {
   return (
     <DashboardLayout>
       <Container maxWidth="xl" sx={{ py: 3 }}>
-        {/* Success Message */}
+        {/* Fitbit Success Message */}
         {showSuccessMessage && (
           <Alert 
             severity="success" 
@@ -105,6 +131,33 @@ export default function Dashboard() {
             }}
           >
             🎉 Fitbit connected successfully! Your data is now syncing with your spine health dashboard.
+          </Alert>
+        )}
+
+        {/* Daily Log Success/Error Message */}
+        {logMessage.show && (
+          <Alert 
+            severity={logMessage.type}
+            sx={{ 
+              mb: 3,
+              background: logMessage.type === 'success' 
+                ? `linear-gradient(135deg, ${alpha('#4caf50', 0.1)}, ${alpha('#4caf50', 0.05)})`
+                : `linear-gradient(135deg, ${alpha('#f44336', 0.1)}, ${alpha('#f44336', 0.05)})`,
+              backdropFilter: 'blur(20px)',
+              border: logMessage.type === 'success' 
+                ? `1px solid ${alpha('#4caf50', 0.3)}`
+                : `1px solid ${alpha('#f44336', 0.3)}`,
+              color: 'white',
+              '& .MuiAlert-icon': {
+                color: logMessage.type === 'success' ? '#4caf50' : '#f44336',
+              },
+              '& .MuiAlert-message': {
+                color: 'white',
+                fontWeight: 500,
+              }
+            }}
+          >
+            {logMessage.text}
           </Alert>
         )}
 
@@ -133,7 +186,7 @@ export default function Dashboard() {
         {/* Stats Grid */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {/* Disc Protection Score Card */}
-          <Grid item xs={12} sm={6} md={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
                 borderRadius: 4,
@@ -164,23 +217,60 @@ export default function Dashboard() {
                     }} 
                   />
                 </Box>
-                <Typography variant="h3" sx={{ fontWeight: 800, mb: 2, color: '#4facfe' }}>
-                  {isFitbitConnected ? '85' : '—'}
-                </Typography>
-                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500 }}>
+                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, mb: 2 }}>
                   Disc Protection Score
                 </Typography>
-                {!isFitbitConnected && (
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', display: 'block', mt: 2 }}>
-                    Connect Fitbit for personalized score
-                  </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', mb: 3 }}>
+                  {isFitbitConnected ? 'Calculating from your activity data...' : 'Connect Fitbit to get your personalized score'}
+                </Typography>
+                {isFitbitConnected ? (
+                  <Box sx={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    justifyContent: 'center', 
+                    gap: 1,
+                    color: '#4facfe'
+                  }}>
+                    <Box sx={{
+                      width: 20,
+                      height: 20,
+                      borderRadius: '50%',
+                      border: '2px solid #4facfe',
+                      borderTop: '2px solid transparent',
+                      animation: 'spin 1s linear infinite'
+                    }} />
+                    <Typography variant="caption">
+                      Analyzing...
+                    </Typography>
+                  </Box>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={handleConnectFitbit}
+                    disabled={connecting}
+                    sx={{
+                      border: `1px solid ${alpha('#4facfe', 0.3)}`,
+                      color: '#4facfe',
+                      borderRadius: '20px',
+                      px: 2,
+                      py: 0.5,
+                      fontSize: '0.8rem',
+                      '&:hover': {
+                        border: `1px solid ${alpha('#4facfe', 0.5)}`,
+                        background: alpha('#4facfe', 0.1),
+                      },
+                    }}
+                  >
+                    Connect to Calculate
+                  </Button>
                 )}
               </CardContent>
             </Card>
           </Grid>
 
           {/* Fitbit Connection Card */}
-          <Grid item xs={12} sm={6} md={6}>
+          <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
                 borderRadius: 4,
@@ -221,11 +311,11 @@ export default function Dashboard() {
                     />
                   )}
                 </Box>
-                <Typography variant="h5" sx={{ fontWeight: 600, mb: 2, color: isFitbitConnected ? '#4caf50' : '#ff6b6b' }}>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: isFitbitConnected ? '#4caf50' : '#ff6b6b' }}>
                   {isFitbitConnected ? 'Fitbit Connected' : 'Connect Fitbit'}
                 </Typography>
-                <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
-                  {isFitbitConnected ? 'Data syncing' : 'Sync your activity data'}
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
+                  {isFitbitConnected ? 'Last synced: 5 minutes ago' : 'Sync your activity data'}
                 </Typography>
                 {!isFitbitConnected && (
                   <Button
@@ -253,11 +343,9 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           </Grid>
-        </Grid>
 
-        {/* Manual Log Section */}
-        <Grid container spacing={3}>
-          <Grid item xs={12}>
+          {/* Daily Log Card */}
+          <Grid item xs={12} sm={12} md={4}>
             <Card
               sx={{
                 borderRadius: 4,
@@ -278,32 +366,37 @@ export default function Dashboard() {
                 },
               }}
             >
-              <CardContent sx={{ p: 6, textAlign: 'center' }}>
-                <Typography variant="h4" sx={{ fontWeight: 700, mb: 3, color: '#4facfe' }}>
-                  How are you feeling today?
+              <CardContent sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                <Box sx={{ mb: 3 }}>
+                  <Assessment 
+                    sx={{ 
+                      fontSize: 48, 
+                      color: '#ff6b6b',
+                      filter: 'drop-shadow(0 0 8px rgba(255, 107, 107, 0.5))'
+                    }} 
+                  />
+                </Box>
+                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#ff6b6b' }}>
+                  Daily Log
                 </Typography>
-                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 5, fontWeight: 300 }}>
-                  Track your spine health in seconds
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
+                  Track your spine health today
                 </Typography>
-                
                 <Button
                   variant="contained"
-                  startIcon={<Assessment />}
+                  size="medium"
                   onClick={() => setLogModalOpen(true)}
-                  size="large"
                   sx={{
-                    borderRadius: '30px',
-                    px: 6,
-                    py: 2,
-                    fontSize: '1.2rem',
-                    fontWeight: 600,
                     background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
-                    boxShadow: '0 10px 40px rgba(255, 107, 107, 0.4)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
+                    borderRadius: '25px',
+                    px: 3,
+                    py: 1,
+                    fontSize: '0.9rem',
+                    fontWeight: 600,
+                    textTransform: 'none',
                     '&:hover': {
                       background: 'linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%)',
-                      transform: 'translateY(-2px)',
-                      boxShadow: '0 15px 50px rgba(255, 107, 107, 0.6)',
+                      transform: 'translateY(-1px)',
                     },
                   }}
                 >
@@ -312,8 +405,8 @@ export default function Dashboard() {
               </CardContent>
             </Card>
           </Grid>
+      </Grid>
 
-        </Grid>
 
         {/* Daily Log Modal */}
         <DailyLogModal
