@@ -110,7 +110,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <Container maxWidth="xl" sx={{ py: 3 }}>
+      <Container maxWidth="lg" sx={{ py: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* Fitbit Success Message */}
         {showSuccessMessage && (
           <Alert 
@@ -162,7 +162,7 @@ export default function Dashboard() {
         )}
 
         {/* Hero Section */}
-        <Box sx={{ mb: 4 }}>
+        <Box sx={{ mb: 4, textAlign: 'center' }}>
           <Typography
             variant="h3"
             sx={{
@@ -184,7 +184,7 @@ export default function Dashboard() {
         </Box>
 
         {/* Stats Grid */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
+        <Grid container spacing={3} sx={{ mb: 4, justifyContent: 'center' }}>
           {/* Disc Protection Score Card */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
