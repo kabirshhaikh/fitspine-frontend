@@ -64,9 +64,15 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
 
 
   const handleSave = () => {
+    // Get today's date in user's local timezone (YYYY-MM-DD format for LocalDate)
+    const today = new Date();
+    const localDate = today.getFullYear() + '-' + 
+      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+      String(today.getDate()).padStart(2, '0');
+    
     // Create log data matching your backend DTO
     const logData = {
-      logDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD format for LocalDate
+      logDate: localDate, // User's local date
       notes: formData.notes,
       painLevel: formData.painLevel || null,
       flareUpToday: formData.flareUpToday,
@@ -196,13 +202,11 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
             </Typography>
             
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 2, color: '#ff6b6b' }}>Any symptoms today?</Typography>
+              <Typography variant="h6" sx={{ mb: 2, color: '#ff6b6b' }}>Health check today</Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
                 {[
-                  { field: 'flareUpToday', label: '🔥 Flare-up' },
-                  { field: 'numbnessTingling', label: '⚡ Numbness' },
-                  { field: 'stretchingDone', label: '🧘 Stretching' },
-                  { field: 'liftingOrStrain', label: '💪 Heavy lifting' }
+                  { field: 'flareUpToday', label: '🔥 Flare-up today?' },
+                  { field: 'numbnessTingling', label: '⚡ Numbness/tingling?' }
                 ].map((symptom) => (
                   <Chip
                     key={symptom.field}
@@ -213,8 +217,35 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                       background: formData[symptom.field] ? '#ff6b6b' : 'transparent',
                       border: '2px solid #ff6b6b',
                       color: formData[symptom.field] ? 'white' : '#ff6b6b',
-                      '&:hover': { 
-                        background: formData[symptom.field] ? '#ff5252' : '#ff6b6b', 
+                      '&:hover': {
+                        background: formData[symptom.field] ? '#ff5252' : '#ff6b6b',
+                        color: 'white',
+                        transform: 'scale(1.05)'
+                      }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#4caf50' }}>Activities today</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                {[
+                  { field: 'stretchingDone', label: '🧘 Did you stretch?' },
+                  { field: 'liftingOrStrain', label: '💪 Heavy lifting?' }
+                ].map((activity) => (
+                  <Chip
+                    key={activity.field}
+                    label={activity.label}
+                    onClick={() => handleInputChange(activity.field, !formData[activity.field])}
+                    variant={formData[activity.field] ? 'filled' : 'outlined'}
+                    sx={{
+                      background: formData[activity.field] ? '#4caf50' : 'transparent',
+                      border: '2px solid #4caf50',
+                      color: formData[activity.field] ? 'white' : '#4caf50',
+                      '&:hover': {
+                        background: formData[activity.field] ? '#45a049' : '#4caf50',
                         color: 'white',
                         transform: 'scale(1.05)'
                       }
