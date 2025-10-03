@@ -48,13 +48,9 @@ const Landing = () => {
   }, []);
 
   const handleGetStarted = () => {
-    navigate('/register');
+    navigate('/login');
   };
 
-  const handleStartFree = () => {
-    console.log('Start Free button clicked!');
-    navigate('/register');
-  };
 
   return (
     <Box
@@ -311,11 +307,11 @@ const Landing = () => {
           </Box>
 
           {/* Timeline Story */}
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: 'relative', display: 'flex', justifyContent: 'center' }}>
             {/* Story Steps */}
             <Grid container spacing={4} sx={{ alignItems: 'center' }}>
               {/* Step 1: Current Integration */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Box
                   className="animate-on-scroll"
                   sx={{
@@ -362,29 +358,18 @@ const Landing = () => {
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
                       <Box
                         sx={{
-                          width: 70,
-                          height: 70,
+                          width: 60,
+                          height: 60,
                           borderRadius: '50%',
                           background: 'linear-gradient(135deg, #4fc3f7, #29b6f6)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           mr: 3,
-                          boxShadow: '0 8px 25px rgba(79, 195, 247, 0.4)',
-                          position: 'relative',
-                          '&::before': {
-                            content: '""',
-                            position: 'absolute',
-                            inset: '-2px',
-                            borderRadius: '50%',
-                            background: 'linear-gradient(135deg, #4fc3f7, #29b6f6)',
-                            zIndex: -1,
-                            filter: 'blur(8px)',
-                            opacity: 0.3,
-                          },
+                          boxShadow: '0 4px 15px rgba(79, 195, 247, 0.3)',
                         }}
                       >
-                        <FitnessCenter sx={{ color: 'white', fontSize: 35 }} />
+                        <FitnessCenter sx={{ color: 'white', fontSize: 30 }} />
                       </Box>
                       <Box>
                         <Typography variant="h6" sx={{ fontWeight: 700, color: '#4fc3f7', fontSize: '1.1rem' }}>
@@ -404,7 +389,7 @@ const Landing = () => {
               </Grid>
 
               {/* Step 2: Coming Soon */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Box
                   className="animate-on-scroll"
                   sx={{
@@ -465,16 +450,16 @@ const Landing = () => {
                         <SmartToy sx={{ color: 'white', fontSize: 30 }} />
                       </Box>
                       <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#7b1fa2' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#9c27b0', fontSize: '1.1rem' }}>
                           Coming Soon
                         </Typography>
-                        <Typography variant="body2" sx={{ color: '#666' }}>
+                        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem' }}>
                           Garmin, Apple Watch & Whoop
                         </Typography>
                       </Box>
                     </Box>
                     
-                    <Typography variant="body1" sx={{ color: '#555', lineHeight: 1.6 }}>
+                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6, fontSize: '1rem' }}>
                       Expanding our ecosystem to support Garmin, Apple Watch, and Whoop devices. More data sources mean better insights for your spine health.
                     </Typography>
                   </Card>
@@ -482,7 +467,7 @@ const Landing = () => {
               </Grid>
 
               {/* Step 3: Daily Insights */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Box
                   className="animate-on-scroll"
                   sx={{
@@ -498,13 +483,31 @@ const Landing = () => {
                   <Card
                     sx={{
                       p: 4,
-                      borderRadius: 4,
-                      background: 'linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%)',
-                      border: 'none',
-                      boxShadow: '0 10px 30px rgba(76, 175, 80, 0.2)',
+                      borderRadius: '20px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      backdropFilter: 'blur(20px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        transform: 'translateY(-8px) scale(1.02)',
+                        boxShadow: '0 20px 60px rgba(76, 175, 80, 0.4)',
+                        border: '1px solid rgba(76, 175, 80, 0.3)',
+                      },
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: '1px',
+                        background: 'linear-gradient(90deg, transparent, rgba(76, 175, 80, 0.5), transparent)',
+                      },
                     }}
                   >
                     
@@ -525,16 +528,16 @@ const Landing = () => {
                         <TrendingUp sx={{ color: 'white', fontSize: 30 }} />
                       </Box>
                       <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#2e7d32' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#4caf50', fontSize: '1.1rem' }}>
                           Daily Disc Score
                         </Typography>
-                        <Typography variant="body2" sx={{ color: '#666' }}>
+                        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem' }}>
                           & Flare-up Insights
                         </Typography>
                       </Box>
                     </Box>
                     
-                    <Typography variant="body1" sx={{ color: '#555', lineHeight: 1.6 }}>
+                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6, fontSize: '1rem' }}>
                       Get your personalized Disc Protection Score every day and receive AI-powered predictions about potential flare-ups before they happen.
                     </Typography>
                   </Card>
@@ -542,7 +545,7 @@ const Landing = () => {
               </Grid>
 
               {/* Step 4: Manual Logs */}
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <Box
                   className="animate-on-scroll"
                   sx={{
@@ -558,13 +561,31 @@ const Landing = () => {
                   <Card
                     sx={{
                       p: 4,
-                      borderRadius: 4,
-                      background: 'linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%)',
-                      border: 'none',
-                      boxShadow: '0 10px 30px rgba(255, 152, 0, 0.2)',
+                      borderRadius: '20px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      backdropFilter: 'blur(20px)',
+                      border: '1px solid rgba(255, 255, 255, 0.1)',
+                      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
+                      position: 'relative',
+                      overflow: 'hidden',
+                      transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                      '&:hover': {
+                        transform: 'translateY(-8px) scale(1.02)',
+                        boxShadow: '0 20px 60px rgba(255, 152, 0, 0.4)',
+                        border: '1px solid rgba(255, 152, 0, 0.3)',
+                      },
+                      '&::before': {
+                        content: '""',
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        height: '1px',
+                        background: 'linear-gradient(90deg, transparent, rgba(255, 152, 0, 0.5), transparent)',
+                      },
                     }}
                   >
                     
@@ -585,16 +606,16 @@ const Landing = () => {
                         <NotificationsActive sx={{ color: 'white', fontSize: 30 }} />
                       </Box>
                       <Box>
-                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#e65100' }}>
+                        <Typography variant="h6" sx={{ fontWeight: 700, color: '#ff9800', fontSize: '1.1rem' }}>
                           Enhanced Insights
                         </Typography>
-                        <Typography variant="body2" sx={{ color: '#666' }}>
+                        <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem' }}>
                           Manual Logs Recommended
                         </Typography>
                       </Box>
                     </Box>
                     
-                    <Typography variant="body1" sx={{ color: '#555', lineHeight: 1.6 }}>
+                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6, fontSize: '1rem' }}>
                       For the most accurate predictions, we recommend adding manual logs about pain levels, posture, and activities. The more data, the better your insights.
                     </Typography>
                   </Card>
@@ -618,30 +639,30 @@ const Landing = () => {
         }}
       >
         <Container maxWidth="lg">
-          <Grid container spacing={6}>
-            {/* Section 1: Simple daily logs */}
-            <Grid item xs={12} md={6}>
+          <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+            <Grid container spacing={6}>
+              {/* Section 1: Simple daily logs */}
+              <Grid item xs={12}>
               <Card
                 className="animate-on-scroll"
                 sx={{
-                  height: '100%',
                   borderRadius: '20px',
                   background: 'rgba(255, 255, 255, 0.05)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                   opacity: 0,
-                  transform: 'translateX(-50px)',
+                  transform: 'translateY(50px)',
                   transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   overflow: 'hidden',
-                  animation: 'morphing 8s ease-in-out infinite',
+                  animation: 'morphing 12s ease-in-out infinite',
                   '&.animate-in': {
                     opacity: 1,
-                    transform: 'translateX(0)',
+                    transform: 'translateY(0)',
                   },
                   '&:hover': {
-                    transform: 'translateY(-8px) scale(1.02)',
+                    transform: 'translateY(-8px) scale(1.01)',
                     boxShadow: '0 20px 60px rgba(79, 195, 247, 0.4)',
                     border: '1px solid rgba(79, 195, 247, 0.3)',
                     animation: 'none',
@@ -740,29 +761,28 @@ const Landing = () => {
               </Card>
             </Grid>
 
-            {/* Section 2: Connect your wearables */}
-            <Grid item xs={12} md={6}>
+              {/* Section 2: Connect your wearables */}
+              <Grid item xs={12}>
               <Card
                 className="animate-on-scroll"
                 sx={{
-                  height: '100%',
                   borderRadius: '20px',
                   background: 'rgba(255, 255, 255, 0.05)',
                   backdropFilter: 'blur(20px)',
                   border: '1px solid rgba(255, 255, 255, 0.1)',
                   boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                   opacity: 0,
-                  transform: 'translateX(50px)',
+                  transform: 'translateY(50px)',
                   transition: 'all 1s cubic-bezier(0.4, 0, 0.2, 1)',
                   position: 'relative',
                   overflow: 'hidden',
-                  animation: 'morphing 10s ease-in-out infinite',
+                  animation: 'morphing 12s ease-in-out infinite',
                   '&.animate-in': {
                     opacity: 1,
-                    transform: 'translateX(0)',
+                    transform: 'translateY(0)',
                   },
                   '&:hover': {
-                    transform: 'translateY(-8px) scale(1.02)',
+                    transform: 'translateY(-8px) scale(1.01)',
                     boxShadow: '0 20px 60px rgba(156, 39, 176, 0.4)',
                     border: '1px solid rgba(156, 39, 176, 0.3)',
                     animation: 'none',
@@ -870,8 +890,8 @@ const Landing = () => {
               </Card>
             </Grid>
 
-            {/* Section 3: AI that understands your spine */}
-            <Grid item xs={12}>
+              {/* Section 3: AI that understands your spine */}
+              <Grid item xs={12}>
               <Card
                 className="animate-on-scroll"
                 sx={{
@@ -1007,8 +1027,9 @@ const Landing = () => {
                   </Box>
                 </CardContent>
               </Card>
+              </Grid>
             </Grid>
-          </Grid>
+          </Box>
         </Container>
       </Box>
 
@@ -1075,8 +1096,9 @@ const Landing = () => {
                 mb: 4,
                 boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
                 position: 'relative',
-                overflow: 'hidden',
+                overflow: 'visible',
                 animation: 'morphing 15s ease-in-out infinite',
+                zIndex: 5,
                 '&::before': {
                   content: '""',
                   position: 'absolute',
@@ -1085,6 +1107,7 @@ const Landing = () => {
                   right: 0,
                   height: '1px',
                   background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                  pointerEvents: 'none',
                 },
               }}
             >
@@ -1103,7 +1126,7 @@ const Landing = () => {
                   lineHeight: 1.1,
                 }}
               >
-                A stronger tomorrow starts with a few minutes today.
+                Your back pain doesn't define you.
               </Typography>
               
               <Typography
@@ -1112,60 +1135,15 @@ const Landing = () => {
                   fontSize: { xs: '1.1rem', md: '1.4rem' },
                   fontWeight: 300,
                   mb: 6,
-                  maxWidth: 700,
+                  maxWidth: 800,
                   mx: 'auto',
                   lineHeight: 1.6,
                   color: 'rgba(255, 255, 255, 0.8)',
                   textShadow: '0 2px 4px rgba(0,0,0,0.3)',
                 }}
               >
-                Enter a quick log, connect your wearable, and let FitSpine guide you toward a healthier back.
+                We understand the frustration of chronic back pain. That's why we built FitSpine - to give you control over your spine health through data, insights, and personalized recommendations. Start with simple daily logs, connect your wearable device, and watch as your understanding of your body transforms into actionable insights.
               </Typography>
-
-              <Button
-                variant="contained"
-                size="large"
-                onClick={handleStartFree}
-                endIcon={<CheckCircle />}
-                sx={{
-                  background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-                  borderRadius: '50px',
-                  px: 6,
-                  py: 2,
-                  fontSize: '1.2rem',
-                  fontWeight: 600,
-                  textTransform: 'none',
-                  boxShadow: '0 10px 40px rgba(102, 126, 234, 0.4)',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  position: 'relative',
-                  overflow: 'hidden',
-                  transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                  zIndex: 1,
-                  cursor: 'pointer',
-                  '&::before': {
-                    content: '""',
-                    position: 'absolute',
-                    top: 0,
-                    left: '-100%',
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
-                    transition: 'left 0.5s',
-                    zIndex: -1,
-                    pointerEvents: 'none',
-                  },
-                  '&:hover': {
-                    transform: 'translateY(-3px) scale(1.02)',
-                    boxShadow: '0 20px 60px rgba(102, 126, 234, 0.6)',
-                    background: 'linear-gradient(135deg, #764ba2 0%, #667eea 100%)',
-                    '&::before': {
-                      left: '100%',
-                    },
-                  },
-                }}
-              >
-                Start Free →
-              </Button>
             </Box>
           </Box>
         </Container>
