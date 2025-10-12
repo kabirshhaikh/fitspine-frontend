@@ -166,6 +166,27 @@ const Login = () => {
         }}
       />
       <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+        {/* Back to Home Link */}
+        <Link
+          component={RouterLink}
+          to="/"
+          sx={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            color: 'rgba(255, 255, 255, 0.8)',
+            textDecoration: 'none',
+            fontSize: '0.95rem',
+            mb: 3,
+            transition: 'all 0.3s ease',
+            '&:hover': {
+              color: 'white',
+              transform: 'translateX(-4px)',
+            },
+          }}
+        >
+          ← Back to Home
+        </Link>
+
         <Box sx={{ textAlign: 'center', mb: 6 }}>
           <Box
             sx={{

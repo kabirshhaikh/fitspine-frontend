@@ -245,8 +245,63 @@ const Landing = () => {
                   },
                 }}
               >
-                Get My Disc Score →
+                Get My Disc Score
               </Button>
+            </Box>
+          </Box>
+
+          {/* Pro Tip Banner */}
+          <Box
+            sx={{
+              mt: 4,
+              p: 3,
+              background: 'rgba(102, 126, 234, 0.1)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(102, 126, 234, 0.3)',
+              borderRadius: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 2,
+              boxShadow: '0 4px 20px rgba(102, 126, 234, 0.2)',
+            }}
+          >
+            <Box
+              sx={{
+                width: 48,
+                height: 48,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+              }}
+            >
+              <Typography sx={{ fontSize: 24 }}>💡</Typography>
+            </Box>
+            <Box>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: 'white',
+                  fontWeight: 600,
+                  fontSize: '1.1rem',
+                  mb: 0.5,
+                }}
+              >
+                Pro Tip for Best Results
+              </Typography>
+              <Typography
+                variant="body2"
+                sx={{
+                  color: 'rgba(255, 255, 255, 0.8)',
+                  fontSize: '0.95rem',
+                  lineHeight: 1.5,
+                }}
+              >
+                Connect a wearable device and log daily for the most accurate Disc Protection Score and personalized insights.
+              </Typography>
             </Box>
           </Box>
         </Container>
