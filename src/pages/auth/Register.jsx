@@ -423,7 +423,7 @@ const Register = () => {
                 textShadow: "0 2px 4px rgba(0,0,0,0.3)",
               }}
             >
-              Join thousands of users protecting their spine health
+              Start your journey to better spine health today
             </Typography>
           </Box>
         </Box>
