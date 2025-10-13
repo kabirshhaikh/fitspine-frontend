@@ -593,7 +593,7 @@ const Landing = () => {
                     </Box>
                     
                     <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6, fontSize: '1rem' }}>
-                      Get your personalized Disc Protection Score every day and receive AI-powered predictions about potential flare-ups before they happen.
+                      Your Disc Protection Score is a personalized wellness indicator designed to help you understand trends in your posture, stress, and recovery habits. It is not a medical or diagnostic score.
                     </Typography>
                   </Card>
                 </Box>
@@ -665,13 +665,17 @@ const Landing = () => {
                           Enhanced Insights
                         </Typography>
                         <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.9rem' }}>
-                          Manual Logs Recommended
+                          Connect + Log for Best Results
                         </Typography>
                       </Box>
                     </Box>
                     
-                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6, fontSize: '1rem' }}>
-                      For the most accurate predictions, we recommend adding manual logs about pain levels, posture, and activities. The more data, the better your insights.
+                    <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.6, fontSize: '1rem', mb: 2 }}>
+                      FitSpine's AI combines your daily logs and wearable data to create meaningful insights — tracking what's improving, what's worsening, and what may be causing your flare-ups. You'll receive personalized summaries each day, including your Disc Protection Score, recovery insights, and simple, data-backed advice to help you protect your spine.
+                    </Typography>
+                    
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.5, fontSize: '0.9rem', fontStyle: 'italic' }}>
+                      For the most accurate results, we recommend connecting your wearable device along with adding manual logs about your pain levels, posture, and activities — the more context you provide, the smarter your insights become.
                     </Typography>
                   </Card>
                 </Box>
@@ -887,6 +891,47 @@ const Landing = () => {
                   >
                     Your Fitbit, Garmin, or Apple Watch automatically adds movement and sleep data — no extra effort needed.
                   </Typography>
+
+                  {/* Security & Privacy Message */}
+                  <Box
+                    sx={{
+                      mt: 2,
+                      mb: 3,
+                      p: 2,
+                      borderRadius: '12px',
+                      background: 'rgba(76, 175, 80, 0.1)',
+                      border: '1px solid rgba(76, 175, 80, 0.2)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 2,
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 40,
+                        height: 40,
+                        borderRadius: '50%',
+                        background: 'linear-gradient(135deg, #4caf50, #66bb6a)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        flexShrink: 0,
+                      }}
+                    >
+                      🔒
+                    </Box>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: 'rgba(255, 255, 255, 0.9)',
+                        fontSize: '0.9rem',
+                        lineHeight: 1.5,
+                        fontWeight: 500,
+                      }}
+                    >
+                      FitSpine connects securely using official APIs and never stores your wearable credentials. Your health data remains private and encrypted.
+                    </Typography>
+                  </Box>
 
                   {/* Animated wearable icons */}
                   <Box
@@ -1202,6 +1247,25 @@ const Landing = () => {
             </Box>
           </Box>
         </Container>
+      </Box>
+
+      {/* Footer Disclaimer */}
+      <Box
+        sx={{
+          py: 3,
+          textAlign: 'center',
+          background: 'rgba(255,255,255,0.03)',
+          borderTop: '1px solid rgba(255,255,255,0.1)',
+          color: 'rgba(255,255,255,0.6)',
+          fontSize: '0.8rem',
+          lineHeight: 1.6,
+          backdropFilter: 'blur(10px)',
+        }}
+      >
+        Disclaimer: FitSpine does not provide medical advice, diagnosis, or treatment.
+        The insights and scores are for informational and educational purposes only.
+        Always consult a qualified healthcare professional for medical concerns or
+        before making changes to your health routine.
       </Box>
 
       {/* CSS Animations */}
