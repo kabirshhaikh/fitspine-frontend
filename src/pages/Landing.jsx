@@ -208,8 +208,8 @@ const Landing = () => {
                   textShadow: "0 2px 4px rgba(0,0,0,0.3)",
                 }}
               >
-                Track. Protect. Predict. Discover your personalized Disc
-                Protection Score and take control of your back health.
+                Discover patterns, track progress, and gain daily insights that
+                help you protect and strengthen your spine.
               </Typography>
 
               <Button
@@ -253,7 +253,7 @@ const Landing = () => {
                   },
                 }}
               >
-                Get My Disc Score
+                Get My Insights
               </Button>
             </Box>
           </Box>
@@ -1501,10 +1501,10 @@ const Landing = () => {
                       FitSpine’s AI studies patterns in your sleep, activity,
                       posture, and daily logs to uncover early signs of strain
                       and stress. It turns your data into daily
-                      <strong> Disc Protection Insights</strong> — showing what’s
-                      improving, what needs attention, and how your habits shape
-                      your recovery journey. Gentle nudges help you stay
-                      consistent and protect your spine over time.
+                      <strong> Disc Protection Insights</strong> — showing
+                      what’s improving, what needs attention, and how your
+                      habits shape your recovery journey. Gentle nudges help you
+                      stay consistent and protect your spine over time.
                     </Typography>
 
                     {/* AI Brain Learning from Lifestyle */}
@@ -1526,7 +1526,8 @@ const Landing = () => {
                           width: 70,
                           height: 70,
                           borderRadius: "50%",
-                          background: "linear-gradient(135deg, #4caf50, #66bb6a)",
+                          background:
+                            "linear-gradient(135deg, #4caf50, #66bb6a)",
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "center",
@@ -1536,50 +1537,52 @@ const Landing = () => {
                           position: "relative",
                         }}
                       >
-                        <Psychology sx={{ 
-                          color: "white", 
-                          fontSize: 30
-                        }} />
+                        <Psychology
+                          sx={{
+                            color: "white",
+                            fontSize: 30,
+                          }}
+                        />
                       </Box>
 
                       {/* Lifestyle Data Nodes */}
                       {[
-                        { 
-                          icon: "😴", 
-                          label: "Sleep", 
-                          position: { 
-                            top: "18%", 
-                            left: "3%"
+                        {
+                          icon: "😴",
+                          label: "Sleep",
+                          position: {
+                            top: "18%",
+                            left: "3%",
                           },
-                          color: "#673ab7"
+                          color: "#673ab7",
                         },
-                        { 
-                          icon: "😰", 
-                          label: "Stress", 
-                          position: { 
-                            bottom: "18%", 
-                            left: "3%"
+                        {
+                          icon: "😰",
+                          label: "Stress",
+                          position: {
+                            bottom: "18%",
+                            left: "3%",
                           },
-                          color: "#f44336"
+                          color: "#f44336",
                         },
-                        { 
-                          icon: "🏃", 
-                          label: "Activity", 
-                          position: { 
-                            top: "18%", 
-                            right: "3%"
+                        {
+                          icon: "🏃",
+                          label: "Activity",
+                          position: {
+                            top: "18%",
+                            right: "3%",
                           },
-                          color: "#ff9800"
+                          color: "#ff9800",
                         },
-                        { 
-                          icon: "❤️", 
-                          label: "Heart", 
-                          position: { 
-                            bottom: "18%", 
-                            right: "3%"
+                        {
+                          icon: "❤️",
+                          label: "Heart",
+                          position: {
+                            bottom: "18%",
+                            right: "3%",
                           },
-                          color: "#e91e63"
-                        }
+                          color: "#e91e63",
+                        },
                       ].map((node, index) => (
                         <Box key={node.label}>
                           {/* Lifestyle Node */}
@@ -1590,7 +1593,8 @@ const Landing = () => {
                               display: "flex",
                               flexDirection: "column",
                               alignItems: "center",
-                              animation: "lifestyleNode 3s ease-in-out infinite",
+                              animation:
+                                "lifestyleNode 3s ease-in-out infinite",
                               animationDelay: `${index * 0.5}s`,
                             }}
                           >
@@ -1625,7 +1629,6 @@ const Landing = () => {
                               {node.label}
                             </Typography>
                           </Box>
-
                         </Box>
                       ))}
 
@@ -1643,7 +1646,8 @@ const Landing = () => {
                           borderRadius: "15px",
                           fontSize: "0.65rem",
                           fontWeight: 600,
-                          animation: "learningIndicator 3s ease-in-out infinite",
+                          animation:
+                            "learningIndicator 3s ease-in-out infinite",
                           zIndex: 4,
                           textAlign: "center",
                           maxWidth: "90%",
