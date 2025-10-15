@@ -1415,7 +1415,7 @@ const Landing = () => {
                           zIndex: 4,
                         }}
                       >
-                        You're in Control! 🎯
+                        You are in Control! 🎯
                       </Box>
                     </Box>
                   </CardContent>
