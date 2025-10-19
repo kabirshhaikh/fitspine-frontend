@@ -331,7 +331,7 @@ export default function Dashboard() {
                   {isFitbitConnected ? 'Fitbit Connected' : 'Connect Fitbit'}
                 </Typography>
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
-                  {isFitbitConnected ? 'Last synced: 5 minutes ago' : 'Sync your activity data'}
+                  Track your daily activity
                 </Typography>
                 {!isFitbitConnected && (
                   <Button
