@@ -1,7 +1,6 @@
 // src/components/Navbar.jsx
 import React from 'react';
 import { AppBar, Toolbar, Typography, IconButton, Avatar, Box, Menu, MenuItem, Divider, Tooltip } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
@@ -40,24 +39,6 @@ export default function Navbar() {
       }}
     >
       <Toolbar sx={{ gap: 2 }}>
-        <IconButton 
-          edge="start" 
-          aria-label="menu"
-          sx={{
-            background: 'rgba(255, 255, 255, 0.1)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.2)',
-            color: 'white',
-            '&:hover': {
-              background: 'rgba(255, 255, 255, 0.2)',
-              transform: 'scale(1.05)',
-            },
-            transition: 'all 0.3s ease',
-          }}
-        >
-          <MenuIcon />
-        </IconButton>
-
         <Typography 
           variant="h6" 
           sx={{ 

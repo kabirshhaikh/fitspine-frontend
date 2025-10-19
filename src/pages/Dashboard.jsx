@@ -8,7 +8,8 @@ import {
   CardContent, 
   alpha, 
   Alert,
-  Grid
+  Grid,
+  CircularProgress
 } from "@mui/material";
 import { 
   FitnessCenter, 
@@ -21,14 +22,15 @@ import DashboardLayout from "../layout/DashboardLayout";
 import { useAuth } from "../context/AuthContext";
 import fitbitService from "../services/fitbit.service";
 import { useState, useEffect, useRef } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DailyLogModal from "../components/DailyLogModal";
 import dailyLogService from "../services/dailyLog.service";
 import insightsService from "../services/insights.service";
 import InsightsModal from "../components/InsightsModal";
 
 export default function Dashboard() {
-  const { user } = useAuth();
+  const { user, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
   const [connecting, setConnecting] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
@@ -39,6 +41,13 @@ export default function Dashboard() {
   const [insightsModalOpen, setInsightsModalOpen] = useState(false);
   const location = useLocation();
   const hasProcessedFitbitConnection = useRef(false);
+
+  // Route guard - redirect unauthenticated users (only when not loading)
+  useEffect(() => {
+    if (!loading && !isAuthenticated) {
+      navigate('/login', { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate]);
 
   // Check for OAuth callback success
   useEffect(() => {
@@ -130,6 +139,22 @@ export default function Dashboard() {
   };
 
   const isFitbitConnected = fitbitService.isConnected(user);
+
+  // Show loading while auth is being checked
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <Container maxWidth="lg" sx={{ py: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+          <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
+            <CircularProgress size={40} sx={{ color: '#4facfe' }} />
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
+              Loading...
+            </Typography>
+          </Box>
+        </Container>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>

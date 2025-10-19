@@ -20,6 +20,7 @@ import {
   Avatar,
   Divider,
   Snackbar,
+  alpha,
 } from '@mui/material';
 import {
   Save,
@@ -27,6 +28,7 @@ import {
   PhotoCamera,
   Visibility,
   VisibilityOff,
+  ArrowBack,
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import api from '../services/api';
@@ -324,12 +326,49 @@ const Profile = () => {
       <Container maxWidth="lg" sx={{ py: 3 }}>
         {/* Header */}
         <Box sx={{ mb: 4 }}>
-          <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-            Profile Settings
-          </Typography>
-          <Typography variant="body1" color="text.secondary">
-            Update your personal information and preferences
-          </Typography>
+          {/* Back Button */}
+          <Box sx={{ mb: 3 }}>
+            <Button
+              variant="outlined"
+              startIcon={<ArrowBack />}
+              onClick={() => navigate('/dashboard')}
+              sx={{
+                borderRadius: '25px',
+                border: `1px solid ${alpha('#ffffff', 0.3)}`,
+                color: 'white',
+                px: 3,
+                py: 1,
+                '&:hover': {
+                  border: `1px solid ${alpha('#ffffff', 0.5)}`,
+                  background: alpha('#ffffff', 0.1),
+                },
+              }}
+            >
+              Back to Dashboard
+            </Button>
+          </Box>
+          
+          {/* Title */}
+          <Box sx={{ textAlign: 'center' }}>
+            <Typography
+              variant="h3"
+              sx={{
+                fontWeight: 900,
+                mb: 2,
+                background: 'linear-gradient(135deg, #ffffff 0%, #a8edea 50%, #fed6e3 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                textShadow: '0 0 30px rgba(255,255,255,0.3)',
+                letterSpacing: '-0.02em',
+              }}
+            >
+              Profile Settings ⚙️
+            </Typography>
+            <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.8)', fontWeight: 300 }}>
+              Update your personal information and preferences
+            </Typography>
+          </Box>
         </Box>
 
         {/* Snackbar for notifications */}
@@ -354,14 +393,27 @@ const Profile = () => {
           elevation={0}
           sx={{
             p: { xs: 3, md: 4 },
-            borderRadius: 3,
-            border: '1px solid #E5E7EB',
+            borderRadius: 4,
+            background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+            backdropFilter: 'blur(20px)',
+            border: `1px solid ${alpha('#ffffff', 0.2)}`,
+            position: 'relative',
+            overflow: 'hidden',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              height: '1px',
+              background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+            },
           }}
         >
           <form onSubmit={handleSubmit}>
             {/* Profile Picture Section */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
                 Profile Picture
               </Typography>
               
@@ -404,7 +456,7 @@ const Profile = () => {
 
             {/* Personal Information */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
                 Personal Information
               </Typography>
 
@@ -480,7 +532,7 @@ const Profile = () => {
 
             {/* Preferences */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
                 Preferences
               </Typography>
 
@@ -531,7 +583,7 @@ const Profile = () => {
 
             {/* Wearable Integration */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
                 Wearable Integration
               </Typography>
 
@@ -585,13 +637,13 @@ const Profile = () => {
 
             {/* Medical Information */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'primary.main', fontWeight: 600 }}>
+              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
                 Medical Information
               </Typography>
 
               {/* Injuries */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
                   Injuries
                 </Typography>
                 <FormControl fullWidth>
@@ -626,7 +678,7 @@ const Profile = () => {
 
               {/* Surgeries */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
                   Surgeries
                 </Typography>
                 <FormControl fullWidth>
@@ -661,7 +713,7 @@ const Profile = () => {
 
               {/* Disc Issues */}
               <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600 }}>
+                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
                   Disc Issues
                 </Typography>
                 <FormControl fullWidth>
@@ -701,7 +753,17 @@ const Profile = () => {
                 variant="outlined"
                 onClick={handleCancel}
                 disabled={loading}
-                sx={{ borderRadius: 2 }}
+                sx={{ 
+                  borderRadius: '25px',
+                  border: `1px solid ${alpha('#ffffff', 0.3)}`,
+                  color: 'white',
+                  px: 3,
+                  py: 1,
+                  '&:hover': {
+                    border: `1px solid ${alpha('#ffffff', 0.5)}`,
+                    background: alpha('#ffffff', 0.1),
+                  },
+                }}
               >
                 Cancel
               </Button>
@@ -710,7 +772,21 @@ const Profile = () => {
                 variant="contained"
                 disabled={loading}
                 startIcon={loading ? <CircularProgress size={20} /> : <Save />}
-                sx={{ borderRadius: 2 }}
+                sx={{ 
+                  borderRadius: '25px',
+                  background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                  px: 3,
+                  py: 1,
+                  fontWeight: 600,
+                  '&:hover': {
+                    background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
+                    transform: 'translateY(-1px)',
+                  },
+                  '&:disabled': {
+                    background: 'rgba(255, 255, 255, 0.1)',
+                    color: 'rgba(255, 255, 255, 0.5)',
+                  }
+                }}
               >
                 {loading ? 'Saving...' : 'Save Changes'}
               </Button>
