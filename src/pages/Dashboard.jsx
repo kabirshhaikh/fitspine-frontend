@@ -20,7 +20,7 @@ import {
 import DashboardLayout from "../layout/DashboardLayout";
 import { useAuth } from "../context/AuthContext";
 import fitbitService from "../services/fitbit.service";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import DailyLogModal from "../components/DailyLogModal";
 import dailyLogService from "../services/dailyLog.service";
@@ -32,11 +32,13 @@ export default function Dashboard() {
   const [logModalOpen, setLogModalOpen] = useState(false);
   const [logMessage, setLogMessage] = useState({ show: false, type: '', text: '' });
   const location = useLocation();
+  const hasProcessedFitbitConnection = useRef(false);
 
   // Check for OAuth callback success
   useEffect(() => {
     const urlParams = new URLSearchParams(location.search);
-    if (urlParams.get('fitbit') === 'connected') {
+    if (urlParams.get('fitbit') === 'connected' && !hasProcessedFitbitConnection.current) {
+      hasProcessedFitbitConnection.current = true;
       setShowSuccessMessage(true);
       
       // Update user context to reflect Fitbit connection
@@ -60,7 +62,7 @@ export default function Dashboard() {
         setShowSuccessMessage(false);
       }, 5000);
     }
-  }, [location, user]);
+  }, [location]); // Removed 'user' from dependency array to prevent infinite loop
 
   const handleConnectFitbit = async () => {
     try {
