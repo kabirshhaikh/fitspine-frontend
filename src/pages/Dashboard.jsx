@@ -24,6 +24,8 @@ import { useState, useEffect, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import DailyLogModal from "../components/DailyLogModal";
 import dailyLogService from "../services/dailyLog.service";
+import insightsService from "../services/insights.service";
+import InsightsModal from "../components/InsightsModal";
 
 export default function Dashboard() {
   const { user } = useAuth();
@@ -31,6 +33,10 @@ export default function Dashboard() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
   const [logMessage, setLogMessage] = useState({ show: false, type: '', text: '' });
+  const [insights, setInsights] = useState(null);
+  const [loadingInsights, setLoadingInsights] = useState(false);
+  const [insightsError, setInsightsError] = useState(null);
+  const [insightsModalOpen, setInsightsModalOpen] = useState(false);
   const location = useLocation();
   const hasProcessedFitbitConnection = useRef(false);
 
@@ -71,6 +77,21 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Failed to connect Fitbit:', error);
       setConnecting(false);
+    }
+  };
+
+  const handleGenerateInsights = async () => {
+    try {
+      setLoadingInsights(true);
+      setInsightsError(null);
+      const data = await insightsService.getTodaysInsights();
+      setInsights(data);
+      setInsightsModalOpen(true); // Directly open the modal
+    } catch (error) {
+      console.error('Failed to generate insights:', error);
+      setInsightsError(error.message);
+    } finally {
+      setLoadingInsights(false);
     }
   };
 
@@ -187,7 +208,7 @@ export default function Dashboard() {
 
         {/* Stats Grid */}
         <Grid container spacing={3} sx={{ mb: 4, justifyContent: 'center' }}>
-          {/* Disc Protection Score Card */}
+          {/* AI Insights Card */}
           <Grid item xs={12} sm={6} md={4}>
             <Card
               sx={{
@@ -220,53 +241,46 @@ export default function Dashboard() {
                   />
                 </Box>
                 <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, mb: 2 }}>
-                  Disc Protection Score
+                  AI Spine Insights
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', mb: 3 }}>
-                  {isFitbitConnected ? 'Calculating from your activity data...' : 'Connect Fitbit to get your personalized score'}
-                </Typography>
-                {isFitbitConnected ? (
-                  <Box sx={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    gap: 1,
-                    color: '#4facfe'
-                  }}>
-                    <Box sx={{
-                      width: 20,
-                      height: 20,
-                      borderRadius: '50%',
-                      border: '2px solid #4facfe',
-                      borderTop: '2px solid transparent',
-                      animation: 'spin 1s linear infinite'
-                    }} />
-                    <Typography variant="caption">
-                      Analyzing...
+                
+                {insightsError ? (
+                  <Box sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ color: '#f44336', mb: 2 }}>
+                      {insightsError}
                     </Typography>
                   </Box>
                 ) : (
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={handleConnectFitbit}
-                    disabled={connecting}
-                    sx={{
-                      border: `1px solid ${alpha('#4facfe', 0.3)}`,
-                      color: '#4facfe',
-                      borderRadius: '20px',
-                      px: 2,
-                      py: 0.5,
-                      fontSize: '0.8rem',
-                      '&:hover': {
-                        border: `1px solid ${alpha('#4facfe', 0.5)}`,
-                        background: alpha('#4facfe', 0.1),
-                      },
-                    }}
-                  >
-                    Connect to Calculate
-                  </Button>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', mb: 3 }}>
+                    Generate personalized spine health insights
+                  </Typography>
                 )}
+
+                <Button
+                  variant="contained"
+                  size="medium"
+                  onClick={handleGenerateInsights}
+                  disabled={loadingInsights}
+                  sx={{
+                    background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                    borderRadius: '25px',
+                    px: 3,
+                    py: 1,
+                    fontSize: '0.9rem',
+                    fontWeight: 600,
+                    textTransform: 'none',
+                    '&:hover': {
+                      background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
+                      transform: 'translateY(-1px)',
+                    },
+                    '&:disabled': {
+                      background: 'rgba(255, 255, 255, 0.1)',
+                      color: 'rgba(255, 255, 255, 0.5)',
+                    }
+                  }}
+                >
+                  {loadingInsights ? 'Generating...' : 'Generate Insights'}
+                </Button>
               </CardContent>
             </Card>
           </Grid>
@@ -415,6 +429,13 @@ export default function Dashboard() {
           open={logModalOpen}
           onClose={() => setLogModalOpen(false)}
           onSave={handleLogSave}
+        />
+
+        {/* Insights Modal */}
+        <InsightsModal
+          open={insightsModalOpen}
+          onClose={() => setInsightsModalOpen(false)}
+          insights={insights}
         />
       </Container>
     </DashboardLayout>
