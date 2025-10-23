@@ -27,6 +27,7 @@ import DailyLogModal from "../components/DailyLogModal";
 import dailyLogService from "../services/dailyLog.service";
 import insightsService from "../services/insights.service";
 import InsightsModal from "../components/InsightsModal";
+import WeeklyGraphWidget from "../components/widgets/WeeklyGraphWidget";
 
 export default function Dashboard() {
   const { user, isAuthenticated, loading } = useAuth();
@@ -448,6 +449,21 @@ export default function Dashboard() {
           </Grid>
       </Grid>
 
+        {/* Weekly Graph Widget */}
+        <Box sx={{ mb: 4, width: '100%' }}>
+          <Typography
+            variant="h4"
+            sx={{
+              fontWeight: 700,
+              mb: 3,
+              color: 'white',
+              textAlign: 'center',
+            }}
+          >
+            7-Day Health Trends 📊
+          </Typography>
+          <WeeklyGraphWidget />
+        </Box>
 
         {/* Daily Log Modal */}
         <DailyLogModal
