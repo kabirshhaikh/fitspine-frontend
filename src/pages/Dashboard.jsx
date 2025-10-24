@@ -460,7 +460,7 @@ export default function Dashboard() {
               textAlign: 'center',
             }}
           >
-            7-Day Health Trends 📊
+            7-Day Health Trends
           </Typography>
           <WeeklyGraphWidget />
         </Box>

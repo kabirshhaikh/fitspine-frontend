@@ -51,16 +51,50 @@ export default function WeeklyGraphWidget() {
   const getChartData = () => {
     if (!graphData || !graphData.dates) return [];
 
-    return graphData.dates.map((date, index) => ({
-      date: date.split('-')[2], // Just the day number
-      painLevel: graphData.painLevel?.[index] ?? null,
-      sittingTime: graphData.sittingTime?.[index] ?? null,
-      standingTime: graphData.standingTime?.[index] ?? null,
-      morningStiffness: graphData.morningStiffness?.[index] ?? null,
-      stressLevel: graphData.stressLevel?.[index] ?? null,
-      restingHeartRate: graphData.restingHeartRate?.[index] ?? null,
-      sedentaryHours: graphData.sedentaryHours?.[index] ?? null,
-    }));
+    return graphData.dates.map((date, index) => {
+      const dateObj = new Date(date);
+      const dayName = dateObj.toLocaleDateString('en-US', { weekday: 'short' });
+      const dayNum = date.split('-')[2];
+      
+      return {
+        date: `${dayName} ${dayNum}`,
+        fullDate: date,
+        painLevel: graphData.painLevel?.[index] ?? null,
+        sittingTime: graphData.sittingTime?.[index] ?? null,
+        standingTime: graphData.standingTime?.[index] ?? null,
+        morningStiffness: graphData.morningStiffness?.[index] ?? null,
+        stressLevel: graphData.stressLevel?.[index] ?? null,
+        restingHeartRate: graphData.restingHeartRate?.[index] ?? null,
+        sedentaryHours: graphData.sedentaryHours?.[index] ?? null,
+      };
+    });
+  };
+
+  // Helper function to get readable label for pain level (matching backend enums)
+  const getPainLabel = (value) => {
+    if (value === null || value === -1) return 'No Data';
+    const labels = ['None', 'Mild', 'Moderate', 'Severe'];
+    return labels[value] || 'Unknown';
+  };
+
+  // Helper function to get readable label for time categories (matching backend enums)
+  const getTimeLabel = (value) => {
+    if (value === null || value === -1) return 'No Data';
+    const labels = [
+      'Less than 2h',      // 0
+      '2-4 hours',        // 1
+      '4-6 hours',        // 2
+      '6-8 hours',        // 3
+      'Greater than 8h'   // 4
+    ];
+    return labels[value] || 'Unknown';
+  };
+
+  // Helper function to get readable label for stress (matching backend enums)
+  const getStressLabel = (value) => {
+    if (value === null || value === -1) return 'No Data';
+    const labels = ['Very Low', 'Low', 'Moderate', 'High', 'Very High'];
+    return labels[value] || 'Unknown';
   };
 
   const CustomTooltip = ({ active, payload, label }) => {
@@ -68,20 +102,53 @@ export default function WeeklyGraphWidget() {
       return (
         <Box
           sx={{
-            background: alpha('#000000', 0.8),
+            background: alpha('#000000', 0.9),
             borderRadius: 2,
-            p: 1.5,
-            border: `1px solid ${alpha('#ffffff', 0.2)}`,
+            p: 2,
+            border: `1px solid ${alpha('#ffffff', 0.3)}`,
+            boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
           }}
         >
-          <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, mb: 1 }}>
-            Day {label}
+          <Typography variant="body2" sx={{ color: 'white', fontWeight: 700, mb: 1.5, fontSize: '0.95rem' }}>
+            {label}
           </Typography>
-          {payload.map((entry, index) => (
-            <Typography key={index} variant="caption" sx={{ color: entry.color, display: 'block' }}>
-              {entry.name}: {entry.value !== null ? entry.value : 'N/A'}
-            </Typography>
-          ))}
+          {payload.map((entry, index) => {
+            // Skip if value is null or -1 (no data)
+            if (entry.value === null || entry.value === -1) {
+              return (
+                <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                  <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: entry.color }} />
+                  <Typography variant="caption" sx={{ color: 'rgba(255,255,255,0.6)', fontSize: '0.85rem' }}>
+                    <strong>{entry.name}:</strong> No Data
+                  </Typography>
+                </Box>
+              );
+            }
+            
+            let displayValue = entry.value;
+            
+            // Format values based on the metric type
+            if (entry.dataKey === 'painLevel' || entry.dataKey === 'morningStiffness') {
+              displayValue = `${entry.value} (${getPainLabel(entry.value)})`;
+            } else if (entry.dataKey === 'sittingTime' || entry.dataKey === 'standingTime') {
+              displayValue = `${entry.value} (${getTimeLabel(entry.value)})`;
+            } else if (entry.dataKey === 'stressLevel') {
+              displayValue = `${entry.value} (${getStressLabel(entry.value)})`;
+            } else if (entry.dataKey === 'restingHeartRate') {
+              displayValue = `${entry.value} bpm`;
+            } else if (entry.dataKey === 'sedentaryHours') {
+              displayValue = `${entry.value.toFixed(1)} hrs`;
+            }
+            
+            return (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                <Box sx={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: entry.color }} />
+                <Typography variant="caption" sx={{ color: 'white', fontSize: '0.85rem' }}>
+                  <strong>{entry.name}:</strong> {displayValue}
+                </Typography>
+              </Box>
+            );
+          })}
         </Box>
       );
     }
@@ -155,27 +222,49 @@ export default function WeeklyGraphWidget() {
           />
           <CardContent sx={{ p: 3 }}>
             <ResponsiveContainer width="100%" height={450}>
-              <LineChart data={chartData}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={alpha('#ffffff', 0.1)} />
-                <XAxis dataKey="date" stroke="#ffffff" />
-                <YAxis stroke="#ffffff" domain={[0, 3]} />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#ffffff" 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  label={{ value: 'Day', position: 'insideBottom', offset: -5, fill: '#ffffff', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#ffffff" 
+                  domain={[0, 3]} 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  tickFormatter={(value) => {
+                    const labels = ['None', 'Mild', 'Moderate', 'Severe'];
+                    return labels[value] || value;
+                  }}
+                  label={{ value: 'Level', angle: -90, position: 'insideLeft', fill: '#ffffff', fontSize: 12, offset: 15 }}
+                  width={70}
+                />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+                <Legend 
+                  wrapperStyle={{ color: '#ffffff', paddingTop: '20px' }}
+                  iconType="line"
+                  verticalAlign="bottom"
+                  height={40}
+                />
                 <Line 
                   type="monotone" 
                   dataKey="painLevel" 
                   stroke="#f44336" 
-                  strokeWidth={2}
+                  strokeWidth={3}
                   name="Pain Level"
-                  dot={{ fill: '#f44336', r: 4 }}
+                  dot={{ fill: '#f44336', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="morningStiffness" 
                   stroke="#ff9800" 
-                  strokeWidth={2}
-                  name="Stiffness"
-                  dot={{ fill: '#ff9800', r: 4 }}
+                  strokeWidth={3}
+                  name="Morning Stiffness"
+                  dot={{ fill: '#ff9800', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -196,27 +285,67 @@ export default function WeeklyGraphWidget() {
           />
           <CardContent sx={{ p: 3 }}>
             <ResponsiveContainer width="100%" height={450}>
-              <LineChart data={chartData}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={alpha('#ffffff', 0.1)} />
-                <XAxis dataKey="date" stroke="#ffffff" />
-                <YAxis stroke="#ffffff" domain={[0, 4]} />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#ffffff" 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  label={{ value: 'Day', position: 'insideBottom', offset: -5, fill: '#ffffff', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#ffffff" 
+                  domain={[0, 4]} 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  tickFormatter={(value) => {
+                    const labels = ['<2h', '2-4h', '4-6h', '6-8h', '>8h'];
+                    return labels[value] || value;
+                  }}
+                  label={{ value: 'Time Category', angle: -90, position: 'insideLeft', fill: '#ffffff', fontSize: 12, offset: 15 }}
+                  width={70}
+                />
+                <YAxis 
+                  stroke="#ffffff" 
+                  yAxisId="right" 
+                  orientation="right"
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  label={{ value: 'Hours', angle: 90, position: 'insideRight', fill: '#ffffff', fontSize: 12, offset: 15 }}
+                  width={60}
+                />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+                <Legend 
+                  wrapperStyle={{ color: '#ffffff', paddingTop: '20px' }}
+                  iconType="line"
+                  verticalAlign="bottom"
+                  height={40}
+                />
                 <Line 
                   type="monotone" 
                   dataKey="sittingTime" 
                   stroke="#4caf50" 
-                  strokeWidth={2}
+                  strokeWidth={3}
                   name="Sitting Time"
-                  dot={{ fill: '#4caf50', r: 4 }}
+                  dot={{ fill: '#4caf50', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="standingTime" 
                   stroke="#2196f3" 
-                  strokeWidth={2}
+                  strokeWidth={3}
                   name="Standing Time"
-                  dot={{ fill: '#2196f3', r: 4 }}
+                  dot={{ fill: '#2196f3', r: 5 }}
+                  activeDot={{ r: 7 }}
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="sedentaryHours" 
+                  stroke="#9c27b0" 
+                  strokeWidth={3}
+                  name="Sedentary Hours"
+                  yAxisId="right"
+                  dot={{ fill: '#9c27b0', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -237,30 +366,60 @@ export default function WeeklyGraphWidget() {
           />
           <CardContent sx={{ p: 3 }}>
             <ResponsiveContainer width="100%" height={450}>
-              <LineChart data={chartData}>
+              <LineChart data={chartData} margin={{ top: 10, right: 20, left: 10, bottom: 40 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke={alpha('#ffffff', 0.1)} />
-                <XAxis dataKey="date" stroke="#ffffff" />
-                <YAxis stroke="#ffffff" yAxisId="left" domain={[0, 4]} />
-                <YAxis stroke="#ffffff" yAxisId="right" orientation="right" />
+                <XAxis 
+                  dataKey="date" 
+                  stroke="#ffffff" 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  label={{ value: 'Day', position: 'insideBottom', offset: -5, fill: '#ffffff', fontSize: 12 }}
+                />
+                <YAxis 
+                  stroke="#ffffff" 
+                  yAxisId="left" 
+                  domain={[0, 4]} 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  tickFormatter={(value) => {
+                    const labels = ['Very Low', 'Low', 'Moderate', 'High', 'Very High'];
+                    return labels[value] || value;
+                  }}
+                  label={{ value: 'Stress Level', angle: -90, position: 'insideLeft', fill: '#ffffff', fontSize: 12, offset: 15 }}
+                  width={80}
+                />
+                <YAxis 
+                  stroke="#ffffff" 
+                  yAxisId="right" 
+                  orientation="right" 
+                  tick={{ fill: '#ffffff', fontSize: 12 }}
+                  label={{ value: 'Heart Rate (bpm)', angle: 90, position: 'insideRight', fill: '#ffffff', fontSize: 12, offset: 15 }}
+                  width={80}
+                />
                 <Tooltip content={<CustomTooltip />} />
-                <Legend />
+                <Legend 
+                  wrapperStyle={{ color: '#ffffff', paddingTop: '20px' }}
+                  iconType="line"
+                  verticalAlign="bottom"
+                  height={40}
+                />
                 <Line 
                   type="monotone" 
                   dataKey="stressLevel" 
                   stroke="#ff9800" 
-                  strokeWidth={2}
+                  strokeWidth={3}
                   name="Stress Level"
                   yAxisId="left"
-                  dot={{ fill: '#ff9800', r: 4 }}
+                  dot={{ fill: '#ff9800', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
                 <Line 
                   type="monotone" 
                   dataKey="restingHeartRate" 
                   stroke="#e91e63" 
-                  strokeWidth={2}
-                  name="Heart Rate (bpm)"
+                  strokeWidth={3}
+                  name="Resting Heart Rate"
                   yAxisId="right"
-                  dot={{ fill: '#e91e63', r: 4 }}
+                  dot={{ fill: '#e91e63', r: 5 }}
+                  activeDot={{ r: 7 }}
                 />
               </LineChart>
             </ResponsiveContainer>
