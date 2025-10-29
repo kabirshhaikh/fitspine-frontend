@@ -111,6 +111,30 @@ class AuthService {
       return null;
     }
   }
+
+  async forgotPassword(email) {
+    try {
+      const { data } = await api.post('/api/user/forgot-password', { email });
+      return data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to send password reset email';
+      throw new Error(errorMessage);
+    }
+  }
+
+  async verifyResetToken(email, token, newPassword) {
+    try {
+      const { data } = await api.post('/api/user/reset-password', {
+        email,
+        token,
+        newPassword
+      });
+      return data;
+    } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Failed to reset password';
+      throw new Error(errorMessage);
+    }
+  }
 }
 
 export default new AuthService();

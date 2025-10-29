@@ -9,10 +9,30 @@ class InsightsService {
    */
   async generateDailyInsight(date) {
     try {
+      console.log('Calling insights API for date:', date);
       const { data } = await api.get(`/api/insights/generate/${date}`);
+      console.log('Insights API response received:', data);
       return data;
     } catch (error) {
-      throw new Error(error.response?.data?.message || 'Failed to generate daily insights');
+      console.error('Insights API error:', {
+        message: error.message,
+        response: error.response,
+        data: error.response?.data,
+        status: error.response?.status,
+        config: error.config,
+      });
+      
+      // More detailed error handling
+      if (error.response) {
+        // Server responded with error
+        throw new Error(error.response?.data?.message || `Server error: ${error.response.status}`);
+      } else if (error.request) {
+        // Request made but no response
+        throw new Error('No response from server. Please check your connection.');
+      } else {
+        // Something else happened
+        throw new Error(error.message || 'Failed to generate daily insights');
+      }
     }
   }
 

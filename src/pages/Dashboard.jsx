@@ -92,15 +92,51 @@ export default function Dashboard() {
 
   const handleGenerateInsights = async () => {
     try {
-      setLoadingInsights(true);
+      // Reset any previous errors and start loading
       setInsightsError(null);
+      setLoadingInsights(true);
+      
+      console.log('Starting insights generation...');
+      const startTime = Date.now();
+      
+      // Wait for insights
       const data = await insightsService.getTodaysInsights();
+      
+      const endTime = Date.now();
+      console.log(`Insights generated successfully in ${endTime - startTime}ms`);
+      console.log('Insights data:', data);
+      
+      // Set insights and open modal
       setInsights(data);
-      setInsightsModalOpen(true); // Directly open the modal
+      setInsightsModalOpen(true);
+      
+      // Clear loading state
+      setLoadingInsights(false);
     } catch (error) {
       console.error('Failed to generate insights:', error);
-      setInsightsError(error.message);
-    } finally {
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        stack: error.stack
+      });
+      
+      // More detailed error message for user
+      let errorMessage = 'Failed to generate insights. ';
+      
+      if (error.response?.status === 404) {
+        errorMessage += 'No data available for today. Please log your daily activities first.';
+      } else if (error.response?.status === 500) {
+        errorMessage += 'Server error. Please try again in a moment.';
+      } else if (error.response?.data?.message) {
+        errorMessage += error.response.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please try again.';
+      }
+      
+      setInsightsError(errorMessage);
       setLoadingInsights(false);
     }
   };
@@ -271,8 +307,11 @@ export default function Dashboard() {
                 </Typography>
                 
                 {insightsError ? (
-                  <Box sx={{ mb: 3 }}>
-                    <Typography variant="body2" sx={{ color: '#f44336', mb: 2 }}>
+                  <Box sx={{ mb: 3, p: 2, background: alpha('#f44336', 0.1), borderRadius: 2, border: `1px solid ${alpha('#f44336', 0.3)}` }}>
+                    <Typography variant="body2" sx={{ color: '#f44336', mb: 0.5, fontWeight: 600 }}>
+                      Error
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'block', lineHeight: 1.4 }}>
                       {insightsError}
                     </Typography>
                   </Box>
@@ -287,6 +326,7 @@ export default function Dashboard() {
                   size="medium"
                   onClick={handleGenerateInsights}
                   disabled={loadingInsights}
+                  startIcon={loadingInsights ? <CircularProgress size={16} sx={{ color: 'white' }} /> : null}
                   sx={{
                     background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
                     borderRadius: '25px',
@@ -295,6 +335,7 @@ export default function Dashboard() {
                     fontSize: '0.9rem',
                     fontWeight: 600,
                     textTransform: 'none',
+                    position: 'relative',
                     '&:hover': {
                       background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
                       transform: 'translateY(-1px)',
@@ -305,7 +346,7 @@ export default function Dashboard() {
                     }
                   }}
                 >
-                  {loadingInsights ? 'Generating...' : 'Generate Insights'}
+                  {loadingInsights ? 'Generating Insights...' : 'Generate Insights'}
                 </Button>
               </CardContent>
             </Card>
