@@ -11,7 +11,7 @@ import {
   Alert,
   CircularProgress,
 } from '@mui/material';
-import { HealthAndSafety, LockReset as LockResetIcon } from '@mui/icons-material';
+import { HealthAndSafety, LockReset as LockResetIcon, Visibility, VisibilityOff } from '@mui/icons-material';
 import authService from '../../services/auth.service';
 import '../auth/Auth.css';
 
@@ -28,6 +28,8 @@ const ResetPassword = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   useEffect(() => {
     // If no email in URL, show error
@@ -91,7 +93,18 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      await authService.verifyResetToken(emailFromUrl, formData.token, formData.newPassword);
+      console.log('Reset Password Data:', {
+        email: emailFromUrl,
+        securityToken: formData.token,
+        newPassword: formData.newPassword,
+        confirmPassword: formData.confirmPassword
+      });
+      await authService.verifyResetToken(
+        emailFromUrl, 
+        formData.token, 
+        formData.newPassword, 
+        formData.confirmPassword
+      );
       setSuccess(true);
       
       // Redirect to login after 3 seconds
@@ -395,7 +408,7 @@ const ResetPassword = () => {
                 fullWidth
                 label="New Password"
                 name="newPassword"
-                type="password"
+                type={showNewPassword ? 'text' : 'password'}
                 value={formData.newPassword}
                 onChange={handleChange}
                 error={!!error && formData.newPassword === ''}
@@ -404,6 +417,24 @@ const ResetPassword = () => {
                 required
                 autoComplete="new-password"
                 disabled={loading || !emailFromUrl}
+                InputProps={{
+                  endAdornment: (
+                    <Button
+                      type="button"
+                      onClick={() => setShowNewPassword(!showNewPassword)}
+                      sx={{
+                        minWidth: 'auto',
+                        p: 1,
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
+                      }}
+                    >
+                      {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                    </Button>
+                  ),
+                }}
                 sx={{ 
                   mb: 2,
                   "& .MuiOutlinedInput-root": {
@@ -437,7 +468,7 @@ const ResetPassword = () => {
                 fullWidth
                 label="Confirm Password"
                 name="confirmPassword"
-                type="password"
+                type={showConfirmPassword ? 'text' : 'password'}
                 value={formData.confirmPassword}
                 onChange={handleChange}
                 error={!!error && formData.confirmPassword !== formData.newPassword}
@@ -446,6 +477,24 @@ const ResetPassword = () => {
                 required
                 autoComplete="new-password"
                 disabled={loading || !emailFromUrl}
+                InputProps={{
+                  endAdornment: (
+                    <Button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      sx={{
+                        minWidth: 'auto',
+                        p: 1,
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&:hover': {
+                          backgroundColor: 'transparent',
+                        },
+                      }}
+                    >
+                      {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                    </Button>
+                  ),
+                }}
                 sx={{ 
                   mb: 3,
                   "& .MuiOutlinedInput-root": {

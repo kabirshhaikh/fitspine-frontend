@@ -122,12 +122,13 @@ class AuthService {
     }
   }
 
-  async verifyResetToken(email, token, newPassword) {
+  async verifyResetToken(email, securityToken, newPassword, confirmPassword) {
     try {
-      const { data } = await api.post('/api/user/reset-password', {
+      const { data } = await api.post('/api/user/set-password', {
         email,
-        token,
-        newPassword
+        securityToken,
+        newPassword,
+        confirmPassword
       });
       return data;
     } catch (error) {
