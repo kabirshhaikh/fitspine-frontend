@@ -1,0 +1,199 @@
+/* Features Section Styles */
+
+.features-section {
+  padding: clamp(48px, 12vw, 96px) 0;
+  position: relative;
+}
+
+.feature-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.feature-title {
+  font-weight: 700;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.feature-description {
+  font-size: clamp(1rem, 1.5vw, 1.1rem);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 24px;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Score Demo */
+.score-demo {
+  height: 200px;
+  background: linear-gradient(45deg, #e3f2fd, #bbdefb);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.progress-ring-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-ring-wrapper {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-bottom: 16px;
+}
+
+.progress-ring-bg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 8px solid rgba(25, 118, 210, 0.2);
+}
+
+.progress-ring-fill {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 8px solid transparent;
+  border-top: 8px solid #4caf50;
+  border-right: 8px solid #4caf50;
+  border-bottom: 8px solid #4caf50;
+  border-left: 8px solid #81c784;
+  transform: rotate(-90deg);
+  animation: fillRing 3s ease-out forwards;
+}
+
+.progress-score {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  font-weight: 800;
+  color: #4caf50;
+  animation: countUp 3s ease-out forwards;
+}
+
+.score-breakdown {
+  text-align: center;
+  min-width: 200px;
+}
+
+.score-label {
+  color: #666;
+  font-weight: 500;
+  margin-bottom: 8px;
+  font-size: clamp(0.75rem, 1vw, 0.875rem);
+}
+
+.score-metrics {
+  display: flex;
+  justify-content: space-between;
+  font-size: clamp(0.65rem, 1vw, 0.75rem);
+  color: #888;
+}
+
+/* Security Banner */
+.security-banner {
+  margin-top: 16px;
+  margin-bottom: 24px;
+  padding: 16px;
+  border-radius: 12px;
+  background: rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.security-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 20px;
+}
+
+.security-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: clamp(0.875rem, 1.2vw, 0.9rem);
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* Animation Placeholders */
+.spine-animation-placeholder,
+.brain-animation-placeholder {
+  height: 200px;
+  background: linear-gradient(45deg, #f8f9fa, #e9ecef);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  margin-top: 24px;
+}
+
+.brain-animation-placeholder {
+  background: linear-gradient(45deg, #e8f5e8, #c8e6c9);
+}
+
+.ai-brain-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4caf50, #66bb6a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(76, 175, 80, 0.5);
+  animation: brainPulse 2s ease-in-out infinite;
+}
+
+.learning-indicator {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(76, 175, 80, 0.9);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 15px;
+  font-size: clamp(0.6rem, 1vw, 0.65rem);
+  font-weight: 600;
+  text-align: center;
+  animation: learningIndicator 3s ease-in-out infinite;
+}
+
+@media (max-width: 600px) {
+  .feature-header {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .security-banner {
+    flex-direction: column;
+    text-align: center;
+  }
+  
+  .score-metrics {
+    flex-direction: column;
+    gap: 4px;
+  }
+}
+
