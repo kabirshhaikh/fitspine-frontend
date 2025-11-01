@@ -73,9 +73,17 @@ const StorySection = () => {
           <Typography variant="h2" className="story-title gradient-text">
             Your Journey to Better Spine Health
           </Typography>
-          <Typography variant="h6" className="story-subtitle">
-            From data collection to actionable insights - see how FitSpine
-            transforms your daily habits into powerful health intelligence.
+          <Typography 
+            variant="h6" 
+            className="story-subtitle"
+            sx={{
+              textAlign: 'center',
+              display: 'block',
+              width: '100%',
+              mx: 'auto'
+            }}
+          >
+            From data collection to actionable insights - see how FitSpine transforms your daily habits into powerful health intelligence.
           </Typography>
         </Box>
 
