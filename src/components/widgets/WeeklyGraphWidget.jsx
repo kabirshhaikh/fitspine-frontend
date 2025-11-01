@@ -1,5 +1,6 @@
 // src/components/widgets/WeeklyGraphWidget.jsx
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -26,6 +27,7 @@ import graphService from '../../services/graph.service';
 import WidgetShell from './WidgetShell';
 
 export default function WeeklyGraphWidget() {
+  const location = useLocation();
   const [graphData, setGraphData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -45,7 +47,7 @@ export default function WeeklyGraphWidget() {
 
   useEffect(() => {
     loadGraphData();
-  }, []);
+  }, [location.pathname]);
 
   // Transform data for charts
   const getChartData = () => {
