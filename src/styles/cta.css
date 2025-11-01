@@ -1,13 +1,14 @@
 /* CTA Section Styles */
 
 .cta-section {
-  padding: clamp(48px, 12vw, 96px) 0;
+  min-height: 100vh;
+  height: 100vh;
   position: relative;
   overflow: hidden;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 60vh;
+  padding: 0;
 }
 
 .cta-content {
@@ -28,17 +29,7 @@
   transform: translateY(0);
 }
 
-.cta-glass-card {
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 24px;
-  padding: clamp(32px, 6vw, 64px) clamp(24px, 5vw, 48px);
-  margin: 0 auto;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  position: relative;
-  overflow: visible;
-  z-index: 5;
+.cta-main-content {
   width: 100%;
   max-width: 900px;
   display: flex;
@@ -46,23 +37,14 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-}
-
-.cta-glass-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  pointer-events: none;
+  gap: clamp(24px, 4vw, 32px);
+  padding: 0;
 }
 
 .cta-title {
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   font-weight: 900;
-  margin: 0 auto 32px auto;
+  margin: 0;
   line-height: 1.1;
   letter-spacing: -0.02em;
   text-align: center;
@@ -73,12 +55,22 @@
 .cta-subtitle {
   font-size: clamp(1.1rem, 2vw, 1.4rem);
   font-weight: 300;
-  margin: 0 auto;
+  margin: 0;
   max-width: 800px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   text-align: center;
   width: 100%;
 }
+
+/* Mobile Responsive */
+@media (max-width: 768px) {
+  .cta-section {
+    min-height: auto;
+    height: auto;
+    padding: clamp(60px, 10vw, 80px) 0;
+  }
+}
+
 

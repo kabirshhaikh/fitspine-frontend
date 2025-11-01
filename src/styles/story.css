@@ -146,7 +146,7 @@
 }
 
 /* Mobile Responsive */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .story-timeline {
     gap: clamp(32px, 6vw, 48px);
   }

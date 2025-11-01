@@ -1,7 +1,6 @@
 import React from "react";
-import { Box, Container, Typography, Grid, CardContent } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { TrendingUp, FitnessCenter, Psychology } from "@mui/icons-material";
-import GlassCard from "./GlassCard";
 import "../../styles/features.css";
 
 const FeaturesSection = () => {
@@ -36,7 +35,7 @@ const FeaturesSection = () => {
       icon: Psychology,
       title: "AI that learns from your lifestyle",
       description:
-        "FitSpine's AI studies patterns in your sleep, activity, posture, and daily logs to uncover early signs of strain and stress. It turns your data into daily Disc Protection Insights — showing what's improving, what needs attention, and how your habits shape your recovery journey. Gentle nudges help you stay consistent and protect your spine over time.",
+        "FitSpine's AI studies patterns in your sleep, activity, heart rate and daily logs to uncover early signs of strain and stress. It turns your data into daily Disc Protection Insights — showing what's improving, what needs attention, and how your habits shape your recovery journey. Gentle nudges help you stay consistent and protect your spine over time.",
       color: "#4caf50",
       hoverColor: "rgba(76, 175, 80, 0.4)",
       borderHoverColor: "rgba(76, 175, 80, 0.3)",
@@ -48,119 +47,204 @@ const FeaturesSection = () => {
   return (
     <Box className="features-section section-background-2">
       <Container maxWidth="lg">
-        <Box sx={{ display: "flex", justifyContent: "center" }}>
-          <Grid container spacing={6}>
-            {features.map((feature) => {
-              const IconComponent = feature.icon;
-              return (
-                <Grid item xs={12} key={feature.id}>
-                  <GlassCard
-                    className="animate-on-scroll"
-                    hoverColor={feature.hoverColor}
-                    borderHoverColor={feature.borderHoverColor}
-                    sx={{
-                      opacity: 0,
-                      transform: "translateY(50px)",
-                      transition: "all 1s cubic-bezier(0.4, 0, 0.2, 1)",
-                      animation: "morphing 12s ease-in-out infinite",
-                      "&.animate-in": {
-                        opacity: 1,
-                        transform: "translateY(0)",
-                      },
-                      "&:hover": {
-                        transform: "translateY(-8px) scale(1.01)",
-                        animation: "none",
-                      },
-                      "&::before": {
-                        background: `linear-gradient(90deg, transparent, ${feature.color}80, transparent)`,
-                      },
-                    }}
-                  >
-                    <CardContent sx={{ p: 4 }}>
-                      <Box className="feature-header" sx={{ color: feature.color }}>
-                        <IconComponent
-                          sx={{
-                            fontSize: { xs: 32, md: 40 },
-                            mr: 2,
-                            filter: `drop-shadow(0 0 8px ${feature.color}80)`,
-                          }}
-                        />
-                        <Typography
-                          variant="h4"
-                          className="feature-title"
-                          sx={{ color: feature.color }}
-                        >
-                          {feature.title}
-                        </Typography>
-                      </Box>
+        <Box className="features-timeline">
+          {features.map((feature, index) => {
+            const IconComponent = feature.icon;
+            return (
+              <Box
+                key={feature.id}
+                className="animate-on-scroll feature-item"
+                sx={{
+                  opacity: 0,
+                  transform: index % 2 === 0 ? "translateX(-50px)" : "translateX(50px)",
+                  transition: "all 0.8s ease-out",
+                  "&.animate-in": {
+                    opacity: 1,
+                    transform: "translateX(0)",
+                  },
+                }}
+              >
+                <Box className="feature-item-content">
+                  <Box className="feature-icon-wrapper">
+                    <Box
+                      className="feature-icon-circle"
+                      sx={{
+                        background: feature.gradient,
+                        boxShadow: `0 4px 20px ${feature.color}40`,
+                      }}
+                    >
+                      <IconComponent
+                        sx={{
+                          color: "white",
+                          fontSize: { xs: 28, md: 36 },
+                        }}
+                      />
+                    </Box>
+                    {index < features.length - 1 && (
+                      <Box className="feature-connector-line" />
+                    )}
+                  </Box>
 
-                      <Typography variant="body1" className="feature-description">
-                        {feature.description}
+                  <Box className="feature-text-content">
+                    <Box className="feature-text-header">
+                      <Typography
+                        variant="h4"
+                        className="feature-item-title"
+                        sx={{ color: feature.color }}
+                      >
+                        {feature.title}
                       </Typography>
+                    </Box>
 
-                      {/* Score Demo Animation */}
-                      {feature.showScoreDemo && (
-                        <Box className="score-demo">
-                          <Box className="progress-ring-container">
-                            <Box className="progress-ring-wrapper">
-                              <Box className="progress-ring-bg" />
-                              <Box className="progress-ring-fill" />
-                              <Typography variant="h3" className="progress-score">
+                    <Typography variant="body1" className="feature-item-description">
+                      {feature.description}
+                    </Typography>
+
+                    {/* Score Demo Animation */}
+                    {feature.showScoreDemo && (
+                      <Box className="score-demo">
+                        <Box className="progress-ring-container">
+                          <Box className="progress-ring-wrapper">
+                            <Box className="progress-ring-bg" />
+                            <Box className="progress-ring-fill" />
+                            <Box
+                              sx={{
+                                position: 'absolute',
+                                top: '50%',
+                                left: '50%',
+                                transform: 'translate(-50%, -50%)',
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                zIndex: 10,
+                                width: '100%',
+                                height: '100%',
+                                pointerEvents: 'none'
+                              }}
+                            >
+                              <Typography 
+                                variant="h3" 
+                                className="progress-score"
+                                sx={{ 
+                                  textAlign: 'center',
+                                  margin: 0,
+                                  lineHeight: 1,
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  justifyContent: 'center'
+                                }}
+                              >
                                 85
                               </Typography>
                             </Box>
-                            <Box className="score-breakdown">
-                              <Typography variant="body2" className="score-label">
-                                Disc Protection Score
-                              </Typography>
-                              <Box className="score-metrics">
-                                <span>Pain: 80%</span>
-                                <span>Posture: 90%</span>
-                                <span>Activity: 85%</span>
-                              </Box>
+                          </Box>
+                          <Box className="score-breakdown">
+                            <Typography 
+                              variant="body2" 
+                              className="score-label"
+                              sx={{ 
+                                textAlign: 'center',
+                                width: '100%',
+                                margin: 0
+                              }}
+                            >
+                              Disc Protection Score
+                            </Typography>
+                            <Box 
+                              className="score-metrics"
+                              sx={{ 
+                                width: '100%',
+                                textAlign: 'center'
+                              }}
+                            >
+                              <span>Pain: 80%</span>
+                              <span>Posture: 90%</span>
+                              <span>Activity: 85%</span>
                             </Box>
                           </Box>
                         </Box>
-                      )}
+                      </Box>
+                    )}
 
-                      {/* Security Message */}
-                      {feature.showSecurity && (
-                        <Box className="security-banner">
-                          <Box className="security-icon">🔒</Box>
-                          <Typography variant="body2" className="security-text">
-                            FitSpine connects securely using official APIs and
-                            never stores your wearable credentials. Your health
-                            data remains private and encrypted.
-                          </Typography>
-                        </Box>
-                      )}
+                    {/* Security Message */}
+                    {feature.showSecurity && (
+                      <Box className="security-banner">
+                        <Box className="security-icon">🔒</Box>
+                        <Typography variant="body2" className="security-text">
+                          FitSpine connects securely using official APIs and
+                          never stores your wearable credentials. Your health
+                          data remains private and encrypted.
+                        </Typography>
+                      </Box>
+                    )}
 
-                      {/* Spine Animation Placeholder */}
-                      {feature.showSpineAnimation && (
-                        <Box className="spine-animation-placeholder">
-                          <Typography variant="body2" sx={{ color: "#666", textAlign: "center" }}>
-                            Spine visualization animation
-                          </Typography>
-                        </Box>
-                      )}
-
-                      {/* Brain Animation Placeholder */}
-                      {feature.showBrainAnimation && (
-                        <Box className="brain-animation-placeholder">
-                          <Box className="ai-brain-icon">
-                            <Psychology sx={{ color: "white", fontSize: 30 }} />
+                    {/* Wearable Animation */}
+                    {feature.showSpineAnimation && (
+                      <Box className="wearable-animation-container">
+                        <Box className="wearable-devices">
+                          <Box className="wearable-device">
+                            <Typography sx={{ fontSize: { xs: 24, md: 32 } }}>⌚</Typography>
+                            <Typography variant="caption" className="wearable-label">
+                              Apple Watch
+                            </Typography>
                           </Box>
-                          <Typography variant="body2" className="learning-indicator">
-                            🧠 Learning Your Patterns...
+                          
+                          <Box className="wearable-device">
+                            <Typography sx={{ fontSize: { xs: 24, md: 32 } }}>⌚</Typography>
+                            <Typography variant="caption" className="wearable-label">
+                              Fitbit
+                            </Typography>
+                          </Box>
+                          
+                          <Box className="wearable-device">
+                            <Typography sx={{ fontSize: { xs: 24, md: 32 } }}>⌚</Typography>
+                            <Typography variant="caption" className="wearable-label">
+                              Garmin
+                            </Typography>
+                          </Box>
+                          
+                          <Box className="wearable-device">
+                            <Typography sx={{ fontSize: { xs: 24, md: 32 } }}>⌚</Typography>
+                            <Typography variant="caption" className="wearable-label">
+                              Whoop
+                            </Typography>
+                          </Box>
+                        </Box>
+                        
+                        <Box className="sync-indicator">
+                          <Box className="sync-dot"></Box>
+                          <Typography variant="caption" className="sync-text">
+                            Syncing...
                           </Typography>
                         </Box>
-                      )}
-                    </CardContent>
-                  </GlassCard>
-                </Grid>
-              );
-            })}
-          </Grid>
+                      </Box>
+                    )}
+
+                    {/* Brain Animation Placeholder */}
+                    {feature.showBrainAnimation && (
+                      <Box className="ai-animation-container">
+                        <Box className="ai-core">
+                          <Psychology sx={{ color: "white", fontSize: { xs: 40, md: 50 } }} />
+                        </Box>
+                        <Box className="ai-particles">
+                          {[0, 1, 2, 3].map((index) => (
+                            <Box
+                              key={index}
+                              className="ai-particle"
+                              sx={{ animationDelay: `${index * 0.3}s` }}
+                            />
+                          ))}
+                        </Box>
+                        <Typography variant="caption" className="ai-status">
+                          AI Processing...
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+              </Box>
+            );
+          })}
         </Box>
       </Container>
     </Box>

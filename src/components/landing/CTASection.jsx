@@ -13,15 +13,17 @@ const CTASection = () => {
           display: 'flex', 
           alignItems: 'center', 
           justifyContent: 'center',
-          width: '100%'
+          width: '100%',
+          height: '100%',
+          px: { xs: 2, sm: 3, md: 4 }
         }}
       >
         <Box className="animate-on-scroll cta-content">
-          <Box className="cta-glass-card">
+          {/* CTA Content - No Card Background */}
+          <Box className="cta-main-content">
             <Typography 
               variant="h2" 
               className="cta-title gradient-text"
-              sx={{ textAlign: 'center', width: '100%' }}
             >
               Your back pain doesn't define you.
             </Typography>
@@ -29,7 +31,6 @@ const CTASection = () => {
             <Typography 
               variant="h6" 
               className="cta-subtitle"
-              sx={{ textAlign: 'center', width: '100%' }}
             >
               We understand the frustration of chronic back pain. That's why
               we built FitSpine - to give you control over your spine health
