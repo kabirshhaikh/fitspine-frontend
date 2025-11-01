@@ -1,18 +1,25 @@
 /* Features Section Styles */
 
 .features-section {
-  padding: clamp(48px, 12vw, 96px) 0;
+  width: 100%;
   position: relative;
+  padding: clamp(80px, 12vw, 120px) 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
-/* Timeline Layout - Clean & Smooth */
+/* Timeline Layout */
 .features-timeline {
   position: relative;
   display: flex;
   flex-direction: column;
-  gap: clamp(48px, 10vw, 80px);
+  gap: clamp(48px, 8vw, 72px);
   max-width: 1000px;
   margin: 0 auto;
+  width: 100%;
+  padding: 0 clamp(16px, 4vw, 24px);
 }
 
 .feature-item {
@@ -284,7 +291,6 @@
   flex: 0 0 auto;
 }
 
-
 .wearable-label {
   color: rgba(102, 102, 102, 0.8);
   font-size: clamp(0.65rem, 1vw, 0.75rem);
@@ -335,7 +341,7 @@
   font-weight: 500;
 }
 
-/* AI Animation - Simple & Clean */
+/* AI Animation */
 .ai-animation-container {
   height: 200px;
   background: linear-gradient(135deg, rgba(232, 245, 232, 0.8), rgba(200, 230, 201, 0.8));

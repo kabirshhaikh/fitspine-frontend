@@ -1,20 +1,14 @@
 /* Landing Page Common Styles */
 
-html {
-  scroll-behavior: smooth;
-}
-
 .landing-container {
-  min-height: 100vh;
+  width: 100%;
   background: 
     radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
     radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
     radial-gradient(circle at 40% 80%, rgba(120, 219, 255, 0.3) 0%, transparent 50%),
     linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
   overflow-x: hidden;
-  overflow-y: auto;
   position: relative;
-  scroll-behavior: smooth;
 }
 
 .landing-section {

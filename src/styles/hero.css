@@ -1,14 +1,14 @@
 /* Hero Section Styles */
 
 .hero-section {
+  width: 100%;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: hidden;
+  padding: clamp(80px, 12vw, 140px) 0;
   z-index: 2;
-  padding: clamp(60px, 10vw, 120px) 0;
 }
 
 .hero-content {
@@ -64,7 +64,7 @@
   padding: 0 clamp(16px, 4vw, 0);
 }
 
-/* Modern CTA Button - No Card Style */
+/* Modern CTA Button */
 .modern-cta-button {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border-radius: 16px;
@@ -127,7 +127,7 @@
   z-index: 2;
 }
 
-/* Pro Tip Banner - Subtle Design */
+/* Pro Tip Banner */
 .pro-tip-banner {
   padding: clamp(16px, 3vw, 20px) clamp(20px, 5vw, 28px);
   background: rgba(102, 126, 234, 0.08);
@@ -187,7 +187,6 @@
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .hero-section {
-    min-height: auto;
     padding: clamp(80px, 15vw, 100px) 0;
   }
 
@@ -251,4 +250,3 @@
     height: 40px;
   }
 }
-
