@@ -199,7 +199,6 @@ const Login = () => {
               boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
               position: 'relative',
               overflow: 'hidden',
-              animation: 'morphing 15s ease-in-out infinite',
               '&::before': {
                 content: '""',
                 position: 'absolute',
@@ -260,7 +259,6 @@ const Login = () => {
             boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
             position: 'relative',
             overflow: 'hidden',
-            animation: 'morphing 12s ease-in-out infinite',
             '&::before': {
               content: '""',
               position: 'absolute',
