@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -20,7 +20,8 @@ import {
   Stepper,
   Step,
   StepLabel,
-  Paper
+  Paper,
+  CircularProgress
 } from '@mui/material';
 import { 
   Close, 
@@ -32,9 +33,12 @@ import {
   ArrowForward,
   ArrowBack
 } from '@mui/icons-material';
+import dailyLogService from '../services/dailyLog.service';
 
 const DailyLogModal = ({ open, onClose, onSave }) => {
   const [activeStep, setActiveStep] = useState(0);
+  const [loading, setLoading] = useState(false);
+  const [hasExistingLog, setHasExistingLog] = useState(false);
   const [formData, setFormData] = useState({
     notes: '',
     painLevel: '',
@@ -48,6 +52,74 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
     liftingOrStrain: false,
     painLocations: []
   });
+
+  // Helper function to get today's date in YYYY-MM-DD format
+  const getTodayDate = () => {
+    const today = new Date();
+    return today.getFullYear() + '-' + 
+      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+      String(today.getDate()).padStart(2, '0');
+  };
+
+  // Fetch existing log when modal opens
+  useEffect(() => {
+    if (open) {
+      // Reset to first step when modal opens
+      setActiveStep(0);
+      setHasExistingLog(false);
+      
+      const fetchExistingLog = async () => {
+        setLoading(true);
+        try {
+          const todayDate = getTodayDate();
+          const existingLog = await dailyLogService.getLogForDate(todayDate);
+          
+          // Mark that we have existing log
+          setHasExistingLog(true);
+          
+          // Populate form with existing data
+          setFormData({
+            notes: existingLog.notes || '',
+            painLevel: existingLog.painLevel || '',
+            flareUpToday: existingLog.flareUpToday || false,
+            numbnessTingling: existingLog.numbnessTingling || false,
+            sittingTime: existingLog.sittingTime || '',
+            standingTime: existingLog.standingTime || '',
+            stretchingDone: existingLog.stretchingDone || false,
+            morningStiffness: existingLog.morningStiffness || '',
+            stressLevel: existingLog.stressLevel || '',
+            liftingOrStrain: existingLog.liftingOrStrain || false,
+            painLocations: existingLog.painLocations || []
+          });
+        } catch (error) {
+          // 404 is expected when no log exists - show empty form
+          if (error.response?.status !== 404) {
+            console.error('Error fetching daily log:', error);
+          }
+          // Mark that we don't have existing log
+          setHasExistingLog(false);
+          // Reset to empty form if no log exists
+          setFormData({
+            notes: '',
+            painLevel: '',
+            flareUpToday: false,
+            numbnessTingling: false,
+            sittingTime: '',
+            standingTime: '',
+            stretchingDone: false,
+            morningStiffness: '',
+            stressLevel: '',
+            liftingOrStrain: false,
+            painLocations: []
+          });
+        } finally {
+          setLoading(false);
+        }
+      };
+
+      fetchExistingLog();
+    }
+  }, [open]);
 
   const steps = [
     { label: 'How do you feel?', icon: <Mood />, color: '#ff6b6b' },
@@ -65,10 +137,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
 
   const handleSave = () => {
     // Get today's date in user's local timezone (YYYY-MM-DD format for LocalDate)
-    const today = new Date();
-    const localDate = today.getFullYear() + '-' + 
-      String(today.getMonth() + 1).padStart(2, '0') + '-' + 
-      String(today.getDate()).padStart(2, '0');
+    const localDate = getTodayDate();
     
     // Create log data matching your backend DTO
     const logData = {
@@ -83,24 +152,12 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
       morningStiffness: formData.morningStiffness || null,
       stressLevel: formData.stressLevel || null,
       liftingOrStrain: formData.liftingOrStrain,
-      painLocations: formData.painLocations
+      painLocations: formData.painLocations,
+      _isUpdate: hasExistingLog // Internal flag to indicate if this is an update
     };
 
-    onSave(logData);
-    // Reset form
-    setFormData({
-      notes: '',
-      painLevel: '',
-      flareUpToday: false,
-      numbnessTingling: false,
-      sittingTime: '',
-      standingTime: '',
-      stretchingDone: false,
-      morningStiffness: '',
-      stressLevel: '',
-      liftingOrStrain: false,
-      painLocations: []
-    });
+    onSave(logData, hasExistingLog);
+    // Don't reset form here - let useEffect handle it when modal reopens
     onClose();
   };
 
@@ -444,10 +501,15 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
     >
       <DialogTitle>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            {steps[activeStep].icon}
-            <Typography variant="h6" sx={{ fontWeight: 600, color: steps[activeStep].color }}>
-              {steps[activeStep].label}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0.5 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+              {steps[activeStep].icon}
+              <Typography variant="h6" sx={{ fontWeight: 600, color: steps[activeStep].color }}>
+                {steps[activeStep].label}
+              </Typography>
+            </Box>
+            <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.6)', ml: 5, fontSize: '0.85rem', fontWeight: 400 }}>
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
@@ -475,14 +537,20 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
       </DialogTitle>
 
       <DialogContent sx={{ minHeight: 300, py: 3 }}>
-        {renderStepContent(activeStep)}
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
+            <CircularProgress sx={{ color: '#4facfe' }} />
+          </Box>
+        ) : (
+          renderStepContent(activeStep)
+        )}
       </DialogContent>
 
       <DialogActions sx={{ px: 3, pb: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
           <Button
             onClick={handleBack}
-            disabled={activeStep === 0}
+            disabled={activeStep === 0 || loading}
             startIcon={<ArrowBack />}
             sx={{ color: 'grey.600' }}
           >
@@ -490,12 +558,13 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
           </Button>
           
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Button onClick={handleClose} sx={{ color: 'grey.600' }}>
+            <Button onClick={handleClose} disabled={loading} sx={{ color: 'grey.600' }}>
               Cancel
             </Button>
             {activeStep === steps.length - 1 ? (
               <Button
                 onClick={handleSave}
+                disabled={loading}
                 variant="contained"
                 endIcon={<CheckCircle />}
                 sx={{
@@ -514,6 +583,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
             ) : (
               <Button
                 onClick={handleNext}
+                disabled={loading}
                 variant="contained"
                 endIcon={<ArrowForward />}
                 sx={{

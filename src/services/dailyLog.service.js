@@ -19,7 +19,8 @@ class DailyLogService {
       return response.data;
     } catch (error) {
       console.error('Error fetching daily log:', error);
-      throw new Error('Failed to fetch daily log');
+      // Preserve the original error so we can check status code (404 for not found)
+      throw error;
     }
   }
 }

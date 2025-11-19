@@ -141,16 +141,21 @@ export default function Dashboard() {
     }
   };
 
-  const handleLogSave = async (logData) => {
+  const handleLogSave = async (logData, isUpdate = false) => {
     try {
-      const result = await dailyLogService.createDailyLog(logData);
+      // Remove internal flag before sending to API
+      const { _isUpdate, ...cleanLogData } = logData;
+      
+      const result = await dailyLogService.createDailyLog(cleanLogData);
       console.log('Daily log saved:', result);
       
-      // Show success message
+      // Show appropriate success message based on create/update
       setLogMessage({
         show: true,
         type: 'success',
-        text: 'Daily log saved successfully! 🎉'
+        text: isUpdate 
+          ? 'Daily log updated successfully! ✏️' 
+          : 'Daily log created successfully! 🎉'
       });
       
       // Hide message after 5 seconds
