@@ -50,9 +50,10 @@ export default function InsightsModal({ open, onClose, insights }) {
 
   const getRiskColor = (bucket) => {
     switch (bucket?.toUpperCase()) {
-      case 'LOW': return '#4caf50';
-      case 'MEDIUM': return '#ff9800';
-      case 'HIGH': return '#f44336';
+      case 'SAFE': return '#4caf50';
+      case 'CAUTION': return '#ff9800';
+      case 'ELEVATED': return '#ff6b00';
+      case 'HIGH_RISK': return '#f44336';
       default: return '#9e9e9e';
     }
   };
@@ -371,9 +372,6 @@ export default function InsightsModal({ open, onClose, insights }) {
                     <Typography variant="body2" sx={{ color: 'white', mb: 1, fontWeight: 400 }}>
                       {trigger.value}
                     </Typography>
-                    <Typography variant="caption" sx={{ color: 'white', display: 'block', mb: 1, fontWeight: 400 }}>
-                      Deviation: {trigger.deviation}
-                    </Typography>
                     <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.4, fontWeight: 400 }}>
                       {trigger.impact}
                     </Typography>
@@ -386,27 +384,76 @@ export default function InsightsModal({ open, onClose, insights }) {
           {/* Risk Forecast */}
           {insights.riskForecast && (
             <Card sx={{ 
-              background: `linear-gradient(135deg, ${alpha(getRiskColor(insights.riskForecast.bucket), 0.1)}, ${alpha(getRiskColor(insights.riskForecast.bucket), 0.05)})`,
-              border: `1px solid ${alpha(getRiskColor(insights.riskForecast.bucket), 0.3)}`,
+              background: `linear-gradient(135deg, ${alpha(getRiskColor(insights.riskForecast.riskBucket), 0.1)}, ${alpha(getRiskColor(insights.riskForecast.riskBucket), 0.05)})`,
+              border: `1px solid ${alpha(getRiskColor(insights.riskForecast.riskBucket), 0.3)}`,
             }}>
               <CardHeader
-                avatar={<Warning sx={{ color: getRiskColor(insights.riskForecast.bucket) }} />}
+                avatar={<Warning sx={{ color: getRiskColor(insights.riskForecast.riskBucket) }} />}
                 title="Risk Assessment"
                 titleTypographyProps={{ color: 'white', fontWeight: 600 }}
               />
               <CardContent sx={{ color: 'white' }}>
-                <Box display="flex" alignItems="center" gap={2}>
+                <Box display="flex" alignItems="center" gap={2} mb={2}>
                   <Chip 
-                    label={insights.riskForecast.bucket}
+                    label={insights.riskForecast.riskBucket || 'UNKNOWN'}
                     sx={{ 
-                      background: getRiskColor(insights.riskForecast.bucket),
+                      background: getRiskColor(insights.riskForecast.riskBucket),
                       color: 'white',
                       fontWeight: 600
                     }}
                   />
-                  <Typography variant="body2" sx={{ color: 'white', fontWeight: 400 }}>
-                    Risk Level: {(insights.riskForecast.risk * 100).toFixed(1)}%
-                  </Typography>
+                </Box>
+                <Box display="flex" flexDirection="column" gap={2}>
+                  {insights.riskForecast.flareUpRiskScore !== null && insights.riskForecast.flareUpRiskScore !== undefined && (
+                    <Box>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                        <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+                          Flare-Up Risk
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+                          {insights.riskForecast.flareUpRiskScore}/10
+                        </Typography>
+                      </Box>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={(insights.riskForecast.flareUpRiskScore / 10) * 100} 
+                        sx={{ 
+                          height: 8, 
+                          borderRadius: 4,
+                          backgroundColor: alpha('#ffffff', 0.1),
+                          '& .MuiLinearProgress-bar': {
+                            backgroundColor: getRiskColor(insights.riskForecast.riskBucket),
+                            borderRadius: 4
+                          }
+                        }} 
+                      />
+                    </Box>
+                  )}
+                  {insights.riskForecast.painRiskScore !== null && insights.riskForecast.painRiskScore !== undefined && (
+                    <Box>
+                      <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                        <Typography variant="body2" sx={{ color: 'white', fontWeight: 500 }}>
+                          Pain Risk
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: 'white', fontWeight: 600 }}>
+                          {insights.riskForecast.painRiskScore}/10
+                        </Typography>
+                      </Box>
+                      <LinearProgress 
+                        variant="determinate" 
+                        value={(insights.riskForecast.painRiskScore / 10) * 100} 
+                        sx={{ 
+                          height: 8, 
+                          borderRadius: 4,
+                          backgroundColor: alpha('#ffffff', 0.1),
+                          '& .MuiLinearProgress-bar': {
+                            backgroundColor: getRiskColor(insights.riskForecast.riskBucket),
+                            borderRadius: 4
+                          }
+                        }} 
+                      />
+                    </Box>
+                  )}
                 </Box>
               </CardContent>
             </Card>
