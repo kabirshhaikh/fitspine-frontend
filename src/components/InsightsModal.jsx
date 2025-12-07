@@ -23,13 +23,11 @@ import {
 } from '@mui/material';
 import {
   Close,
-  TrendingUp,
   TrendingDown,
   Warning,
   Lightbulb,
   MedicalServices,
   Psychology,
-  CheckCircle,
   Error,
   Info,
   Assessment
@@ -44,6 +42,7 @@ export default function InsightsModal({ open, onClose, insights }) {
     return '#f44336';
   };
 
+  // eslint-disable-next-line no-unused-vars
   const getScoreLabel = (score) => {
     return null; // No labels shown
   };
@@ -178,40 +177,6 @@ export default function InsightsModal({ open, onClose, insights }) {
                 <Typography variant="body1" sx={{ color: 'white', lineHeight: 1.6, fontWeight: 400 }}>
                   {insights.recoveryInsights}
                 </Typography>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Improved Metrics */}
-          {insights.improved && insights.improved.length > 0 && (
-            <Card sx={{ 
-              background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
-              border: `1px solid ${alpha('#ffffff', 0.2)}`,
-            }}>
-              <CardHeader
-                avatar={<TrendingUp sx={{ color: '#4caf50' }} />}
-                title="Improvements"
-                titleTypographyProps={{ color: 'white', fontWeight: 600 }}
-              />
-              <CardContent sx={{ color: 'white' }}>
-                <List dense sx={{ color: 'white' }}>
-                  {insights.improved.map((item, index) => (
-                    <ListItem key={index} sx={{ px: 0 }}>
-                      <ListItemIcon>
-                        <CheckCircle sx={{ color: '#4caf50', fontSize: 20 }} />
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={item}
-                        primaryTypographyProps={{ 
-                          color: 'white', 
-                          fontSize: '0.9rem',
-                          lineHeight: 1.4,
-                          fontWeight: 400
-                        }}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
               </CardContent>
             </Card>
           )}
