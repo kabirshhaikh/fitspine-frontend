@@ -167,7 +167,15 @@ export const identifyNeedsAttention = (dailyData) => {
   );
   const missingDays = dailyData.length - loggedDays.length;
   if (missingDays > 0) {
-    needs.push(`${missingDays} day${missingDays > 1 ? 's' : ''} with missing logs`);
+    // Check if user is new (no logs at all, or most days are missing)
+    // If no logs at all, or if more than 70% of days are missing, likely a new user
+    const isNewUser = loggedDays.length === 0 || (missingDays / dailyData.length >= 0.7);
+    
+    if (isNewUser) {
+      needs.push(`${missingDays} day${missingDays > 1 ? 's' : ''} with missing logs (expected for new users who haven't been logging for the full week yet)`);
+    } else {
+      needs.push(`${missingDays} day${missingDays > 1 ? 's' : ''} with missing logs`);
+    }
   }
 
   // High pain levels
@@ -312,7 +320,6 @@ export const generateWeeklySummary = (dailyData) => {
 export const generateNextWeekFocus = (dailyData) => {
   const averages = computeWeeklyAverages(dailyData);
   const trends = detectTrends(dailyData);
-  const needs = identifyNeedsAttention(dailyData);
 
   // Priority 1: High sedentary hours
   if (averages.sedentaryHours !== null && averages.sedentaryHours > 11) {
