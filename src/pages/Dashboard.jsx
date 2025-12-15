@@ -497,17 +497,33 @@ export default function Dashboard() {
 
         {/* Weekly Graph Widget */}
         <Box sx={{ mb: 4, width: '100%' }}>
-          <Typography
-            variant="h4"
-            sx={{
-              fontWeight: 700,
-              mb: 3,
-              color: 'white',
-              textAlign: 'center',
-            }}
-          >
-            7-Day Health Trends
-          </Typography>
+          <Box sx={{ textAlign: 'center', mb: 2 }}>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                mb: 1,
+                color: 'white',
+                textAlign: 'center',
+              }}
+            >
+              7-Day Health Trends
+            </Typography>
+            <Typography
+              variant="caption"
+              sx={{
+                color: 'rgba(255, 255, 255, 0.5)',
+                fontStyle: 'italic',
+                display: 'block',
+                fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                maxWidth: '800px',
+                mx: 'auto',
+                px: 2,
+              }}
+            >
+              ⚠️ Disclaimer: The information and insights provided are for informational purposes only and are not intended as medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
+            </Typography>
+          </Box>
           <WeeklyGraphWidget />
         </Box>
 
