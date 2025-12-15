@@ -10,13 +10,13 @@ import {
   Tab,
   alpha,
 } from '@mui/material';
-import { Assessment, LocalHospital, FitnessCenter, Favorite, Dashboard } from '@mui/icons-material';
+import { Assessment, LocalHospital, FitnessCenter, Favorite, Psychology } from '@mui/icons-material';
 import graphService from '../../services/graph.service';
 import WidgetShell from './WidgetShell';
 import PainStiffnessChart from './charts/PainStiffnessChart';
 import ActivityChart from './charts/ActivityChart';
 import HeartRateChart from './charts/HeartRateChart';
-import OverviewChart from './charts/OverviewChart';
+import WeeklyInsights from '../WeeklyInsights';
 
 export default function WeeklyGraphWidget() {
   const location = useLocation();
@@ -133,9 +133,9 @@ export default function WeeklyGraphWidget() {
             }}
           >
             <Tab 
-              icon={<Dashboard sx={{ fontSize: 18, mb: 0.5 }} />} 
+              icon={<Psychology sx={{ fontSize: 18, mb: 0.5 }} />} 
               iconPosition="start"
-              label="Overview" 
+              label="Insights" 
             />
             <Tab 
               icon={<LocalHospital sx={{ fontSize: 18, mb: 0.5 }} />} 
@@ -158,7 +158,9 @@ export default function WeeklyGraphWidget() {
         {/* Tab Content */}
         <Box sx={{ minHeight: 400 }}>
           {tabValue === 0 && (
-            <OverviewChart dailyData={graphData.dailyData} />
+            <Box sx={{ p: 3 }}>
+              <WeeklyInsights weeklyGraphData={graphData} />
+            </Box>
           )}
           {tabValue === 1 && (
             <PainStiffnessChart dailyData={graphData.dailyData} />
