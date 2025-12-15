@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Typography, alpha, Paper } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, Remove, Info } from '@mui/icons-material';
+import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid } from '@mui/material';
+import { TrendingUp, TrendingDown, Remove, Info, Lightbulb, Favorite, EmojiEvents } from '@mui/icons-material';
 import { calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
+import { detectHRStressCorrelation, getFirstAndLastLoggedDays } from '../../../utils/chartInsights';
+import { getStressLabel } from './chartUtils';
 
 export default function HeartRateChart({ dailyData }) {
   if (!dailyData || !dailyData.length) {
@@ -15,203 +16,326 @@ export default function HeartRateChart({ dailyData }) {
     );
   }
 
-  // Prepare chart data
-  const chartData = dailyData.map((day) => ({
-    date: day.date,
-    dayLabel: formatDayLabel(day.date),
-    fullDate: formatDate(day.date),
-    restingHeartRate: day.restingHeartRate !== null ? day.restingHeartRate : null,
-  }));
-
   // Calculate average and trend
-  const heartRateAvg = calculateAverage(dailyData.map(d => d.restingHeartRate));
-  const heartRateTrend = calculateTrend(dailyData.map(d => d.restingHeartRate), 'restingHeartRate');
+  const heartRateValues = dailyData.map(d => d.restingHeartRate);
+  const heartRateAvg = calculateAverage(heartRateValues);
+  const heartRateTrend = calculateTrend(heartRateValues, 'restingHeartRate');
+
+  // Get insights
+  const stressCorrelations = detectHRStressCorrelation(dailyData);
+  const { first, last } = getFirstAndLastLoggedDays(dailyData);
+
+  // Calculate recovery insights
+  const validHRDays = dailyData.filter(day => day.restingHeartRate !== null);
+  const firstHRDay = validHRDays[0];
+  const lastHRDay = validHRDays[validHRDays.length - 1];
+  
+  let recoveryChange = null;
+  if (firstHRDay && lastHRDay && firstHRDay.restingHeartRate !== null && lastHRDay.restingHeartRate !== null) {
+    recoveryChange = firstHRDay.restingHeartRate - lastHRDay.restingHeartRate;
+  }
+
+  // Calculate consistency
+  const hrValues = validHRDays.map(d => d.restingHeartRate);
+  let consistency = null;
+  if (heartRateAvg !== null && hrValues.length > 1) {
+    const variance = hrValues.reduce((sum, hr) => sum + Math.pow(hr - heartRateAvg, 2), 0) / hrValues.length;
+    const stdDev = Math.sqrt(variance);
+    consistency = ((1 - (stdDev / heartRateAvg)) * 100);
+  }
+
+  // Get fitness level
+  const getFitnessLevel = (hr) => {
+    if (hr === null) return null;
+    if (hr <= 60) return { label: 'Excellent', color: '#4caf50' };
+    if (hr <= 70) return { label: 'Good', color: '#8bc34a' };
+    if (hr <= 80) return { label: 'Moderate', color: '#ff9800' };
+    return { label: 'Needs Improvement', color: '#f44336' };
+  };
+
+  const fitnessLevel = getFitnessLevel(heartRateAvg);
+
+  // Find best recovery day
+  const bestRecoveryDay = validHRDays.length > 0 
+    ? validHRDays.reduce((best, day) => {
+        if (!best || day.restingHeartRate < best.restingHeartRate) return day;
+        return best;
+      }, null)
+    : null;
 
   // Determine color based on value
   const getHeartRateColor = (value) => {
-    if (value === null) return alpha('#888888', 0.3);
-    if (value <= 60) return '#4caf50'; // Excellent
-    if (value <= 70) return '#8bc34a'; // Good
-    if (value <= 80) return '#ff9800'; // Moderate
-    return '#f44336'; // High
+    if (value === null) return '#888888';
+    if (value <= 60) return '#4caf50';
+    if (value <= 70) return '#8bc34a';
+    if (value <= 80) return '#ff9800';
+    return '#f44336';
   };
 
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length && payload[0].value !== null) {
-      const data = payload[0].payload;
-      return (
-        <Box
-          sx={{
-            background: alpha('#000', 0.9),
-            backdropFilter: 'blur(10px)',
-            border: `1px solid ${alpha('#fff', 0.2)}`,
-            borderRadius: 2,
-            p: 2,
-            minWidth: 200,
-          }}
-        >
-          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600 }}>
-            {data.fullDate}
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box
-              sx={{
-                width: 12,
-                height: 12,
-                borderRadius: '50%',
-                backgroundColor: payload[0].color,
-              }}
-            />
-            <Typography variant="body2" sx={{ color: payload[0].color, fontWeight: 500 }}>
-              Resting Heart Rate: {payload[0].value} bpm
-            </Typography>
-          </Box>
-        </Box>
-      );
-    }
-    return null;
-  };
+  const loggedDays = validHRDays.length;
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Explanation */}
-      <Paper
-        sx={{
-          p: 2,
-          mb: 3,
-          background: alpha('#4facfe', 0.1),
-          border: `1px solid ${alpha('#4facfe', 0.3)}`,
-          borderRadius: 2,
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-          <Info sx={{ fontSize: 20, color: '#4facfe', mt: 0.5 }} />
-          <Box>
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5 }}>
-              Resting Heart Rate
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6 }}>
-              Your resting heart rate is a key indicator of cardiovascular health and fitness level. 
-              Lower values (green) typically indicate better cardiovascular fitness. 
-              Normal range is 60-100 bpm for adults.
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
-
-      {/* Summary Stats */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 3, alignItems: 'center' }}>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-            Average Resting Heart Rate
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-            <Typography 
-              variant="h4" 
-              sx={{ 
-                color: getHeartRateColor(heartRateAvg), 
+    <Box sx={{ 
+      p: { xs: 2, sm: 3 }, 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: { xs: 2, sm: 3 },
+      maxWidth: '100%',
+      overflow: 'hidden'
+    }}>
+      {/* Recovery Summary Card - Large */}
+      <Card sx={{ 
+        background: `linear-gradient(135deg, ${alpha('#4facfe', 0.2)}, ${alpha('#4facfe', 0.1)})`,
+        border: `2px solid ${alpha('#4facfe', 0.4)}`,
+        width: '100%',
+      }}>
+        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 }, mb: 2, flexWrap: 'wrap' }}>
+            <Favorite sx={{ fontSize: { xs: 36, sm: 48 }, color: getHeartRateColor(heartRateAvg), flexShrink: 0 }} />
+            <Box sx={{ flex: 1, minWidth: 0 }}>
+              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                Average Resting Heart Rate
+              </Typography>
+              <Typography variant="h3" sx={{ 
+                color: getHeartRateColor(heartRateAvg),
                 fontWeight: 700,
-                fontFamily: 'monospace'
-              }}
-            >
-              {heartRateAvg !== null ? `${Math.round(heartRateAvg)}` : '--'}
-            </Typography>
-            <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontWeight: 400 }}>
-              bpm
-            </Typography>
-            {heartRateTrend && (
-              <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, ml: 2 }}>
-                {heartRateTrend.direction === 'better' && <TrendingDown sx={{ fontSize: 20, color: '#4caf50' }} />}
-                {heartRateTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: 20, color: '#f44336' }} />}
-                {heartRateTrend.direction === 'stable' && <Remove sx={{ fontSize: 20, color: '#888888' }} />}
-                {heartRateTrend.change > 0 && (
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-                    {Math.round(heartRateTrend.change)}%
+                mb: 1,
+                fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                wordBreak: 'break-word'
+              }}>
+                {heartRateAvg !== null ? `${Math.round(heartRateAvg)}` : '--'} bpm
+              </Typography>
+              {fitnessLevel && (
+                <Chip 
+                  label={fitnessLevel.label} 
+                  sx={{ 
+                    background: alpha(fitnessLevel.color, 0.3), 
+                    color: fitnessLevel.color, 
+                    fontWeight: 600,
+                    mb: 2,
+                    fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                  }} 
+                />
+              )}
+              {heartRateTrend && (
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, flexWrap: 'wrap' }}>
+                  {heartRateTrend.direction === 'better' && <TrendingDown sx={{ fontSize: { xs: 18, sm: 20 }, color: '#4caf50' }} />}
+                  {heartRateTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: { xs: 18, sm: 20 }, color: '#f44336' }} />}
+                  {heartRateTrend.direction === 'stable' && <Remove sx={{ fontSize: { xs: 18, sm: 20 }, color: '#888888' }} />}
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                    {heartRateTrend.direction === 'better' && 'Improving'}
+                    {heartRateTrend.direction === 'worse' && 'Increasing'}
+                    {heartRateTrend.direction === 'stable' && 'Stable'}
                   </Typography>
-                )}
+                </Box>
+              )}
+              {recoveryChange !== null && recoveryChange > 2 && (
+                <Typography variant="body2" sx={{ color: '#4caf50', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  Decreased by {Math.round(recoveryChange)} bpm this week - improved recovery
+                </Typography>
+              )}
+              {consistency !== null && (
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 1, display: 'block', fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
+                  HR consistency: {consistency.toFixed(0)}% {consistency > 95 ? '(excellent)' : consistency > 90 ? '(good)' : ''}
+                </Typography>
+              )}
+            </Box>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* Stress Correlation Card */}
+      {stressCorrelations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#9c27b0', 0.15)}, ${alpha('#9c27b0', 0.05)})`,
+          border: `1px solid ${alpha('#9c27b0', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Lightbulb sx={{ color: '#9c27b0', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Stress Correlation
+              </Typography>
+            </Box>
+            {stressCorrelations.map((insight, index) => (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
+                <Info sx={{ color: '#9c27b0', fontSize: { xs: 16, sm: 18 }, mt: 0.5, flexShrink: 0 }} />
+                <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {insight}
+                </Typography>
               </Box>
-            )}
-          </Box>
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 1, display: 'block' }}>
-            Normal range: 60-100 bpm
-          </Typography>
-        </Box>
-      </Box>
-
-      {/* Chart */}
-      <ResponsiveContainer width="100%" height={350}>
-        <BarChart 
-          data={chartData} 
-          margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-        >
-          <CartesianGrid strokeDasharray="3 3" stroke={alpha('#fff', 0.1)} />
-          <XAxis 
-            dataKey="dayLabel" 
-            stroke="rgba(255, 255, 255, 0.6)"
-            tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 13, fontWeight: 500 }}
-          />
-          <YAxis 
-            domain={['dataMin - 5', 'dataMax + 5']}
-            stroke="rgba(255, 255, 255, 0.6)"
-            tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 12 }}
-            label={{ 
-              value: 'Heart Rate (bpm)', 
-              angle: -90, 
-              position: 'insideLeft', 
-              fill: 'rgba(255, 255, 255, 0.7)',
-              style: { fontSize: 12 }
-            }}
-          />
-          <Tooltip content={<CustomTooltip />} />
-          <ReferenceLine 
-            y={60} 
-            stroke="#4caf50" 
-            strokeDasharray="3 3" 
-            strokeOpacity={0.6}
-            label={{ value: 'Optimal (≤60)', position: 'right', fill: '#4caf50', fontSize: 11 }}
-          />
-          <ReferenceLine 
-            y={80} 
-            stroke="#ff9800" 
-            strokeDasharray="3 3" 
-            strokeOpacity={0.6}
-            label={{ value: 'Moderate (≤80)', position: 'right', fill: '#ff9800', fontSize: 11 }}
-          />
-          <Bar 
-            dataKey="restingHeartRate" 
-            name="Resting Heart Rate"
-            radius={[4, 4, 0, 0]}
-          >
-            {chartData.map((entry, index) => (
-              <Cell key={`hr-${index}`} fill={getHeartRateColor(entry.restingHeartRate)} />
             ))}
-          </Bar>
-        </BarChart>
-      </ResponsiveContainer>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Legend */}
-      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 3, mt: 2, flexWrap: 'wrap' }}>
-        {[
-          { label: 'Excellent (≤60)', color: '#4caf50' },
-          { label: 'Good (61-70)', color: '#8bc34a' },
-          { label: 'Moderate (71-80)', color: '#ff9800' },
-          { label: 'High (>80)', color: '#f44336' },
-        ].map((item) => (
-          <Box key={item.label} sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Box
-              sx={{
-                width: 16,
-                height: 16,
-                borderRadius: 1,
-                backgroundColor: item.color,
-              }}
-            />
-            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
-              {item.label}
-            </Typography>
-          </Box>
-        ))}
+      {/* Daily Recovery Cards */}
+      <Box sx={{ width: '100%' }}>
+        <Typography variant="h6" sx={{ color: 'white', mb: 2, fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+          Daily Recovery
+        </Typography>
+        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+          {dailyData.map((day, index) => {
+            const hasData = day.restingHeartRate !== null;
+            const dayLabel = formatDayLabel(day.date);
+            const fullDate = formatDate(day.date);
+            const hrColor = getHeartRateColor(day.restingHeartRate);
+            
+            // Get recovery status
+            let recoveryStatus = 'No data';
+            let statusColor = '#888888';
+            if (hasData) {
+              if (day.restingHeartRate <= 60) {
+                recoveryStatus = 'Optimal recovery';
+                statusColor = '#4caf50';
+              } else if (day.restingHeartRate <= 70) {
+                recoveryStatus = 'Good recovery';
+                statusColor = '#8bc34a';
+              } else if (day.restingHeartRate <= 80) {
+                recoveryStatus = 'Moderate recovery';
+                statusColor = '#ff9800';
+              } else {
+                recoveryStatus = 'Elevated';
+                statusColor = '#f44336';
+              }
+            }
+
+            return (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card sx={{ 
+                  background: hasData 
+                    ? `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`
+                    : alpha('#888888', 0.1),
+                  border: `1px solid ${hasData ? alpha('#ffffff', 0.2) : alpha('#888888', 0.2)}`,
+                  height: '100%',
+                  width: '100%',
+                }}>
+                  <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                    <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                      {dayLabel}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', display: 'block', mb: 2, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                      {fullDate}
+                    </Typography>
+                    
+                    {hasData ? (
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                        <Box>
+                          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                            Resting Heart Rate
+                          </Typography>
+                          <Typography variant="h5" sx={{ 
+                            color: hrColor, 
+                            fontWeight: 700,
+                            fontFamily: 'monospace',
+                            fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' }
+                          }}>
+                            {day.restingHeartRate} bpm
+                          </Typography>
+                        </Box>
+                        {day.stressLevel !== null && (
+                          <Box>
+                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              Stress Level
+                            </Typography>
+                            <Chip 
+                              label={getStressLabel(day.stressLevel)}
+                              size="small"
+                              sx={{
+                                background: alpha('#9c27b0', 0.2),
+                                color: '#9c27b0',
+                                border: `1px solid ${alpha('#9c27b0', 0.5)}`,
+                                fontWeight: 600,
+                                mt: 0.5,
+                                fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                height: { xs: 24, sm: 28 },
+                              }}
+                            />
+                          </Box>
+                        )}
+                        <Box sx={{ mt: 1, pt: 1, borderTop: `1px solid ${alpha('#ffffff', 0.1)}` }}>
+                          <Typography variant="caption" sx={{ color: statusColor, fontWeight: 600, fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
+                            {recoveryStatus}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                        No data logged
+                      </Typography>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Box>
+
+      {/* Weekly Patterns Card */}
+      {bestRecoveryDay && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#4caf50', 0.15)}, ${alpha('#4caf50', 0.05)})`,
+          border: `1px solid ${alpha('#4caf50', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <EmojiEvents sx={{ color: '#4caf50', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Weekly Patterns
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                <strong>Best recovery day:</strong> {formatDate(bestRecoveryDay.date)} with {bestRecoveryDay.restingHeartRate} bpm
+              </Typography>
+              {consistency !== null && consistency > 90 && (
+                <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  <strong>Consistency:</strong> {consistency.toFixed(0)}% - Your HR shows excellent stability
+                </Typography>
+              )}
+              {recoveryChange !== null && recoveryChange > 0 && (
+                <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  <strong>Trend:</strong> HR decreased by {Math.round(recoveryChange)} bpm - indicates improved recovery
+                </Typography>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Fitness Insights Card */}
+      {fitnessLevel && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+          border: `1px solid ${alpha('#ffffff', 0.2)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Info sx={{ color: '#4facfe', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Fitness Insights
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+              <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                Your average HR of {Math.round(heartRateAvg)} bpm suggests <strong>{fitnessLevel.label.toLowerCase()}</strong> cardiovascular fitness.
+              </Typography>
+              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                Normal range: 60-100 bpm for adults. Lower values typically indicate better cardiovascular fitness.
+              </Typography>
+              {loggedDays > 0 && (
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                  {loggedDays} out of 7 days logged
+                </Typography>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 }

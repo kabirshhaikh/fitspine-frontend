@@ -111,7 +111,7 @@ export default function WeeklyGraphWidget() {
     >
       <Box>
         {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', px: 2 }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider', px: { xs: 1, sm: 2 }, overflowX: 'auto' }}>
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
@@ -121,8 +121,9 @@ export default function WeeklyGraphWidget() {
               '& .MuiTab-root': {
                 color: 'rgba(255, 255, 255, 0.6)',
                 textTransform: 'none',
-                fontSize: '0.875rem',
-                minHeight: 48,
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                minHeight: { xs: 40, sm: 48 },
+                px: { xs: 1, sm: 2 },
                 '&.Mui-selected': {
                   color: '#4facfe',
                 },
@@ -133,22 +134,22 @@ export default function WeeklyGraphWidget() {
             }}
           >
             <Tab 
-              icon={<Psychology sx={{ fontSize: 18, mb: 0.5 }} />} 
+              icon={<Psychology sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
               iconPosition="start"
               label="Insights" 
             />
             <Tab 
-              icon={<LocalHospital sx={{ fontSize: 18, mb: 0.5 }} />} 
+              icon={<LocalHospital sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
               iconPosition="start"
               label="Pain & Stiffness" 
             />
             <Tab 
-              icon={<FitnessCenter sx={{ fontSize: 18, mb: 0.5 }} />} 
+              icon={<FitnessCenter sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
               iconPosition="start"
               label="Activity" 
             />
             <Tab 
-              icon={<Favorite sx={{ fontSize: 18, mb: 0.5 }} />} 
+              icon={<Favorite sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
               iconPosition="start"
               label="Heart Rate" 
             />
@@ -156,9 +157,13 @@ export default function WeeklyGraphWidget() {
         </Box>
 
         {/* Tab Content */}
-        <Box sx={{ minHeight: 400 }}>
+        <Box sx={{ 
+          minHeight: { xs: 300, sm: 400 },
+          width: '100%',
+          overflow: 'auto'
+        }}>
           {tabValue === 0 && (
-            <Box sx={{ p: 3 }}>
+            <Box sx={{ p: { xs: 2, sm: 3 }, width: '100%' }}>
               <WeeklyInsights weeklyGraphData={graphData} />
             </Box>
           )}

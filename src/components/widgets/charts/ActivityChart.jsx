@@ -1,8 +1,8 @@
 import React from 'react';
-import { Box, Typography, alpha, Paper } from '@mui/material';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, Cell } from 'recharts';
-import { TrendingUp, TrendingDown, Remove, Info } from '@mui/icons-material';
+import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid, LinearProgress } from '@mui/material';
+import { TrendingUp, TrendingDown, Remove, Info, Assessment, Lightbulb, CheckCircle } from '@mui/icons-material';
 import { getTimeLabel, calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
+import { calculateActivityBalance, detectPainActivityCorrelation } from '../../../utils/chartInsights';
 
 export default function ActivityChart({ dailyData }) {
   if (!dailyData || !dailyData.length) {
@@ -14,25 +14,6 @@ export default function ActivityChart({ dailyData }) {
       </Box>
     );
   }
-
-  // Prepare chart data with readable labels
-  const chartData = dailyData.map((day) => {
-    const standingValue = day.standingTime !== null && day.standingTime !== -1 ? day.standingTime : null;
-    const sittingValue = day.sittingTime !== null && day.sittingTime !== -1 ? day.sittingTime : null;
-    const sedentaryValue = day.sedentaryHours !== null && day.sedentaryHours !== -1 ? day.sedentaryHours : null;
-    
-    return {
-      date: day.date,
-      dayLabel: formatDayLabel(day.date),
-      fullDate: formatDate(day.date),
-      standingTime: standingValue,
-      standingLabel: standingValue !== null ? getTimeLabel(standingValue) : 'No Data',
-      sittingTime: sittingValue,
-      sittingLabel: sittingValue !== null ? getTimeLabel(sittingValue) : 'No Data',
-      sedentaryHours: sedentaryValue,
-      sedentaryLabel: sedentaryValue !== null ? `${sedentaryValue.toFixed(1)} hrs` : 'No Data',
-    };
-  });
 
   // Calculate averages and trends
   const standingValues = dailyData.map(d => d.standingTime);
@@ -47,282 +28,370 @@ export default function ActivityChart({ dailyData }) {
   const sittingTrend = calculateTrend(sittingValues, 'sittingTime');
   const sedentaryTrend = calculateTrend(sedentaryValues, 'sedentaryHours');
 
-  const CustomTooltip = ({ active, payload, label }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0].payload;
-      return (
-        <Box
-          sx={{
-            background: alpha('#000', 0.9),
-            backdropFilter: 'blur(10px)',
-            border: `1px solid ${alpha('#fff', 0.2)}`,
-            borderRadius: 2,
-            p: 2,
-            minWidth: 200,
-          }}
-        >
-          <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600 }}>
-            {data.fullDate}
-          </Typography>
-          {payload.map((entry, index) => {
-            if (entry.value === null) {
-              return (
-                <Typography key={index} variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 0.5 }}>
-                  {entry.name}: No Data
-                </Typography>
-              );
-            }
-            let label = entry.name;
-            let value = entry.value;
-            if (entry.dataKey === 'standingTime') {
-              value = data.standingLabel;
-            } else if (entry.dataKey === 'sittingTime') {
-              value = data.sittingLabel;
-            } else if (entry.dataKey === 'sedentaryHours') {
-              value = data.sedentaryLabel;
-            }
-            return (
-              <Box key={index} sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-                <Box
-                  sx={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: '50%',
-                    backgroundColor: entry.color,
-                  }}
-                />
-                <Typography variant="body2" sx={{ color: entry.color, fontWeight: 500 }}>
-                  {label}: {value}
-                </Typography>
-              </Box>
-            );
-          })}
-        </Box>
-      );
-    }
-    return null;
-  };
+  // Get insights
+  const activityBalance = calculateActivityBalance(dailyData);
+  const painCorrelations = detectPainActivityCorrelation(dailyData);
 
-  // Custom Y-axis tick formatter for time categories
-  const formatTimeCategoryTick = (value) => {
-    const labels = ['<2h', '2-4h', '4-6h', '6-8h', '>8h'];
-    return labels[value] || '';
-  };
+  // Count days meeting goals
+  const standingGoalDays = dailyData.filter(day => day.standingTime !== null && day.standingTime >= 3).length;
+  const sedentaryLimitDays = dailyData.filter(day => day.sedentaryHours !== null && day.sedentaryHours < 11).length;
+  const balanceOptimalDays = dailyData.filter(day => {
+    if (day.standingTime === null || day.sittingTime === null) return false;
+    const total = day.standingTime + day.sittingTime;
+    if (total === 0) return false;
+    return (day.standingTime / total) * 100 >= 60;
+  }).length;
 
-  // Custom Y-axis tick formatter for hours
-  const formatHoursTick = (value) => {
-    return `${value}h`;
-  };
+  const loggedDays = dailyData.filter(day => 
+    day.standingTime !== null || day.sittingTime !== null || day.sedentaryHours !== null
+  ).length;
 
   return (
-    <Box sx={{ p: 3 }}>
-      {/* Explanation */}
-      <Paper
-        sx={{
-          p: 2,
-          mb: 3,
-          background: alpha('#4facfe', 0.1),
-          border: `1px solid ${alpha('#4facfe', 0.3)}`,
-          borderRadius: 2,
-        }}
-      >
-        <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1 }}>
-          <Info sx={{ fontSize: 20, color: '#4facfe', mt: 0.5 }} />
-          <Box>
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5 }}>
-              Activity Tracking
-            </Typography>
-            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', lineHeight: 1.6 }}>
-              Track your daily activity patterns. Standing time (green) is beneficial for spine health, 
-              while excessive sitting (orange) and sedentary hours (red) can contribute to back pain. 
-              Aim for more standing and less sedentary time.
-            </Typography>
-          </Box>
-        </Box>
-      </Paper>
+    <Box sx={{ 
+      p: { xs: 2, sm: 3 }, 
+      display: 'flex', 
+      flexDirection: 'column', 
+      gap: { xs: 2, sm: 3 },
+      maxWidth: '100%',
+      overflow: 'hidden'
+    }}>
+      {/* Activity Balance Scorecard - Large */}
+      {activityBalance !== null && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#4facfe', 0.2)}, ${alpha('#4facfe', 0.1)})`,
+          border: `2px solid ${alpha('#4facfe', 0.4)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: { xs: 1.5, sm: 2 }, mb: 2, flexWrap: 'wrap' }}>
+              <Assessment sx={{ 
+                fontSize: { xs: 36, sm: 48 }, 
+                color: activityBalance >= 60 ? '#4caf50' : activityBalance >= 40 ? '#ff9800' : '#f44336',
+                flexShrink: 0
+              }} />
+              <Box sx={{ flex: 1, minWidth: 0 }}>
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                  Activity Balance Score
+                </Typography>
+                <Typography variant="h3" sx={{ 
+                  color: activityBalance >= 60 ? '#4caf50' : activityBalance >= 40 ? '#ff9800' : '#f44336',
+                  fontWeight: 700,
+                  mb: 1,
+                  fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
+                  wordBreak: 'break-word'
+                }}>
+                  {Math.round(activityBalance)}% Standing
+                </Typography>
+                <Typography variant="body1" sx={{ color: 'rgba(255, 255, 255, 0.7)', mb: 2, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  {Math.round(100 - activityBalance)}% Sitting
+                </Typography>
+                {activityBalance >= 60 ? (
+                  <Chip label="Optimal" sx={{ background: alpha('#4caf50', 0.3), color: '#4caf50', fontWeight: 600, fontSize: { xs: '0.7rem', sm: '0.75rem' } }} />
+                ) : activityBalance >= 40 ? (
+                  <Chip label="Moderate" sx={{ background: alpha('#ff9800', 0.3), color: '#ff9800', fontWeight: 600, fontSize: { xs: '0.7rem', sm: '0.75rem' } }} />
+                ) : (
+                  <Chip label="Needs Improvement" sx={{ background: alpha('#f44336', 0.3), color: '#f44336', fontWeight: 600, fontSize: { xs: '0.7rem', sm: '0.75rem' } }} />
+                )}
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 2, display: 'block', fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
+                  Target: &gt;60% standing time for optimal spine health
+                </Typography>
+              </Box>
+            </Box>
+          </CardContent>
+        </Card>
+      )}
 
-      {/* Summary Stats */}
-      <Box sx={{ display: 'flex', gap: 3, mb: 3, flexWrap: 'wrap' }}>
-        <Box sx={{ flex: 1, minWidth: 150 }}>
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-            Standing Time (Weekly Avg)
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-            <Typography variant="h6" sx={{ color: '#4caf50', fontWeight: 600 }}>
-              {standingAvg !== null ? getTimeLabel(Math.round(standingAvg)) : 'No Data'}
+      {/* Goal Tracking Card */}
+      <Card sx={{ 
+        background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+        border: `1px solid ${alpha('#ffffff', 0.2)}`,
+        width: '100%',
+      }}>
+        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+            <CheckCircle sx={{ color: '#4caf50', fontSize: { xs: 20, sm: 24 } }} />
+            <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              Goal Tracking
             </Typography>
-            {standingTrend && (
-              <>
-                {standingTrend.direction === 'better' && <TrendingUp sx={{ fontSize: 18, color: '#4caf50' }} />}
-                {standingTrend.direction === 'worse' && <TrendingDown sx={{ fontSize: 18, color: '#f44336' }} />}
-                {standingTrend.direction === 'stable' && <Remove sx={{ fontSize: 18, color: '#888888' }} />}
-                {standingTrend.change > 0 && (
-                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-                    {Math.round(standingTrend.change)}%
-                  </Typography>
-                )}
-              </>
-            )}
           </Box>
-        </Box>
-        <Box sx={{ flex: 1, minWidth: 150 }}>
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-            Sitting Time (Weekly Avg)
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-            <Typography variant="h6" sx={{ color: '#ff9800', fontWeight: 600 }}>
-              {sittingAvg !== null ? getTimeLabel(Math.round(sittingAvg)) : 'No Data'}
-            </Typography>
-            {sittingTrend && (
-              <>
-                {sittingTrend.direction === 'better' && <TrendingDown sx={{ fontSize: 18, color: '#4caf50' }} />}
-                {sittingTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: 18, color: '#f44336' }} />}
-                {sittingTrend.direction === 'stable' && <Remove sx={{ fontSize: 18, color: '#888888' }} />}
-                {sittingTrend.change > 0 && (
-                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-                    {Math.round(sittingTrend.change)}%
-                  </Typography>
-                )}
-              </>
-            )}
+          
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
+                <Typography variant="body2" sx={{ color: 'white', fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  Standing Goal (≥4hrs)
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  {standingGoalDays}/7 days
+                </Typography>
+              </Box>
+              <LinearProgress 
+                variant="determinate" 
+                value={(standingGoalDays / 7) * 100} 
+                sx={{ 
+                  height: 8, 
+                  borderRadius: 4,
+                  backgroundColor: alpha('#ffffff', 0.1),
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: '#4caf50',
+                    borderRadius: 4
+                  }
+                }} 
+              />
+            </Box>
+            
+            <Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
+                <Typography variant="body2" sx={{ color: 'white', fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  Sedentary Limit (&lt;11hrs)
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  {sedentaryLimitDays}/7 days
+                </Typography>
+              </Box>
+              <LinearProgress 
+                variant="determinate" 
+                value={(sedentaryLimitDays / 7) * 100} 
+                sx={{ 
+                  height: 8, 
+                  borderRadius: 4,
+                  backgroundColor: alpha('#ffffff', 0.1),
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: '#4caf50',
+                    borderRadius: 4
+                  }
+                }} 
+              />
+            </Box>
+            
+            <Box>
+              <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1, flexWrap: 'wrap', gap: 0.5 }}>
+                <Typography variant="body2" sx={{ color: 'white', fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  Activity Balance (≥60% standing)
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                  {balanceOptimalDays}/7 days
+                </Typography>
+              </Box>
+              <LinearProgress 
+                variant="determinate" 
+                value={(balanceOptimalDays / 7) * 100} 
+                sx={{ 
+                  height: 8, 
+                  borderRadius: 4,
+                  backgroundColor: alpha('#ffffff', 0.1),
+                  '& .MuiLinearProgress-bar': {
+                    backgroundColor: '#4caf50',
+                    borderRadius: 4
+                  }
+                }} 
+              />
+            </Box>
           </Box>
-        </Box>
-        <Box sx={{ flex: 1, minWidth: 150 }}>
-          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)' }}>
-            Sedentary Hours (Weekly Avg)
-          </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mt: 0.5 }}>
-            <Typography variant="h6" sx={{ color: '#f44336', fontWeight: 600 }}>
-              {sedentaryAvg !== null ? `${sedentaryAvg.toFixed(1)} hrs` : 'No Data'}
-            </Typography>
-            {sedentaryTrend && (
-              <>
-                {sedentaryTrend.direction === 'better' && <TrendingDown sx={{ fontSize: 18, color: '#4caf50' }} />}
-                {sedentaryTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: 18, color: '#f44336' }} />}
-                {sedentaryTrend.direction === 'stable' && <Remove sx={{ fontSize: 18, color: '#888888' }} />}
-                {sedentaryTrend.change > 0 && (
-                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
-                    {Math.round(sedentaryTrend.change)}%
-                  </Typography>
-                )}
-              </>
-            )}
-          </Box>
-        </Box>
-      </Box>
+        </CardContent>
+      </Card>
 
-      {/* Standing & Sitting Time Chart */}
-      <Box sx={{ mb: 4 }}>
-        <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 2, fontWeight: 600 }}>
-          Standing & Sitting Time (Daily)
+      {/* Weekly Summary Card */}
+      <Card sx={{ 
+        background: `linear-gradient(135deg, ${alpha('#4facfe', 0.15)}, ${alpha('#4facfe', 0.05)})`,
+        border: `1px solid ${alpha('#4facfe', 0.3)}`,
+        width: '100%',
+      }}>
+        <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+            <Info sx={{ color: '#4facfe', fontSize: { xs: 20, sm: 24 } }} />
+            <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+              Weekly Summary
+            </Typography>
+          </Box>
+          
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {standingAvg !== null && (
+              <Box>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                  Average Standing Time
+                </Typography>
+                <Typography variant="h6" sx={{ color: '#4caf50', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                  {getTimeLabel(Math.round(standingAvg))}
+                  {standingTrend && (
+                    <>
+                      {' '}
+                      {standingTrend.direction === 'better' && <TrendingUp sx={{ fontSize: { xs: 16, sm: 18 }, color: '#4caf50', verticalAlign: 'middle' }} />}
+                      {standingTrend.direction === 'worse' && <TrendingDown sx={{ fontSize: { xs: 16, sm: 18 }, color: '#f44336', verticalAlign: 'middle' }} />}
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
+            
+            {sittingAvg !== null && (
+              <Box>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                  Average Sitting Time
+                </Typography>
+                <Typography variant="h6" sx={{ color: '#ff9800', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                  {getTimeLabel(Math.round(sittingAvg))}
+                  {sittingTrend && (
+                    <>
+                      {' '}
+                      {sittingTrend.direction === 'better' && <TrendingDown sx={{ fontSize: { xs: 16, sm: 18 }, color: '#4caf50', verticalAlign: 'middle' }} />}
+                      {sittingTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: { xs: 16, sm: 18 }, color: '#f44336', verticalAlign: 'middle' }} />}
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
+            
+            {sedentaryAvg !== null && (
+              <Box>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                  Average Sedentary Hours
+                </Typography>
+                <Typography variant="h6" sx={{ color: '#f44336', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                  {sedentaryAvg.toFixed(1)} hrs
+                  {sedentaryTrend && (
+                    <>
+                      {' '}
+                      {sedentaryTrend.direction === 'better' && <TrendingDown sx={{ fontSize: { xs: 16, sm: 18 }, color: '#4caf50', verticalAlign: 'middle' }} />}
+                      {sedentaryTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: { xs: 16, sm: 18 }, color: '#f44336', verticalAlign: 'middle' }} />}
+                    </>
+                  )}
+                </Typography>
+              </Box>
+            )}
+            
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+              {loggedDays} out of 7 days logged
+            </Typography>
+          </Box>
+        </CardContent>
+      </Card>
+
+      {/* Daily Activity Cards */}
+      <Box sx={{ width: '100%' }}>
+        <Typography variant="h6" sx={{ color: 'white', mb: 2, fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+          Daily Activity
         </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart 
-            data={chartData} 
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke={alpha('#fff', 0.1)} />
-            <XAxis 
-              dataKey="dayLabel" 
-              stroke="rgba(255, 255, 255, 0.6)"
-              tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 13, fontWeight: 500 }}
-            />
-            <YAxis 
-              domain={[0, 4]}
-              stroke="rgba(255, 255, 255, 0.6)"
-              tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 12 }}
-              tickFormatter={formatTimeCategoryTick}
-              label={{ 
-                value: 'Time Category', 
-                angle: -90, 
-                position: 'insideLeft', 
-                fill: 'rgba(255, 255, 255, 0.7)',
-                style: { fontSize: 12 }
-              }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Legend 
-              wrapperStyle={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: 13 }}
-              iconType="square"
-            />
-            <Bar 
-              dataKey="standingTime" 
-              name="Standing Time"
-              radius={[4, 4, 0, 0]}
-            >
-              {chartData.map((entry, index) => (
-                <Cell 
-                  key={`standing-${index}`} 
-                  fill={entry.standingTime !== null ? '#4caf50' : alpha('#888888', 0.3)} 
-                />
-              ))}
-            </Bar>
-            <Bar 
-              dataKey="sittingTime" 
-              name="Sitting Time"
-              radius={[4, 4, 0, 0]}
-            >
-              {chartData.map((entry, index) => (
-                <Cell 
-                  key={`sitting-${index}`} 
-                  fill={entry.sittingTime !== null ? '#ff9800' : alpha('#888888', 0.3)} 
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+          {dailyData.map((day, index) => {
+            const hasData = day.standingTime !== null || day.sittingTime !== null || day.sedentaryHours !== null;
+            const dayLabel = formatDayLabel(day.date);
+            const fullDate = formatDate(day.date);
+            
+            // Calculate activity score
+            let activityStatus = 'No data';
+            let statusColor = '#888888';
+            if (hasData) {
+              const standingMet = day.standingTime !== null && day.standingTime >= 3;
+              const sedentaryMet = day.sedentaryHours !== null && day.sedentaryHours < 11;
+              if (standingMet && sedentaryMet) {
+                activityStatus = 'Good day for spine health';
+                statusColor = '#4caf50';
+              } else if (standingMet || sedentaryMet) {
+                activityStatus = 'Moderate day';
+                statusColor = '#ff9800';
+              } else {
+                activityStatus = 'Needs attention';
+                statusColor = '#f44336';
+              }
+            }
+
+            return (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <Card sx={{ 
+                  background: hasData 
+                    ? `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`
+                    : alpha('#888888', 0.1),
+                  border: `1px solid ${hasData ? alpha('#ffffff', 0.2) : alpha('#888888', 0.2)}`,
+                  height: '100%',
+                  width: '100%',
+                }}>
+                  <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                    <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                      {dayLabel}
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', display: 'block', mb: 2, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                      {fullDate}
+                    </Typography>
+                    
+                    {hasData ? (
+                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                        {day.standingTime !== null && (
+                          <Box>
+                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              Standing
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: '#4caf50', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                              {getTimeLabel(day.standingTime)}
+                              {day.standingTime >= 3 && <CheckCircle sx={{ fontSize: { xs: 14, sm: 16 }, color: '#4caf50', ml: 0.5, verticalAlign: 'middle' }} />}
+                            </Typography>
+                          </Box>
+                        )}
+                        {day.sittingTime !== null && (
+                          <Box>
+                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              Sitting
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: '#ff9800', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                              {getTimeLabel(day.sittingTime)}
+                            </Typography>
+                          </Box>
+                        )}
+                        {day.sedentaryHours !== null && (
+                          <Box>
+                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                              Sedentary
+                            </Typography>
+                            <Typography variant="body2" sx={{ color: day.sedentaryHours < 11 ? '#4caf50' : '#f44336', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                              {day.sedentaryHours.toFixed(1)} hrs
+                              {day.sedentaryHours < 11 && <CheckCircle sx={{ fontSize: { xs: 14, sm: 16 }, color: '#4caf50', ml: 0.5, verticalAlign: 'middle' }} />}
+                            </Typography>
+                          </Box>
+                        )}
+                        <Box sx={{ mt: 1, pt: 1, borderTop: `1px solid ${alpha('#ffffff', 0.1)}` }}>
+                          <Typography variant="caption" sx={{ color: statusColor, fontWeight: 600, fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
+                            {activityStatus}
+                          </Typography>
+                        </Box>
+                      </Box>
+                    ) : (
+                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)' }}>
+                        No data logged
+                      </Typography>
+                    )}
+                  </CardContent>
+                </Card>
+              </Grid>
+            );
+          })}
+        </Grid>
       </Box>
 
-      {/* Sedentary Hours Chart */}
-      <Box>
-        <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 2, fontWeight: 600 }}>
-          Sedentary Hours (Daily)
-        </Typography>
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart 
-            data={chartData} 
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke={alpha('#fff', 0.1)} />
-            <XAxis 
-              dataKey="dayLabel" 
-              stroke="rgba(255, 255, 255, 0.6)"
-              tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 13, fontWeight: 500 }}
-            />
-            <YAxis 
-              domain={[0, 'dataMax + 2']}
-              stroke="rgba(255, 255, 255, 0.6)"
-              tick={{ fill: 'rgba(255, 255, 255, 0.7)', fontSize: 12 }}
-              tickFormatter={formatHoursTick}
-              label={{ 
-                value: 'Hours', 
-                angle: -90, 
-                position: 'insideLeft', 
-                fill: 'rgba(255, 255, 255, 0.7)',
-                style: { fontSize: 12 }
-              }}
-            />
-            <Tooltip content={<CustomTooltip />} />
-            <Bar 
-              dataKey="sedentaryHours" 
-              name="Sedentary Hours"
-              radius={[4, 4, 0, 0]}
-            >
-              {chartData.map((entry, index) => {
-                const value = entry.sedentaryHours;
-                let color = '#f44336'; // Red (bad)
-                if (value !== null) {
-                  if (value <= 4) color = '#4caf50'; // Green (good)
-                  else if (value <= 8) color = '#ff9800'; // Orange (moderate)
-                } else {
-                  color = alpha('#888888', 0.3);
-                }
-                return <Cell key={`sedentary-${index}`} fill={color} />;
-              })}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
-      </Box>
+      {/* Pain Correlation Card */}
+      {painCorrelations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#9c27b0', 0.15)}, ${alpha('#9c27b0', 0.05)})`,
+          border: `1px solid ${alpha('#9c27b0', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Lightbulb sx={{ color: '#9c27b0', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Pain Correlation
+              </Typography>
+            </Box>
+            {painCorrelations.map((insight, index) => (
+              <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
+                <CheckCircle sx={{ color: '#9c27b0', fontSize: { xs: 16, sm: 18 }, mt: 0.5, flexShrink: 0 }} />
+                <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {insight}
+                </Typography>
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
+      )}
     </Box>
   );
 }
