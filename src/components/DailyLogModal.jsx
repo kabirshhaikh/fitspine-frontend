@@ -50,7 +50,10 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
     morningStiffness: '',
     stressLevel: '',
     liftingOrStrain: false,
-    painLocations: []
+    painLocations: [],
+    sleepDuration: '',
+    nightWakeUps: '',
+    restingHeartRate: ''
   });
 
   // Helper function to get today's date in YYYY-MM-DD format
@@ -89,7 +92,10 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
             morningStiffness: existingLog.morningStiffness || '',
             stressLevel: existingLog.stressLevel || '',
             liftingOrStrain: existingLog.liftingOrStrain || false,
-            painLocations: existingLog.painLocations || []
+            painLocations: existingLog.painLocations || [],
+            sleepDuration: existingLog.sleepDuration || '',
+            nightWakeUps: existingLog.nightWakeUps || '',
+            restingHeartRate: existingLog.restingHeartRate || ''
           });
         } catch (error) {
           // 404 is expected when no log exists - show empty form
@@ -110,7 +116,10 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
             morningStiffness: '',
             stressLevel: '',
             liftingOrStrain: false,
-            painLocations: []
+            painLocations: [],
+            sleepDuration: '',
+            nightWakeUps: '',
+            restingHeartRate: ''
           });
         } finally {
           setLoading(false);
@@ -139,6 +148,15 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
     // Get today's date in user's local timezone (YYYY-MM-DD format for LocalDate)
     const localDate = getTodayDate();
     
+    // Validate and parse resting heart rate (must be between 30-120)
+    let restingHeartRate = null;
+    if (formData.restingHeartRate) {
+      const parsed = parseInt(formData.restingHeartRate);
+      if (!isNaN(parsed) && parsed >= 30 && parsed <= 120) {
+        restingHeartRate = parsed;
+      }
+    }
+    
     // Create log data matching your backend DTO
     const logData = {
       logDate: localDate, // User's local date
@@ -153,6 +171,9 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
       stressLevel: formData.stressLevel || null,
       liftingOrStrain: formData.liftingOrStrain,
       painLocations: formData.painLocations,
+      sleepDuration: formData.sleepDuration || null,
+      nightWakeUps: formData.nightWakeUps || null,
+      restingHeartRate: restingHeartRate,
       _isUpdate: hasExistingLog // Internal flag to indicate if this is an update
     };
 
@@ -174,7 +195,10 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
       morningStiffness: '',
       stressLevel: '',
       liftingOrStrain: false,
-      painLocations: []
+      painLocations: [],
+      sleepDuration: '',
+      nightWakeUps: '',
+      restingHeartRate: ''
     });
     setActiveStep(0);
     onClose();
@@ -312,7 +336,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
               </Box>
             </Box>
 
-            <Box>
+            <Box sx={{ mb: 4 }}>
               <Typography variant="h6" sx={{ mb: 2, color: '#667eea' }}>Stress level?</Typography>
               <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
                 {[
@@ -336,6 +360,101 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                   />
                 ))}
               </Box>
+            </Box>
+
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#9c27b0' }}>How much did you sleep? 😴</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                {[
+                  { value: 'LESS_THAN_5H', label: '😴 < 5h', color: '#f44336' },
+                  { value: 'H5_TO_6', label: '😴 5-6h', color: '#ff9800' },
+                  { value: 'H6_TO_7', label: '😴 6-7h', color: '#ffc107' },
+                  { value: 'H7_TO_8', label: '😴 7-8h', color: '#4caf50' },
+                  { value: 'MORE_THAN_8H', label: '😴 8h+', color: '#2196f3' }
+                ].map((option) => (
+                  <Chip
+                    key={option.value}
+                    label={option.label}
+                    onClick={() => handleQuickSelect('sleepDuration', option.value)}
+                    variant={formData.sleepDuration === option.value ? 'filled' : 'outlined'}
+                    sx={{
+                      background: formData.sleepDuration === option.value ? option.color : 'transparent',
+                      border: `2px solid ${option.color}`,
+                      color: formData.sleepDuration === option.value ? 'white' : option.color,
+                      '&:hover': { background: option.color, color: 'white', transform: 'scale(1.05)' }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 4 }}>
+              <Typography variant="h6" sx={{ mb: 2, color: '#9c27b0' }}>Night wake ups? 🌙</Typography>
+              <Box sx={{ display: 'flex', justifyContent: 'center', gap: 1, flexWrap: 'wrap' }}>
+                {[
+                  { value: 'NONE', label: '😴 None', color: '#4caf50' },
+                  { value: 'ONE', label: '🌙 One', color: '#8bc34a' },
+                  { value: 'TWO', label: '🌙 Two', color: '#ff9800' },
+                  { value: 'THREE_OR_MORE', label: '🌙 3+', color: '#f44336' }
+                ].map((option) => (
+                  <Chip
+                    key={option.value}
+                    label={option.label}
+                    onClick={() => handleQuickSelect('nightWakeUps', option.value)}
+                    variant={formData.nightWakeUps === option.value ? 'filled' : 'outlined'}
+                    sx={{
+                      background: formData.nightWakeUps === option.value ? option.color : 'transparent',
+                      border: `2px solid ${option.color}`,
+                      color: formData.nightWakeUps === option.value ? 'white' : option.color,
+                      '&:hover': { background: option.color, color: 'white', transform: 'scale(1.05)' }
+                    }}
+                  />
+                ))}
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="h6" sx={{ mb: 1, color: '#e91e63' }}>Resting heart rate 💓</Typography>
+              <Typography variant="body2" sx={{ mb: 2, color: 'rgba(0, 0, 0, 0.6)', fontSize: '0.85rem' }}>
+                If you know it through your phone or other app, enter it here (optional)
+              </Typography>
+              <TextField
+                type="number"
+                value={formData.restingHeartRate}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  // Allow empty string or any numeric input
+                  if (value === '' || (!isNaN(value) && value >= 0 && value <= 999)) {
+                    handleInputChange('restingHeartRate', value);
+                  }
+                }}
+                error={
+                  formData.restingHeartRate !== '' &&
+                  formData.restingHeartRate !== null &&
+                  formData.restingHeartRate !== undefined &&
+                  (isNaN(parseInt(formData.restingHeartRate)) ||
+                    parseInt(formData.restingHeartRate) < 30 ||
+                    parseInt(formData.restingHeartRate) > 120)
+                }
+                helperText={
+                  formData.restingHeartRate !== '' &&
+                  formData.restingHeartRate !== null &&
+                  formData.restingHeartRate !== undefined &&
+                  (isNaN(parseInt(formData.restingHeartRate)) ||
+                    parseInt(formData.restingHeartRate) < 30 ||
+                    parseInt(formData.restingHeartRate) > 120)
+                    ? 'Heart rate must be between 30 and 120 bpm'
+                    : ''
+                }
+                placeholder="e.g., 65"
+                inputProps={{ min: 30, max: 120 }}
+                fullWidth
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 3,
+                  }
+                }}
+              />
             </Box>
           </Box>
         );
