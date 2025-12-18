@@ -47,7 +47,7 @@ export const calculateTrend = (values, metricName) => {
   
   if (percentChange < 5) return { direction: 'stable', change: 0 };
   
-  const lowerIsBetter = ['painLevel', 'morningStiffness', 'stressLevel', 'sittingTime', 'sedentaryHours', 'restingHeartRate'].includes(metricName);
+  const lowerIsBetter = ['painLevel', 'morningStiffness', 'stressLevel', 'sittingTime', 'fitbitSedentaryHours', 'restingHeartRate', 'fitbitRestingHeartRate', 'manualRestingHeartRate'].includes(metricName);
   
   if (lowerIsBetter) {
     return { direction: diff < 0 ? 'better' : 'worse', change: percentChange };

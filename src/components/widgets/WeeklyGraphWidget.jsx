@@ -10,12 +10,13 @@ import {
   Tab,
   alpha,
 } from '@mui/material';
-import { Assessment, LocalHospital, FitnessCenter, Favorite, Psychology } from '@mui/icons-material';
+import { Assessment, LocalHospital, FitnessCenter, Favorite, Psychology, Bedtime } from '@mui/icons-material';
 import graphService from '../../services/graph.service';
 import WidgetShell from './WidgetShell';
 import PainStiffnessChart from './charts/PainStiffnessChart';
 import ActivityChart from './charts/ActivityChart';
 import HeartRateChart from './charts/HeartRateChart';
+import SleepChart from './charts/SleepChart';
 import WeeklyInsights from '../WeeklyInsights';
 
 export default function WeeklyGraphWidget() {
@@ -153,6 +154,11 @@ export default function WeeklyGraphWidget() {
               iconPosition="start"
               label="Heart Rate" 
             />
+            <Tab 
+              icon={<Bedtime sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
+              iconPosition="start"
+              label="Sleep" 
+            />
           </Tabs>
         </Box>
 
@@ -174,7 +180,10 @@ export default function WeeklyGraphWidget() {
             <ActivityChart dailyData={graphData.dailyData} />
           )}
           {tabValue === 3 && (
-            <HeartRateChart dailyData={graphData.dailyData} />
+            <HeartRateChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
+          )}
+          {tabValue === 4 && (
+            <SleepChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
           )}
         </Box>
       </Box>

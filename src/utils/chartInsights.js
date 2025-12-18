@@ -41,7 +41,7 @@ export const detectPainActivityCorrelation = (dailyData) => {
   const insights = [];
   const loggedDays = dailyData.filter(day => 
     day.painLevel !== null && 
-    (day.standingTime !== null || day.sedentaryHours !== null)
+    (day.standingTime !== null || day.fitbitSedentaryHours !== null)
   );
 
   if (loggedDays.length < 2) return insights;
@@ -66,8 +66,8 @@ export const detectPainActivityCorrelation = (dailyData) => {
 
   // Pain vs Sedentary Hours
   const sedentaryPainPairs = loggedDays
-    .filter(day => day.sedentaryHours !== null && day.painLevel !== null)
-    .map(day => ({ sedentary: day.sedentaryHours, pain: day.painLevel }));
+    .filter(day => day.fitbitSedentaryHours !== null && day.painLevel !== null)
+    .map(day => ({ sedentary: day.fitbitSedentaryHours, pain: day.painLevel }));
   
   if (sedentaryPainPairs.length >= 2) {
     const sorted = [...sedentaryPainPairs].sort((a, b) => a.sedentary - b.sedentary);
@@ -88,10 +88,24 @@ export const detectPainActivityCorrelation = (dailyData) => {
 /**
  * Detects heart rate - stress correlation
  */
-export const detectHRStressCorrelation = (dailyData) => {
+export const detectHRStressCorrelation = (dailyData, isFitbitConnected) => {
   const insights = [];
+  
+  // Get heart rate value based on Fitbit connection
+  const getHeartRate = (day) => {
+    if (isFitbitConnected) {
+      return day.fitbitRestingHeartRate !== null && day.fitbitRestingHeartRate !== undefined
+        ? day.fitbitRestingHeartRate
+        : null;
+    } else {
+      return day.manualRestingHeartRate !== null && day.manualRestingHeartRate !== undefined
+        ? day.manualRestingHeartRate
+        : null;
+    }
+  };
+  
   const loggedDays = dailyData.filter(day => 
-    day.restingHeartRate !== null && day.stressLevel !== null
+    getHeartRate(day) !== null && day.stressLevel !== null
   );
 
   if (loggedDays.length < 2) return insights;
@@ -100,8 +114,8 @@ export const detectHRStressCorrelation = (dailyData) => {
   const lowStress = sorted.slice(0, Math.ceil(sorted.length / 2));
   const highStress = sorted.slice(Math.floor(sorted.length / 2));
   
-  const avgHRLow = average(lowStress.map(d => d.restingHeartRate));
-  const avgHRHigh = average(highStress.map(d => d.restingHeartRate));
+  const avgHRLow = average(lowStress.map(d => getHeartRate(d)));
+  const avgHRHigh = average(highStress.map(d => getHeartRate(d)));
   
   if (avgHRLow !== null && avgHRHigh !== null && avgHRHigh > avgHRLow + 2) {
     const diff = Math.round(avgHRHigh - avgHRLow);
@@ -116,15 +130,18 @@ export const detectHRStressCorrelation = (dailyData) => {
 
 /**
  * Finds best and worst days for a metric
+ * @param {Array} dailyData - Array of daily data objects
+ * @param {string} metric - Metric name to compare
+ * @param {boolean} higherIsBetter - If true, higher values are better (e.g., sleep hours). Default: false (lower is better)
  */
-export const findBestWorstDays = (dailyData, metric) => {
-  const validDays = dailyData.filter(day => day[metric] !== null && day[metric] !== -1);
+export const findBestWorstDays = (dailyData, metric, higherIsBetter = false) => {
+  const validDays = dailyData.filter(day => day[metric] !== null && day[metric] !== -1 && day[metric] !== undefined);
   if (validDays.length === 0) return { best: null, worst: null };
 
   const sorted = [...validDays].sort((a, b) => a[metric] - b[metric]);
   return {
-    best: sorted[0],
-    worst: sorted[sorted.length - 1]
+    best: higherIsBetter ? sorted[sorted.length - 1] : sorted[0],
+    worst: higherIsBetter ? sorted[0] : sorted[sorted.length - 1]
   };
 };
 
@@ -139,7 +156,9 @@ export const getFirstAndLastLoggedDays = (dailyData) => {
     day.sittingTime !== null ||
     day.standingTime !== null ||
     day.restingHeartRate !== null ||
-    day.sedentaryHours !== null
+    day.fitbitRestingHeartRate !== null ||
+    day.manualRestingHeartRate !== null ||
+    day.fitbitSedentaryHours !== null
   );
   
   if (loggedDays.length === 0) return { first: null, last: null };

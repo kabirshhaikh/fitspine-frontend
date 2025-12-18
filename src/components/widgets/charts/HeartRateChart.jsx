@@ -5,8 +5,9 @@ import { calculateAverage, calculateTrend, formatDayLabel, formatDate } from './
 import { detectHRStressCorrelation, getFirstAndLastLoggedDays } from '../../../utils/chartInsights';
 import { getStressLabel } from './chartUtils';
 
-export default function HeartRateChart({ dailyData }) {
-  if (!dailyData || !dailyData.length) {
+export default function HeartRateChart({ dailyData, isFitbitConnected }) {
+  // Handle missing or invalid data
+  if (!dailyData || !Array.isArray(dailyData) || dailyData.length === 0) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
         <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
@@ -16,27 +17,56 @@ export default function HeartRateChart({ dailyData }) {
     );
   }
 
+  // Ensure isFitbitConnected is a boolean
+  const isFitbit = isFitbitConnected === true;
+
+  // Get heart rate data based on Fitbit connection
+  const getHeartRateValue = (day) => {
+    if (!day) return null;
+    // Check if Fitbit is connected (handle undefined/null)
+    if (isFitbit) {
+      // Use Fitbit data if available, otherwise fall back to manual
+      if (day.fitbitRestingHeartRate !== null && day.fitbitRestingHeartRate !== undefined) {
+        return day.fitbitRestingHeartRate;
+      }
+      // Fall back to manual if Fitbit data not available
+      if (day.manualRestingHeartRate !== null && day.manualRestingHeartRate !== undefined) {
+        return day.manualRestingHeartRate;
+      }
+      return null;
+    } else {
+      // Use manual data
+      return day.manualRestingHeartRate !== null && day.manualRestingHeartRate !== undefined
+        ? day.manualRestingHeartRate
+        : null;
+    }
+  };
+
   // Calculate average and trend
-  const heartRateValues = dailyData.map(d => d.restingHeartRate);
+  const heartRateValues = dailyData.map(d => getHeartRateValue(d));
   const heartRateAvg = calculateAverage(heartRateValues);
   const heartRateTrend = calculateTrend(heartRateValues, 'restingHeartRate');
 
   // Get insights
-  const stressCorrelations = detectHRStressCorrelation(dailyData);
+  const stressCorrelations = detectHRStressCorrelation(dailyData, isFitbit);
   const { first, last } = getFirstAndLastLoggedDays(dailyData);
 
   // Calculate recovery insights
-  const validHRDays = dailyData.filter(day => day.restingHeartRate !== null);
+  const validHRDays = dailyData.filter(day => getHeartRateValue(day) !== null);
   const firstHRDay = validHRDays[0];
   const lastHRDay = validHRDays[validHRDays.length - 1];
   
   let recoveryChange = null;
-  if (firstHRDay && lastHRDay && firstHRDay.restingHeartRate !== null && lastHRDay.restingHeartRate !== null) {
-    recoveryChange = firstHRDay.restingHeartRate - lastHRDay.restingHeartRate;
+  if (firstHRDay && lastHRDay) {
+    const firstHR = getHeartRateValue(firstHRDay);
+    const lastHR = getHeartRateValue(lastHRDay);
+    if (firstHR !== null && lastHR !== null) {
+      recoveryChange = firstHR - lastHR;
+    }
   }
 
   // Calculate consistency
-  const hrValues = validHRDays.map(d => d.restingHeartRate);
+  const hrValues = validHRDays.map(d => getHeartRateValue(d));
   let consistency = null;
   if (heartRateAvg !== null && hrValues.length > 1) {
     const variance = hrValues.reduce((sum, hr) => sum + Math.pow(hr - heartRateAvg, 2), 0) / hrValues.length;
@@ -58,7 +88,9 @@ export default function HeartRateChart({ dailyData }) {
   // Find best recovery day
   const bestRecoveryDay = validHRDays.length > 0 
     ? validHRDays.reduce((best, day) => {
-        if (!best || day.restingHeartRate < best.restingHeartRate) return day;
+        const bestHR = getHeartRateValue(best);
+        const dayHR = getHeartRateValue(day);
+        if (!best || (dayHR !== null && bestHR !== null && dayHR < bestHR)) return day;
         return best;
       }, null)
     : null;
@@ -94,10 +126,12 @@ export default function HeartRateChart({ dailyData }) {
             <Favorite sx={{ fontSize: { xs: 36, sm: 48 }, color: getHeartRateColor(heartRateAvg), flexShrink: 0 }} />
             <Box sx={{ flex: 1, minWidth: 0 }}>
               <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                Average Resting Heart Rate
-              </Typography>
+            Average Resting Heart Rate
+                {isFitbit && <Chip label="Fitbit" size="small" sx={{ ml: 1, background: alpha('#4facfe', 0.3), color: '#4facfe', fontSize: '0.65rem', height: 20 }} />}
+                {!isFitbit && <Chip label="Manual" size="small" sx={{ ml: 1, background: alpha('#888888', 0.3), color: '#888888', fontSize: '0.65rem', height: 20 }} />}
+          </Typography>
               <Typography variant="h3" sx={{ 
-                color: getHeartRateColor(heartRateAvg),
+                color: getHeartRateColor(heartRateAvg), 
                 fontWeight: 700,
                 mb: 1,
                 fontSize: { xs: '1.75rem', sm: '2.5rem', md: '3rem' },
@@ -117,7 +151,7 @@ export default function HeartRateChart({ dailyData }) {
                   }} 
                 />
               )}
-              {heartRateTrend && (
+            {heartRateTrend && (
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 1, flexWrap: 'wrap' }}>
                   {heartRateTrend.direction === 'better' && <TrendingDown sx={{ fontSize: { xs: 18, sm: 20 }, color: '#4caf50' }} />}
                   {heartRateTrend.direction === 'worse' && <TrendingUp sx={{ fontSize: { xs: 18, sm: 20 }, color: '#f44336' }} />}
@@ -137,9 +171,9 @@ export default function HeartRateChart({ dailyData }) {
               {consistency !== null && (
                 <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', mt: 1, display: 'block', fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
                   HR consistency: {consistency.toFixed(0)}% {consistency > 95 ? '(excellent)' : consistency > 90 ? '(good)' : ''}
-                </Typography>
-              )}
-            </Box>
+                  </Typography>
+                )}
+              </Box>
           </Box>
         </CardContent>
       </Card>
@@ -156,15 +190,15 @@ export default function HeartRateChart({ dailyData }) {
               <Lightbulb sx={{ color: '#9c27b0', fontSize: { xs: 20, sm: 24 } }} />
               <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
                 Stress Correlation
-              </Typography>
-            </Box>
+          </Typography>
+        </Box>
             {stressCorrelations.map((insight, index) => (
               <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
                 <Info sx={{ color: '#9c27b0', fontSize: { xs: 16, sm: 18 }, mt: 0.5, flexShrink: 0 }} />
                 <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
                   {insight}
                 </Typography>
-              </Box>
+      </Box>
             ))}
           </CardContent>
         </Card>
@@ -177,22 +211,23 @@ export default function HeartRateChart({ dailyData }) {
         </Typography>
         <Grid container spacing={{ xs: 1.5, sm: 2 }}>
           {dailyData.map((day, index) => {
-            const hasData = day.restingHeartRate !== null;
+            const hrValue = getHeartRateValue(day);
+            const hasData = hrValue !== null;
             const dayLabel = formatDayLabel(day.date);
             const fullDate = formatDate(day.date);
-            const hrColor = getHeartRateColor(day.restingHeartRate);
+            const hrColor = getHeartRateColor(hrValue);
             
             // Get recovery status
             let recoveryStatus = 'No data';
             let statusColor = '#888888';
             if (hasData) {
-              if (day.restingHeartRate <= 60) {
+              if (hrValue <= 60) {
                 recoveryStatus = 'Optimal recovery';
                 statusColor = '#4caf50';
-              } else if (day.restingHeartRate <= 70) {
+              } else if (hrValue <= 70) {
                 recoveryStatus = 'Good recovery';
                 statusColor = '#8bc34a';
-              } else if (day.restingHeartRate <= 80) {
+              } else if (hrValue <= 80) {
                 recoveryStatus = 'Moderate recovery';
                 statusColor = '#ff9800';
               } else {
@@ -231,7 +266,7 @@ export default function HeartRateChart({ dailyData }) {
                             fontFamily: 'monospace',
                             fontSize: { xs: '1.5rem', sm: '1.75rem', md: '2rem' }
                           }}>
-                            {day.restingHeartRate} bpm
+                            {hrValue} bpm
                           </Typography>
                         </Box>
                         {day.stressLevel !== null && (
@@ -242,7 +277,7 @@ export default function HeartRateChart({ dailyData }) {
                             <Chip 
                               label={getStressLabel(day.stressLevel)}
                               size="small"
-                              sx={{
+              sx={{
                                 background: alpha('#9c27b0', 0.2),
                                 color: '#9c27b0',
                                 border: `1px solid ${alpha('#9c27b0', 0.5)}`,
@@ -257,8 +292,8 @@ export default function HeartRateChart({ dailyData }) {
                         <Box sx={{ mt: 1, pt: 1, borderTop: `1px solid ${alpha('#ffffff', 0.1)}` }}>
                           <Typography variant="caption" sx={{ color: statusColor, fontWeight: 600, fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
                             {recoveryStatus}
-                          </Typography>
-                        </Box>
+            </Typography>
+          </Box>
                       </Box>
                     ) : (
                       <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
@@ -289,7 +324,7 @@ export default function HeartRateChart({ dailyData }) {
             </Box>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
               <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                <strong>Best recovery day:</strong> {formatDate(bestRecoveryDay.date)} with {bestRecoveryDay.restingHeartRate} bpm
+                <strong>Best recovery day:</strong> {formatDate(bestRecoveryDay.date)} with {getHeartRateValue(bestRecoveryDay)} bpm
               </Typography>
               {consistency !== null && consistency > 90 && (
                 <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>

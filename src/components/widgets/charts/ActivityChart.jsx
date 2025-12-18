@@ -18,7 +18,7 @@ export default function ActivityChart({ dailyData }) {
   // Calculate averages and trends
   const standingValues = dailyData.map(d => d.standingTime);
   const sittingValues = dailyData.map(d => d.sittingTime);
-  const sedentaryValues = dailyData.map(d => d.sedentaryHours);
+  const sedentaryValues = dailyData.map(d => d.fitbitSedentaryHours);
   
   const standingAvg = calculateAverage(standingValues);
   const sittingAvg = calculateAverage(sittingValues);
@@ -26,7 +26,7 @@ export default function ActivityChart({ dailyData }) {
   
   const standingTrend = calculateTrend(standingValues, 'standingTime');
   const sittingTrend = calculateTrend(sittingValues, 'sittingTime');
-  const sedentaryTrend = calculateTrend(sedentaryValues, 'sedentaryHours');
+  const sedentaryTrend = calculateTrend(sedentaryValues, 'fitbitSedentaryHours');
 
   // Get insights
   const activityBalance = calculateActivityBalance(dailyData);
@@ -34,7 +34,7 @@ export default function ActivityChart({ dailyData }) {
 
   // Count days meeting goals
   const standingGoalDays = dailyData.filter(day => day.standingTime !== null && day.standingTime >= 3).length;
-  const sedentaryLimitDays = dailyData.filter(day => day.sedentaryHours !== null && day.sedentaryHours < 11).length;
+  const sedentaryLimitDays = dailyData.filter(day => day.fitbitSedentaryHours !== null && day.fitbitSedentaryHours < 11).length;
   const balanceOptimalDays = dailyData.filter(day => {
     if (day.standingTime === null || day.sittingTime === null) return false;
     const total = day.standingTime + day.sittingTime;
@@ -43,7 +43,7 @@ export default function ActivityChart({ dailyData }) {
   }).length;
 
   const loggedDays = dailyData.filter(day => 
-    day.standingTime !== null || day.sittingTime !== null || day.sedentaryHours !== null
+    day.standingTime !== null || day.sittingTime !== null || day.fitbitSedentaryHours !== null
   ).length;
 
   return (
@@ -274,7 +274,7 @@ export default function ActivityChart({ dailyData }) {
         </Typography>
         <Grid container spacing={{ xs: 1.5, sm: 2 }}>
           {dailyData.map((day, index) => {
-            const hasData = day.standingTime !== null || day.sittingTime !== null || day.sedentaryHours !== null;
+            const hasData = day.standingTime !== null || day.sittingTime !== null || day.fitbitSedentaryHours !== null;
             const dayLabel = formatDayLabel(day.date);
             const fullDate = formatDate(day.date);
             
@@ -283,7 +283,7 @@ export default function ActivityChart({ dailyData }) {
             let statusColor = '#888888';
             if (hasData) {
               const standingMet = day.standingTime !== null && day.standingTime >= 3;
-              const sedentaryMet = day.sedentaryHours !== null && day.sedentaryHours < 11;
+              const sedentaryMet = day.fitbitSedentaryHours !== null && day.fitbitSedentaryHours < 11;
               if (standingMet && sedentaryMet) {
                 activityStatus = 'Good day for spine health';
                 statusColor = '#4caf50';
@@ -337,14 +337,14 @@ export default function ActivityChart({ dailyData }) {
                             </Typography>
                           </Box>
                         )}
-                        {day.sedentaryHours !== null && (
+                        {day.fitbitSedentaryHours !== null && (
                           <Box>
                             <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                               Sedentary
                             </Typography>
-                            <Typography variant="body2" sx={{ color: day.sedentaryHours < 11 ? '#4caf50' : '#f44336', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                              {day.sedentaryHours.toFixed(1)} hrs
-                              {day.sedentaryHours < 11 && <CheckCircle sx={{ fontSize: { xs: 14, sm: 16 }, color: '#4caf50', ml: 0.5, verticalAlign: 'middle' }} />}
+                            <Typography variant="body2" sx={{ color: day.fitbitSedentaryHours < 11 ? '#4caf50' : '#f44336', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                              {day.fitbitSedentaryHours.toFixed(1)} hrs
+                              {day.fitbitSedentaryHours < 11 && <CheckCircle sx={{ fontSize: { xs: 14, sm: 16 }, color: '#4caf50', ml: 0.5, verticalAlign: 'middle' }} />}
                             </Typography>
                           </Box>
                         )}

@@ -218,8 +218,8 @@ export default function PainStiffnessChart({ dailyData }) {
             
             // Get key insight for the day
             let dayInsight = null;
-            if (day.sedentaryHours !== null && day.sedentaryHours > 11) {
-              dayInsight = `High sedentary (${day.sedentaryHours.toFixed(1)}hrs)`;
+            if (day.fitbitSedentaryHours !== null && day.fitbitSedentaryHours > 11) {
+              dayInsight = `High sedentary (${day.fitbitSedentaryHours.toFixed(1)}hrs)`;
             } else if (day.standingTime !== null && day.standingTime >= 3) {
               dayInsight = `Good standing time`;
             } else if (day.stressLevel !== null && day.stressLevel >= 3) {

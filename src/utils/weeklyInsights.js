@@ -26,7 +26,9 @@ const getFirstAndLastLoggedDays = (dailyData) => {
     day.sittingTime !== null ||
     day.standingTime !== null ||
     day.restingHeartRate !== null ||
-    day.sedentaryHours !== null
+    day.fitbitRestingHeartRate !== null ||
+    day.manualRestingHeartRate !== null ||
+    day.fitbitSedentaryHours !== null
   );
   
   if (loggedDays.length === 0) return { first: null, last: null };
@@ -59,8 +61,8 @@ export const computeWeeklyAverages = (dailyData) => {
     stressLevel: average(dailyData.map(d => d.stressLevel)),
     sittingTime: average(dailyData.map(d => d.sittingTime)),
     standingTime: average(dailyData.map(d => d.standingTime)),
-    sedentaryHours: average(dailyData.map(d => d.sedentaryHours)),
-    restingHeartRate: average(dailyData.map(d => d.restingHeartRate))
+    sedentaryHours: average(dailyData.map(d => d.fitbitSedentaryHours)),
+    restingHeartRate: average(dailyData.map(d => d.fitbitRestingHeartRate || d.manualRestingHeartRate))
   };
 };
 
@@ -90,6 +92,9 @@ export const detectTrends = (dailyData) => {
     return 'stable';
   };
 
+  // Get heart rate value (Fitbit or manual)
+  const getHeartRate = (day) => day.fitbitRestingHeartRate !== null ? day.fitbitRestingHeartRate : day.manualRestingHeartRate;
+
   // For restingHeartRate and sedentaryHours, lower is better
   // For others, lower is better (pain, stiffness, stress, sitting)
   return {
@@ -98,8 +103,8 @@ export const detectTrends = (dailyData) => {
     stressLevel: compare(first.stressLevel, last.stressLevel),
     sittingTime: compare(first.sittingTime, last.sittingTime),
     standingTime: compare(last.standingTime, first.standingTime), // Higher is better
-    sedentaryHours: compare(first.sedentaryHours, last.sedentaryHours),
-    restingHeartRate: compare(first.restingHeartRate, last.restingHeartRate)
+    sedentaryHours: compare(first.fitbitSedentaryHours, last.fitbitSedentaryHours),
+    restingHeartRate: compare(getHeartRate(first), getHeartRate(last))
   };
 };
 
@@ -163,7 +168,9 @@ export const identifyNeedsAttention = (dailyData) => {
     day.sittingTime !== null ||
     day.standingTime !== null ||
     day.restingHeartRate !== null ||
-    day.sedentaryHours !== null
+    day.fitbitRestingHeartRate !== null ||
+    day.manualRestingHeartRate !== null ||
+    day.fitbitSedentaryHours !== null
   );
   const missingDays = dailyData.length - loggedDays.length;
   if (missingDays > 0) {
@@ -203,7 +210,9 @@ export const detectPatterns = (dailyData) => {
     day.sittingTime !== null ||
     day.standingTime !== null ||
     day.restingHeartRate !== null ||
-    day.sedentaryHours !== null
+    day.fitbitRestingHeartRate !== null ||
+    day.manualRestingHeartRate !== null ||
+    day.fitbitSedentaryHours !== null
   );
 
   if (loggedDays.length < 2) {
@@ -212,8 +221,8 @@ export const detectPatterns = (dailyData) => {
 
   // Check sedentary hours vs pain correlation
   const sedentaryPainPairs = loggedDays
-    .filter(day => day.sedentaryHours !== null && day.painLevel !== null)
-    .map(day => ({ sedentary: day.sedentaryHours, pain: day.painLevel }));
+    .filter(day => day.fitbitSedentaryHours !== null && day.painLevel !== null)
+    .map(day => ({ sedentary: day.fitbitSedentaryHours, pain: day.painLevel }));
   
   if (sedentaryPainPairs.length >= 2) {
     const sorted = [...sedentaryPainPairs].sort((a, b) => a.sedentary - b.sedentary);
@@ -245,9 +254,10 @@ export const detectPatterns = (dailyData) => {
   }
 
   // Check stress vs resting heart rate
+  const getHeartRate = (day) => day.fitbitRestingHeartRate !== null ? day.fitbitRestingHeartRate : day.manualRestingHeartRate;
   const stressHRPairs = loggedDays
-    .filter(day => day.stressLevel !== null && day.restingHeartRate !== null)
-    .map(day => ({ stress: day.stressLevel, hr: day.restingHeartRate }));
+    .filter(day => day.stressLevel !== null && (day.fitbitRestingHeartRate !== null || day.manualRestingHeartRate !== null))
+    .map(day => ({ stress: day.stressLevel, hr: getHeartRate(day) }));
   
   if (stressHRPairs.length >= 2) {
     const sorted = [...stressHRPairs].sort((a, b) => a.stress - b.stress);
@@ -349,7 +359,9 @@ export const generateNextWeekFocus = (dailyData) => {
     day.sittingTime !== null ||
     day.standingTime !== null ||
     day.restingHeartRate !== null ||
-    day.sedentaryHours !== null
+    day.fitbitRestingHeartRate !== null ||
+    day.manualRestingHeartRate !== null ||
+    day.fitbitSedentaryHours !== null
   );
   if (loggedDays.length < 4) {
     return `Consistent daily logging will help identify patterns and track improvements`;

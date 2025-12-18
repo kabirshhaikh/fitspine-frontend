@@ -99,8 +99,8 @@ export default function OverviewChart({ dailyData }) {
   const stressValues = dailyData.map(d => d.stressLevel);
   const standingValues = dailyData.map(d => d.standingTime);
   const sittingValues = dailyData.map(d => d.sittingTime);
-  const sedentaryValues = dailyData.map(d => d.sedentaryHours);
-  const heartRateValues = dailyData.map(d => d.restingHeartRate);
+  const sedentaryValues = dailyData.map(d => d.fitbitSedentaryHours);
+  const heartRateValues = dailyData.map(d => d.fitbitRestingHeartRate || d.manualRestingHeartRate);
 
   // Calculate averages and trends
   const painAvg = calculateAverage(painValues);
@@ -116,7 +116,7 @@ export default function OverviewChart({ dailyData }) {
   const stressTrend = calculateTrend(stressValues, 'stressLevel');
   const standingTrend = calculateTrend(standingValues, 'standingTime');
   const sittingTrend = calculateTrend(sittingValues, 'sittingTime');
-  const sedentaryTrend = calculateTrend(sedentaryValues, 'sedentaryHours');
+  const sedentaryTrend = calculateTrend(sedentaryValues, 'fitbitSedentaryHours');
   const heartRateTrend = calculateTrend(heartRateValues, 'restingHeartRate');
 
   const metrics = [
