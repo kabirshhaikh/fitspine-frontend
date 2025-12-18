@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Dialog,
   DialogTitle,
@@ -39,6 +39,8 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasExistingLog, setHasExistingLog] = useState(false);
+  const contentRef = useRef(null);
+  const stepRef = useRef(0);
   const [formData, setFormData] = useState({
     notes: '',
     painLevel: '',
@@ -130,6 +132,14 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
     }
   }, [open]);
 
+  // Update ref when step changes
+  useEffect(() => {
+    stepRef.current = activeStep;
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+    }
+  }, [activeStep]);
+
   const steps = [
     { label: 'How do you feel?', icon: <Mood />, color: '#ff6b6b' },
     { label: 'Activity & Symptoms', icon: <FitnessCenter />, color: '#4facfe' },
@@ -205,7 +215,11 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
   };
 
   const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+    setActiveStep((prevStep) => {
+      const nextStep = prevStep + 1;
+      stepRef.current = nextStep;
+      return nextStep;
+    });
   };
 
   const handleBack = () => {
@@ -349,7 +363,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                   <Chip
                     key={option.value}
                     label={option.label}
-                    onClick={() => handleQuickSelect('stressLevel', option.value)}
+                    onClick={() => handleInputChange('stressLevel', option.value)}
                     variant={formData.stressLevel === option.value ? 'filled' : 'outlined'}
                     sx={{
                       background: formData.stressLevel === option.value ? option.color : 'transparent',
@@ -375,7 +389,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                   <Chip
                     key={option.value}
                     label={option.label}
-                    onClick={() => handleQuickSelect('sleepDuration', option.value)}
+                    onClick={() => handleInputChange('sleepDuration', option.value)}
                     variant={formData.sleepDuration === option.value ? 'filled' : 'outlined'}
                     sx={{
                       background: formData.sleepDuration === option.value ? option.color : 'transparent',
@@ -400,7 +414,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                   <Chip
                     key={option.value}
                     label={option.label}
-                    onClick={() => handleQuickSelect('nightWakeUps', option.value)}
+                    onClick={() => handleInputChange('nightWakeUps', option.value)}
                     variant={formData.nightWakeUps === option.value ? 'filled' : 'outlined'}
                     sx={{
                       background: formData.nightWakeUps === option.value ? option.color : 'transparent',
@@ -426,6 +440,19 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
                   // Allow empty string or any numeric input
                   if (value === '' || (!isNaN(value) && value >= 0 && value <= 999)) {
                     handleInputChange('restingHeartRate', value);
+                  }
+                }}
+                onBlur={(e) => {
+                  const value = e.target.value;
+                  const parsed = parseInt(value);
+                  // Auto-advance if valid heart rate entered and still on step 1
+                  if (value && !isNaN(parsed) && parsed >= 30 && parsed <= 120) {
+                    setTimeout(() => {
+                      // Check current step using ref to prevent double-advance
+                      if (stepRef.current === 1 && stepRef.current < steps.length - 1) {
+                        handleNext();
+                      }
+                    }, 300);
                   }
                 }}
                 error={
@@ -655,7 +682,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
         </Stepper>
       </DialogTitle>
 
-      <DialogContent sx={{ minHeight: 300, py: 3 }}>
+      <DialogContent ref={contentRef} sx={{ minHeight: 300, py: 3 }}>
         {loading ? (
           <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: 200 }}>
             <CircularProgress sx={{ color: '#4facfe' }} />
