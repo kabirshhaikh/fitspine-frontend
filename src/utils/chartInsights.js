@@ -169,3 +169,288 @@ export const getFirstAndLastLoggedDays = (dailyData) => {
   };
 };
 
+/**
+ * Helper to get time label from enum value
+ */
+const getTimeLabelFromEnum = (value) => {
+  if (value === null || value === -1) return null;
+  const labels = ['Less than 2h', '2-4 hours', '4-6 hours', '6-8 hours', 'Greater than 8h'];
+  return labels[value] || null;
+};
+
+/**
+ * Helper to get stress label from enum value
+ */
+const getStressLabelFromEnum = (value) => {
+  if (value === null || value === -1) return null;
+  const labels = ['Very Low', 'Low', 'Moderate', 'High', 'Very High'];
+  return labels[value] || null;
+};
+
+/**
+ * Helper to get pain label from enum value
+ */
+const getPainLabelFromEnum = (value) => {
+  if (value === null || value === -1) return null;
+  const labels = ['None', 'Mild', 'Moderate', 'Severe'];
+  return labels[value] || null;
+};
+
+/**
+ * Explains why a metric changed by comparing worst day to best day
+ * Uses generic physiological explanations applicable to all users
+ * @param {Object} worstDay - The worst day object
+ * @param {Object} bestDay - The best day object
+ * @param {string} metricType - Type of metric: 'pain', 'stiffness', 'activity', 'heartRate', 'sleep'
+ * @param {boolean} isFitbitConnected - Whether Fitbit is connected (for heart rate and sleep)
+ * @returns {Array} Array of explanation strings
+ */
+export const explainWhyMetricChanged = (worstDay, bestDay, metricType, isFitbitConnected = false) => {
+  if (!worstDay || !bestDay) return [];
+  
+  const explanations = [];
+  
+  // Helper to safely get value
+  const getValue = (day, field) => {
+    if (day[field] === null || day[field] === undefined || day[field] === -1) return null;
+    return day[field];
+  };
+  
+  // Helper to format comparison
+  const formatComparison = (worstVal, bestVal, label, unit = '') => {
+    if (worstVal === null || bestVal === null) return null;
+    return `${label} was ${worstVal}${unit} (vs ${bestVal}${unit} on best day)`;
+  };
+  
+  switch (metricType) {
+    case 'pain':
+    case 'stiffness': {
+      // Compare sedentary hours
+      const worstSedentary = getValue(worstDay, 'fitbitSedentaryHours');
+      const bestSedentary = getValue(bestDay, 'fitbitSedentaryHours');
+      if (worstSedentary !== null && bestSedentary !== null && worstSedentary > bestSedentary + 1) {
+        explanations.push({
+          cause: formatComparison(worstSedentary.toFixed(1), bestSedentary.toFixed(1), 'Sedentary hours', 'hrs'),
+          explanation: 'Prolonged sitting increases pressure on the spine and reduces circulation, which can contribute to increased discomfort.'
+        });
+      }
+      
+      // Compare standing time
+      const worstStanding = getValue(worstDay, 'standingTime');
+      const bestStanding = getValue(bestDay, 'standingTime');
+      if (worstStanding !== null && bestStanding !== null && worstStanding < bestStanding) {
+        const worstLabel = getTimeLabelFromEnum(worstStanding);
+        const bestLabel = getTimeLabelFromEnum(bestStanding);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Standing time', ''),
+            explanation: 'Reduced standing time decreases muscle activation and circulation, which can lead to increased stiffness and discomfort.'
+          });
+        }
+      }
+      
+      // Compare stress level
+      const worstStress = getValue(worstDay, 'stressLevel');
+      const bestStress = getValue(bestDay, 'stressLevel');
+      if (worstStress !== null && bestStress !== null && worstStress > bestStress) {
+        const worstLabel = getStressLabelFromEnum(worstStress);
+        const bestLabel = getStressLabelFromEnum(bestStress);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Stress level', ''),
+            explanation: 'Higher stress levels increase muscle tension and can lower pain threshold, contributing to increased discomfort.'
+          });
+        }
+      }
+      
+      // Compare sleep (if available)
+      let worstSleepHours = null;
+      let bestSleepHours = null;
+      if (isFitbitConnected) {
+        const worstSleep = getValue(worstDay, 'fitbitTotalMinutesAsleep');
+        const bestSleep = getValue(bestDay, 'fitbitTotalMinutesAsleep');
+        if (worstSleep !== null && bestSleep !== null) {
+          worstSleepHours = (worstSleep / 60).toFixed(1);
+          bestSleepHours = (bestSleep / 60).toFixed(1);
+        }
+      } else {
+        const worstSleep = getValue(worstDay, 'sleepDuration');
+        const bestSleep = getValue(bestDay, 'sleepDuration');
+        if (worstSleep !== null && bestSleep !== null && worstSleep !== -1 && bestSleep !== -1) {
+          const sleepMap = { 0: 4.5, 1: 5.5, 2: 6.5, 3: 7.5, 4: 8.5 };
+          worstSleepHours = sleepMap[worstSleep]?.toFixed(1);
+          bestSleepHours = sleepMap[bestSleep]?.toFixed(1);
+        }
+      }
+      if (worstSleepHours && bestSleepHours && parseFloat(worstSleepHours) < parseFloat(bestSleepHours) - 0.5) {
+        explanations.push({
+          cause: formatComparison(worstSleepHours, bestSleepHours, 'Sleep duration', 'h'),
+          explanation: 'Insufficient sleep reduces the body\'s ability to recover and repair, which can increase sensitivity to discomfort.'
+        });
+      }
+      
+      break;
+    }
+    
+    case 'activity': {
+      // Compare pain level
+      const worstPain = getValue(worstDay, 'painLevel');
+      const bestPain = getValue(bestDay, 'painLevel');
+      if (worstPain !== null && bestPain !== null && worstPain > bestPain) {
+        const worstLabel = getPainLabelFromEnum(worstPain);
+        const bestLabel = getPainLabelFromEnum(bestPain);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Pain level', ''),
+            explanation: 'Higher pain levels can reduce motivation and physical capacity, leading to decreased activity and mobility.'
+          });
+        }
+      }
+      
+      // Compare stress level
+      const worstStress = getValue(worstDay, 'stressLevel');
+      const bestStress = getValue(bestDay, 'stressLevel');
+      if (worstStress !== null && bestStress !== null && worstStress > bestStress) {
+        const worstLabel = getStressLabelFromEnum(worstStress);
+        const bestLabel = getStressLabelFromEnum(bestStress);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Stress level', ''),
+            explanation: 'Elevated stress can reduce energy levels and motivation, making it more difficult to maintain regular activity patterns.'
+          });
+        }
+      }
+      
+      // Compare sleep
+      let worstSleepHours = null;
+      let bestSleepHours = null;
+      if (isFitbitConnected) {
+        const worstSleep = getValue(worstDay, 'fitbitTotalMinutesAsleep');
+        const bestSleep = getValue(bestDay, 'fitbitTotalMinutesAsleep');
+        if (worstSleep !== null && bestSleep !== null) {
+          worstSleepHours = (worstSleep / 60).toFixed(1);
+          bestSleepHours = (bestSleep / 60).toFixed(1);
+        }
+      } else {
+        const worstSleep = getValue(worstDay, 'sleepDuration');
+        const bestSleep = getValue(bestDay, 'sleepDuration');
+        if (worstSleep !== null && bestSleep !== null && worstSleep !== -1 && bestSleep !== -1) {
+          const sleepMap = { 0: 4.5, 1: 5.5, 2: 6.5, 3: 7.5, 4: 8.5 };
+          worstSleepHours = sleepMap[worstSleep]?.toFixed(1);
+          bestSleepHours = sleepMap[bestSleep]?.toFixed(1);
+        }
+      }
+      if (worstSleepHours && bestSleepHours && parseFloat(worstSleepHours) < parseFloat(bestSleepHours) - 0.5) {
+        explanations.push({
+          cause: formatComparison(worstSleepHours, bestSleepHours, 'Sleep duration', 'h'),
+          explanation: 'Inadequate sleep reduces energy levels and physical capacity, making it harder to maintain active movement throughout the day.'
+        });
+      }
+      
+      break;
+    }
+    
+    case 'heartRate': {
+      // Compare stress level
+      const worstStress = getValue(worstDay, 'stressLevel');
+      const bestStress = getValue(bestDay, 'stressLevel');
+      if (worstStress !== null && bestStress !== null && worstStress > bestStress) {
+        const worstLabel = getStressLabelFromEnum(worstStress);
+        const bestLabel = getStressLabelFromEnum(bestStress);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Stress level', ''),
+            explanation: 'Higher stress activates the sympathetic nervous system, increasing heart rate and cardiac output as part of the body\'s stress response.'
+          });
+        }
+      }
+      
+      // Compare sleep
+      let worstSleepHours = null;
+      let bestSleepHours = null;
+      if (isFitbitConnected) {
+        const worstSleep = getValue(worstDay, 'fitbitTotalMinutesAsleep');
+        const bestSleep = getValue(bestDay, 'fitbitTotalMinutesAsleep');
+        if (worstSleep !== null && bestSleep !== null) {
+          worstSleepHours = (worstSleep / 60).toFixed(1);
+          bestSleepHours = (bestSleep / 60).toFixed(1);
+        }
+      } else {
+        const worstSleep = getValue(worstDay, 'sleepDuration');
+        const bestSleep = getValue(bestDay, 'sleepDuration');
+        if (worstSleep !== null && bestSleep !== null && worstSleep !== -1 && bestSleep !== -1) {
+          const sleepMap = { 0: 4.5, 1: 5.5, 2: 6.5, 3: 7.5, 4: 8.5 };
+          worstSleepHours = sleepMap[worstSleep]?.toFixed(1);
+          bestSleepHours = sleepMap[bestSleep]?.toFixed(1);
+        }
+      }
+      if (worstSleepHours && bestSleepHours && parseFloat(worstSleepHours) < parseFloat(bestSleepHours) - 0.5) {
+        explanations.push({
+          cause: formatComparison(worstSleepHours, bestSleepHours, 'Sleep duration', 'h'),
+          explanation: 'Insufficient sleep prevents the body from fully entering recovery mode, keeping heart rate elevated due to incomplete parasympathetic activation.'
+        });
+      }
+      
+      // Compare pain level
+      const worstPain = getValue(worstDay, 'painLevel');
+      const bestPain = getValue(bestDay, 'painLevel');
+      if (worstPain !== null && bestPain !== null && worstPain > bestPain) {
+        const worstLabel = getPainLabelFromEnum(worstPain);
+        const bestLabel = getPainLabelFromEnum(bestPain);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Pain level', ''),
+            explanation: 'Increased pain can trigger stress responses and sympathetic nervous system activation, leading to elevated heart rate.'
+          });
+        }
+      }
+      
+      break;
+    }
+    
+    case 'sleep': {
+      // Compare stress level
+      const worstStress = getValue(worstDay, 'stressLevel');
+      const bestStress = getValue(bestDay, 'stressLevel');
+      if (worstStress !== null && bestStress !== null && worstStress > bestStress) {
+        const worstLabel = getStressLabelFromEnum(worstStress);
+        const bestLabel = getStressLabelFromEnum(bestStress);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Stress level', ''),
+            explanation: 'Elevated stress increases cortisol levels and activates the sympathetic nervous system, which disrupts the natural sleep-wake cycle and reduces sleep quality.'
+          });
+        }
+      }
+      
+      // Compare pain level
+      const worstPain = getValue(worstDay, 'painLevel');
+      const bestPain = getValue(bestDay, 'painLevel');
+      if (worstPain !== null && bestPain !== null && worstPain > bestPain) {
+        const worstLabel = getPainLabelFromEnum(worstPain);
+        const bestLabel = getPainLabelFromEnum(bestPain);
+        if (worstLabel && bestLabel) {
+          explanations.push({
+            cause: formatComparison(worstLabel, bestLabel, 'Pain level', ''),
+            explanation: 'Increased discomfort can make it difficult to find comfortable sleeping positions and may cause frequent awakenings, disrupting sleep cycles.'
+          });
+        }
+      }
+      
+      // Compare activity (sedentary hours)
+      const worstSedentary = getValue(worstDay, 'fitbitSedentaryHours');
+      const bestSedentary = getValue(bestDay, 'fitbitSedentaryHours');
+      if (worstSedentary !== null && bestSedentary !== null && worstSedentary > bestSedentary + 1) {
+        explanations.push({
+          cause: formatComparison(worstSedentary.toFixed(1), bestSedentary.toFixed(1), 'Sedentary hours', 'hrs'),
+          explanation: 'Excessive sedentary time can disrupt circadian rhythms and reduce the body\'s natural drive for restorative sleep, affecting both sleep duration and quality.'
+        });
+      }
+      
+      break;
+    }
+  }
+  
+  return explanations;
+};
+

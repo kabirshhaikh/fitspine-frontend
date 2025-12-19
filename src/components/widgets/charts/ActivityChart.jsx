@@ -1,10 +1,10 @@
 import React from 'react';
 import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid, LinearProgress } from '@mui/material';
-import { TrendingUp, TrendingDown, Remove, Info, Assessment, Lightbulb, CheckCircle } from '@mui/icons-material';
+import { TrendingUp, TrendingDown, Remove, Info, Assessment, Lightbulb, CheckCircle, EmojiEvents, Warning } from '@mui/icons-material';
 import { getTimeLabel, calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
-import { calculateActivityBalance, detectPainActivityCorrelation } from '../../../utils/chartInsights';
+import { calculateActivityBalance, detectPainActivityCorrelation, findBestWorstDays, explainWhyMetricChanged } from '../../../utils/chartInsights';
 
-export default function ActivityChart({ dailyData }) {
+export default function ActivityChart({ dailyData, isFitbitConnected = false }) {
   if (!dailyData || !dailyData.length) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -31,6 +31,14 @@ export default function ActivityChart({ dailyData }) {
   // Get insights
   const activityBalance = calculateActivityBalance(dailyData);
   const painCorrelations = detectPainActivityCorrelation(dailyData);
+  
+  // Find best/worst days for activity (using standing time as proxy)
+  const standingBestWorst = findBestWorstDays(dailyData, 'standingTime', true);
+  
+  // Get explanations for why activity decreased
+  const activityExplanations = standingBestWorst.best && standingBestWorst.worst && standingBestWorst.worst.standingTime !== null && standingBestWorst.best.standingTime !== null && standingBestWorst.worst.standingTime < standingBestWorst.best.standingTime
+    ? explainWhyMetricChanged(standingBestWorst.worst, standingBestWorst.best, 'activity', isFitbitConnected)
+    : [];
 
   // Count days meeting goals
   const standingGoalDays = dailyData.filter(day => day.standingTime !== null && day.standingTime >= 3).length;
@@ -366,6 +374,77 @@ export default function ActivityChart({ dailyData }) {
           })}
         </Grid>
       </Box>
+
+      {/* Best/Worst Days Card */}
+      {(standingBestWorst.best || standingBestWorst.worst) && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+          border: `1px solid ${alpha('#ffffff', 0.2)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {standingBestWorst.best && standingBestWorst.best.standingTime !== null && (
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
+                  <EmojiEvents sx={{ color: '#4caf50', fontSize: { xs: 24, sm: 28 }, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      Best Activity Day
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                      {formatDate(standingBestWorst.best.date)} - {getTimeLabel(standingBestWorst.best.standingTime)} standing
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                      What helped you stay active?
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+              {standingBestWorst.worst && standingBestWorst.worst.standingTime !== null && standingBestWorst.best && standingBestWorst.best.standingTime !== null && standingBestWorst.worst.standingTime < standingBestWorst.best.standingTime && (
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
+                  <Warning sx={{ color: '#f44336', fontSize: { xs: 24, sm: 28 }, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      Lowest Activity Day
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                      {formatDate(standingBestWorst.worst.date)} - {getTimeLabel(standingBestWorst.worst.standingTime)} standing
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Why Did Activity Decrease? Card */}
+      {activityExplanations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#f44336', 0.15)}, ${alpha('#f44336', 0.05)})`,
+          border: `1px solid ${alpha('#f44336', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Warning sx={{ color: '#f44336', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Why did activity decrease on {formatDate(standingBestWorst.worst.date)}?
+              </Typography>
+            </Box>
+            {activityExplanations.map((explanation, index) => (
+              <Box key={index} sx={{ mb: 2, pb: index < activityExplanations.length - 1 ? 2 : 0, borderBottom: index < activityExplanations.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  • Because {explanation.cause}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', ml: 2, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {explanation.explanation}
+                </Typography>
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Pain Correlation Card */}
       {painCorrelations.length > 0 && (

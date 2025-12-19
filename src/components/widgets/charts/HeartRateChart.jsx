@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid } from '@mui/material';
-import { TrendingUp, TrendingDown, Remove, Info, Lightbulb, Favorite, EmojiEvents } from '@mui/icons-material';
+import { TrendingUp, TrendingDown, Remove, Info, Lightbulb, Favorite, EmojiEvents, Warning } from '@mui/icons-material';
 import { calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
-import { detectHRStressCorrelation, getFirstAndLastLoggedDays } from '../../../utils/chartInsights';
+import { detectHRStressCorrelation, getFirstAndLastLoggedDays, findBestWorstDays, explainWhyMetricChanged } from '../../../utils/chartInsights';
 import { getStressLabel } from './chartUtils';
 
 export default function HeartRateChart({ dailyData, isFitbitConnected }) {
@@ -50,6 +50,23 @@ export default function HeartRateChart({ dailyData, isFitbitConnected }) {
   // Get insights
   const stressCorrelations = detectHRStressCorrelation(dailyData, isFitbit);
   const { first, last } = getFirstAndLastLoggedDays(dailyData);
+  
+  // Find best/worst days for heart rate (lower is better)
+  // Create a temporary array with hrValue for comparison
+  const dailyDataWithHR = dailyData.map(day => ({ ...day, hrValue: getHeartRateValue(day) }));
+  const hrBestWorst = findBestWorstDays(dailyDataWithHR, 'hrValue', false); // lower is better
+  // Map back to original day objects
+  if (hrBestWorst.best) {
+    hrBestWorst.best = dailyData.find(d => d.date === hrBestWorst.best.date) || hrBestWorst.best;
+  }
+  if (hrBestWorst.worst) {
+    hrBestWorst.worst = dailyData.find(d => d.date === hrBestWorst.worst.date) || hrBestWorst.worst;
+  }
+  
+  // Get explanations for why heart rate increased
+  const hrExplanations = hrBestWorst.best && hrBestWorst.worst && getHeartRateValue(hrBestWorst.worst) !== null && getHeartRateValue(hrBestWorst.best) !== null && getHeartRateValue(hrBestWorst.worst) > getHeartRateValue(hrBestWorst.best)
+    ? explainWhyMetricChanged(hrBestWorst.worst, hrBestWorst.best, 'heartRate', isFitbit)
+    : [];
 
   // Calculate recovery insights
   const validHRDays = dailyData.filter(day => getHeartRateValue(day) !== null);
@@ -177,6 +194,77 @@ export default function HeartRateChart({ dailyData, isFitbitConnected }) {
           </Box>
         </CardContent>
       </Card>
+
+      {/* Best/Worst Days Card */}
+      {(hrBestWorst.best || hrBestWorst.worst) && getHeartRateValue(hrBestWorst.best) !== null && getHeartRateValue(hrBestWorst.worst) !== null && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+          border: `1px solid ${alpha('#ffffff', 0.2)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {hrBestWorst.best && (
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
+                  <EmojiEvents sx={{ color: '#4caf50', fontSize: { xs: 24, sm: 28 }, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      Best Recovery Day
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                      {formatDate(hrBestWorst.best.date)} - {Math.round(getHeartRateValue(hrBestWorst.best))} bpm
+                    </Typography>
+                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                      What helped your recovery?
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+              {hrBestWorst.worst && getHeartRateValue(hrBestWorst.worst) > getHeartRateValue(hrBestWorst.best) && (
+                <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
+                  <Warning sx={{ color: '#f44336', fontSize: { xs: 24, sm: 28 }, flexShrink: 0 }} />
+                  <Box sx={{ flex: 1, minWidth: 0 }}>
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                      Highest Heart Rate Day
+                    </Typography>
+                    <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
+                      {formatDate(hrBestWorst.worst.date)} - {Math.round(getHeartRateValue(hrBestWorst.worst))} bpm
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Why Did Heart Rate Increase? Card */}
+      {hrExplanations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#f44336', 0.15)}, ${alpha('#f44336', 0.05)})`,
+          border: `1px solid ${alpha('#f44336', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Warning sx={{ color: '#f44336', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Why did heart rate increase on {formatDate(hrBestWorst.worst.date)}?
+              </Typography>
+            </Box>
+            {hrExplanations.map((explanation, index) => (
+              <Box key={index} sx={{ mb: 2, pb: index < hrExplanations.length - 1 ? 2 : 0, borderBottom: index < hrExplanations.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  • Because {explanation.cause}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', ml: 2, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {explanation.explanation}
+                </Typography>
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
+      )}
 
       {/* Stress Correlation Card */}
       {stressCorrelations.length > 0 && (

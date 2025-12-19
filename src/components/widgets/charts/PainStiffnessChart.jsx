@@ -2,9 +2,9 @@ import React from 'react';
 import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid } from '@mui/material';
 import { TrendingUp, TrendingDown, Remove, Info, Lightbulb, EmojiEvents, Warning, CheckCircle } from '@mui/icons-material';
 import { getPainLabel, getTimeLabel, calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
-import { detectPainActivityCorrelation, findBestWorstDays, getFirstAndLastLoggedDays } from '../../../utils/chartInsights';
+import { detectPainActivityCorrelation, findBestWorstDays, getFirstAndLastLoggedDays, explainWhyMetricChanged } from '../../../utils/chartInsights';
 
-export default function PainStiffnessChart({ dailyData }) {
+export default function PainStiffnessChart({ dailyData, isFitbitConnected = false }) {
   if (!dailyData || !dailyData.length) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
@@ -29,6 +29,14 @@ export default function PainStiffnessChart({ dailyData }) {
   const painBestWorst = findBestWorstDays(dailyData, 'painLevel');
   const stiffnessBestWorst = findBestWorstDays(dailyData, 'morningStiffness');
   const { first, last } = getFirstAndLastLoggedDays(dailyData);
+  
+  // Get explanations for why pain/stiffness increased
+  const painExplanations = painBestWorst.best && painBestWorst.worst && painBestWorst.worst.painLevel > painBestWorst.best.painLevel
+    ? explainWhyMetricChanged(painBestWorst.worst, painBestWorst.best, 'pain', isFitbitConnected)
+    : [];
+  const stiffnessExplanations = stiffnessBestWorst.best && stiffnessBestWorst.worst && stiffnessBestWorst.worst.morningStiffness > stiffnessBestWorst.best.morningStiffness
+    ? explainWhyMetricChanged(stiffnessBestWorst.worst, stiffnessBestWorst.best, 'stiffness', isFitbitConnected)
+    : [];
   
   // Count logged days
   const loggedDays = dailyData.filter(day => 
@@ -175,6 +183,62 @@ export default function PainStiffnessChart({ dailyData }) {
                 </Box>
               )}
             </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Why Did Pain Increase? Card */}
+      {painExplanations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#f44336', 0.15)}, ${alpha('#f44336', 0.05)})`,
+          border: `1px solid ${alpha('#f44336', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Warning sx={{ color: '#f44336', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Why did pain increase on {formatDate(painBestWorst.worst.date)}?
+              </Typography>
+            </Box>
+            {painExplanations.map((explanation, index) => (
+              <Box key={index} sx={{ mb: 2, pb: index < painExplanations.length - 1 ? 2 : 0, borderBottom: index < painExplanations.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  • Because {explanation.cause}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', ml: 2, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {explanation.explanation}
+                </Typography>
+              </Box>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Why Did Stiffness Increase? Card */}
+      {stiffnessExplanations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#ff9800', 0.15)}, ${alpha('#ff9800', 0.05)})`,
+          border: `1px solid ${alpha('#ff9800', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Warning sx={{ color: '#ff9800', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Why did stiffness increase on {formatDate(stiffnessBestWorst.worst.date)}?
+              </Typography>
+            </Box>
+            {stiffnessExplanations.map((explanation, index) => (
+              <Box key={index} sx={{ mb: 2, pb: index < stiffnessExplanations.length - 1 ? 2 : 0, borderBottom: index < stiffnessExplanations.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  • Because {explanation.cause}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', ml: 2, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {explanation.explanation}
+                </Typography>
+              </Box>
+            ))}
           </CardContent>
         </Card>
       )}

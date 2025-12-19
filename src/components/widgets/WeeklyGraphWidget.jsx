@@ -174,10 +174,10 @@ export default function WeeklyGraphWidget() {
             </Box>
           )}
           {tabValue === 1 && (
-            <PainStiffnessChart dailyData={graphData.dailyData} />
+            <PainStiffnessChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
           )}
           {tabValue === 2 && (
-            <ActivityChart dailyData={graphData.dailyData} />
+            <ActivityChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
           )}
           {tabValue === 3 && (
             <HeartRateChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid } from '@mui/material';
 import { TrendingUp, TrendingDown, Remove, Info, Lightbulb, Bedtime, EmojiEvents, Warning } from '@mui/icons-material';
 import { calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
-import { getFirstAndLastLoggedDays, findBestWorstDays } from '../../../utils/chartInsights';
+import { getFirstAndLastLoggedDays, findBestWorstDays, explainWhyMetricChanged } from '../../../utils/chartInsights';
 
 // Helper to convert sleep duration score to hours (for manual data)
 const getSleepHoursFromScore = (score) => {
@@ -106,6 +106,11 @@ export default function SleepChart({ dailyData, isFitbitConnected }) {
     'sleepHours',
     true // higher is better for sleep
   );
+  
+  // Get explanations for why sleep decreased
+  const sleepExplanations = sleepBestWorst.best && sleepBestWorst.worst && getSleepHours(sleepBestWorst.worst) !== null && getSleepHours(sleepBestWorst.best) !== null && getSleepHours(sleepBestWorst.worst) < getSleepHours(sleepBestWorst.best)
+    ? explainWhyMetricChanged(sleepBestWorst.worst, sleepBestWorst.best, 'sleep', isFitbit)
+    : [];
 
   // Calculate consistency
   const validSleepDays = dailyData.filter(day => getSleepValue(day) !== null);
@@ -256,6 +261,34 @@ export default function SleepChart({ dailyData, isFitbitConnected }) {
                 </Box>
               )}
             </Box>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Why Did Sleep Quality Decrease? Card */}
+      {sleepExplanations.length > 0 && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#f44336', 0.15)}, ${alpha('#f44336', 0.05)})`,
+          border: `1px solid ${alpha('#f44336', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Warning sx={{ color: '#f44336', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Why did sleep quality decrease on {formatDate(sleepBestWorst.worst.date)}?
+              </Typography>
+            </Box>
+            {sleepExplanations.map((explanation, index) => (
+              <Box key={index} sx={{ mb: 2, pb: index < sleepExplanations.length - 1 ? 2 : 0, borderBottom: index < sleepExplanations.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  • Because {explanation.cause}
+                </Typography>
+                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', ml: 2, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                  {explanation.explanation}
+                </Typography>
+              </Box>
+            ))}
           </CardContent>
         </Card>
       )}
