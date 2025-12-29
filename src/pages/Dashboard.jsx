@@ -9,14 +9,16 @@ import {
   alpha, 
   Alert,
   Grid,
-  CircularProgress
+  CircularProgress,
+  TextField
 } from "@mui/material";
 import { 
   FitnessCenter, 
   CheckCircle, 
   ArrowForward,
   Assessment,
-  Psychology
+  Psychology,
+  Visibility
 } from "@mui/icons-material";
 import DashboardLayout from "../layout/DashboardLayout";
 import { useAuth } from "../context/AuthContext";
@@ -40,6 +42,17 @@ export default function Dashboard() {
   const [loadingInsights, setLoadingInsights] = useState(false);
   const [insightsError, setInsightsError] = useState(null);
   const [insightsModalOpen, setInsightsModalOpen] = useState(false);
+  // Separate state for viewing insights
+  const [viewDate, setViewDate] = useState(() => {
+    // Default to today's date in YYYY-MM-DD format
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  });
+  const [loadingViewInsights, setLoadingViewInsights] = useState(false);
+  const [viewInsightsError, setViewInsightsError] = useState(null);
   const location = useLocation();
   const hasProcessedFitbitConnection = useRef(false);
 
@@ -138,6 +151,62 @@ export default function Dashboard() {
       
       setInsightsError(errorMessage);
       setLoadingInsights(false);
+    }
+  };
+
+  const handleViewInsights = async () => {
+    try {
+      // Reset any previous errors and start loading
+      setViewInsightsError(null);
+      setLoadingViewInsights(true);
+      
+      console.log('Fetching insights for date:', viewDate);
+      const startTime = Date.now();
+      
+      // Try to get existing insight for the selected date
+      const data = await insightsService.getAiInsightForDay(viewDate);
+      
+      const endTime = Date.now();
+      console.log(`Insights fetched successfully in ${endTime - startTime}ms`);
+      console.log('Insights data:', data);
+      
+      // If we have data, open modal
+      if (data) {
+        setInsights(data);
+        setInsightsModalOpen(true);
+        setViewInsightsError(null);
+      } else {
+        setViewInsightsError('No insights data received from server.');
+      }
+      
+      // Clear loading state
+      setLoadingViewInsights(false);
+    } catch (error) {
+      console.error('Failed to fetch insights:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+        stack: error.stack
+      });
+      
+      // More detailed error message for user
+      let errorMessage = 'Failed to fetch insights. ';
+      
+      if (error.response?.status === 404) {
+        errorMessage = `No insights available for ${viewDate}. Please generate insights first or log your daily activities.`;
+      } else if (error.response?.status === 500) {
+        errorMessage += 'Server error. Please try again in a moment.';
+      } else if (error.response?.data?.message) {
+        errorMessage += error.response.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please try again.';
+      }
+      
+      setViewInsightsError(errorMessage);
+      setLoadingViewInsights(false);
     }
   };
 
@@ -494,6 +563,129 @@ export default function Dashboard() {
             </Card>
           </Grid>
       </Grid>
+
+        {/* View Insights Section */}
+        <Box sx={{ mb: 4, width: '100%' }}>
+          <Card
+            sx={{
+              borderRadius: 4,
+              background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+              backdropFilter: 'blur(20px)',
+              border: `1px solid ${alpha('#ffffff', 0.2)}`,
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+              },
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'stretch', md: 'center' }, gap: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: { xs: 'none', md: '0 0 auto' } }}>
+                  <Visibility 
+                    sx={{ 
+                      fontSize: 40, 
+                      color: '#9c27b0',
+                      filter: 'drop-shadow(0 0 8px rgba(156, 39, 176, 0.5))'
+                    }} 
+                  />
+                  <Box>
+                    <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5 }}>
+                      View Past Insights
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.85rem' }}>
+                      Select a date to view previously generated insights
+                    </Typography>
+                  </Box>
+                </Box>
+                
+                <Box sx={{ flex: { xs: 'none', md: '1 1 auto' }, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: { xs: 'stretch', sm: 'center' } }}>
+                  <TextField
+                    type="date"
+                    label="Select Date"
+                    value={viewDate}
+                    onChange={(e) => setViewDate(e.target.value)}
+                    disabled={loadingViewInsights}
+                    InputLabelProps={{
+                      shrink: true,
+                      sx: { color: 'rgba(255, 255, 255, 0.7)' }
+                    }}
+                    inputProps={{
+                      max: new Date().toISOString().split('T')[0], // Prevent future dates
+                    }}
+                    sx={{
+                      flex: { xs: 'none', sm: '1 1 auto' },
+                      minWidth: { xs: '100%', sm: '200px' },
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': {
+                          borderColor: 'rgba(255, 255, 255, 0.3)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(255, 255, 255, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#9c27b0',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      },
+                      '& .MuiInputBase-input': {
+                        color: 'white',
+                      },
+                    }}
+                  />
+                  
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    onClick={handleViewInsights}
+                    disabled={loadingViewInsights}
+                    startIcon={loadingViewInsights ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <Visibility />}
+                    sx={{
+                      background: 'linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%)',
+                      borderRadius: '25px',
+                      px: 3,
+                      py: 1.5,
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      whiteSpace: 'nowrap',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #7b1fa2 0%, #9c27b0 100%)',
+                        transform: 'translateY(-1px)',
+                      },
+                      '&:disabled': {
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.5)',
+                      }
+                    }}
+                  >
+                    {loadingViewInsights ? 'Loading...' : 'View Insights'}
+                  </Button>
+                </Box>
+              </Box>
+              
+              {viewInsightsError && (
+                <Box sx={{ mt: 2, p: 2, background: alpha('#f44336', 0.1), borderRadius: 2, border: `1px solid ${alpha('#f44336', 0.3)}` }}>
+                  <Typography variant="body2" sx={{ color: '#f44336', fontWeight: 600, mb: 0.5 }}>
+                    Error
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'block', lineHeight: 1.4 }}>
+                    {viewInsightsError}
+                  </Typography>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
 
         {/* Weekly Graph Widget */}
         <Box sx={{ mb: 4, width: '100%' }}>
