@@ -15,7 +15,9 @@ class DailyLogService {
   // Get log for a specific date
   async getLogForDate(date) {
     try {
-      const response = await api.get(`/api/manual-daily-log/date/${date}`);
+      const response = await api.get(`/api/manual-daily-log/date`, {
+        params: { date }
+      });
       return response.data;
     } catch (error) {
       console.error('Error fetching daily log:', error);

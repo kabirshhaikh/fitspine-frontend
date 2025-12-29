@@ -18,7 +18,8 @@ import {
   ArrowForward,
   Assessment,
   Psychology,
-  Visibility
+  Visibility,
+  History
 } from "@mui/icons-material";
 import DashboardLayout from "../layout/DashboardLayout";
 import { useAuth } from "../context/AuthContext";
@@ -53,6 +54,17 @@ export default function Dashboard() {
   });
   const [loadingViewInsights, setLoadingViewInsights] = useState(false);
   const [viewInsightsError, setViewInsightsError] = useState(null);
+  // State for viewing past logs
+  const [viewLogDate, setViewLogDate] = useState(() => {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  });
+  const [loadingViewLog, setLoadingViewLog] = useState(false);
+  const [viewLogError, setViewLogError] = useState(null);
+  const [logModalDate, setLogModalDate] = useState(null); // Date to pass to modal
   const location = useLocation();
   const hasProcessedFitbitConnection = useRef(false);
 
@@ -207,6 +219,58 @@ export default function Dashboard() {
       
       setViewInsightsError(errorMessage);
       setLoadingViewInsights(false);
+    }
+  };
+
+  const handleViewLog = async () => {
+    try {
+      // Reset any previous errors and start loading
+      setViewLogError(null);
+      setLoadingViewLog(true);
+      
+      console.log('Fetching log for date:', viewLogDate);
+      
+      // Try to get existing log for the selected date
+      const logData = await dailyLogService.getLogForDate(viewLogDate);
+      
+      console.log('Log data fetched successfully:', logData);
+      
+      // If we have data, open modal with pre-filled data
+      if (logData) {
+        setLogModalDate(viewLogDate);
+        setLogModalOpen(true);
+        setViewLogError(null);
+      } else {
+        setViewLogError('No log data received from server.');
+      }
+      
+      // Clear loading state
+      setLoadingViewLog(false);
+    } catch (error) {
+      console.error('Failed to fetch log:', error);
+      console.error('Error details:', {
+        message: error.message,
+        response: error.response?.data,
+        status: error.response?.status,
+      });
+      
+      // More detailed error message for user
+      let errorMessage = 'Failed to fetch log. ';
+      
+      if (error.response?.status === 404) {
+        errorMessage = `No log found for ${viewLogDate}. Please create a log for this date first.`;
+      } else if (error.response?.status === 500) {
+        errorMessage += 'Server error. Please try again in a moment.';
+      } else if (error.response?.data?.message) {
+        errorMessage += error.response.data.message;
+      } else if (error.message) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please try again.';
+      }
+      
+      setViewLogError(errorMessage);
+      setLoadingViewLog(false);
     }
   };
 
@@ -597,7 +661,7 @@ export default function Dashboard() {
                   />
                   <Box>
                     <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5 }}>
-                      View Past Insights
+                      View Past AI Insights
                     </Typography>
                     <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.85rem' }}>
                       Select a date to view previously generated insights
@@ -687,6 +751,129 @@ export default function Dashboard() {
           </Card>
         </Box>
 
+        {/* View Past Logs Section */}
+        <Box sx={{ mb: 4, width: '100%' }}>
+          <Card
+            sx={{
+              borderRadius: 4,
+              background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+              backdropFilter: 'blur(20px)',
+              border: `1px solid ${alpha('#ffffff', 0.2)}`,
+              position: 'relative',
+              overflow: 'hidden',
+              '&::before': {
+                content: '""',
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: '1px',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+              },
+            }}
+          >
+            <CardContent sx={{ p: 4 }}>
+              <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, alignItems: { xs: 'stretch', md: 'center' }, gap: 3 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, flex: { xs: 'none', md: '0 0 auto' } }}>
+                  <History 
+                    sx={{ 
+                      fontSize: 40, 
+                      color: '#ff6b6b',
+                      filter: 'drop-shadow(0 0 8px rgba(255, 107, 107, 0.5))'
+                    }} 
+                  />
+                  <Box>
+                    <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5 }}>
+                      View Past Manual Logs
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: '0.85rem' }}>
+                      Select a date to view or edit previously logged data
+                    </Typography>
+                  </Box>
+                </Box>
+                
+                <Box sx={{ flex: { xs: 'none', md: '1 1 auto' }, display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 2, alignItems: { xs: 'stretch', sm: 'center' } }}>
+                  <TextField
+                    type="date"
+                    label="Select Date"
+                    value={viewLogDate}
+                    onChange={(e) => setViewLogDate(e.target.value)}
+                    disabled={loadingViewLog}
+                    InputLabelProps={{
+                      shrink: true,
+                      sx: { color: 'rgba(255, 255, 255, 0.7)' }
+                    }}
+                    inputProps={{
+                      max: new Date().toISOString().split('T')[0], // Prevent future dates
+                    }}
+                    sx={{
+                      flex: { xs: 'none', sm: '1 1 auto' },
+                      minWidth: { xs: '100%', sm: '200px' },
+                      '& .MuiOutlinedInput-root': {
+                        color: 'white',
+                        '& fieldset': {
+                          borderColor: 'rgba(255, 255, 255, 0.3)',
+                        },
+                        '&:hover fieldset': {
+                          borderColor: 'rgba(255, 255, 255, 0.5)',
+                        },
+                        '&.Mui-focused fieldset': {
+                          borderColor: '#ff6b6b',
+                        },
+                      },
+                      '& .MuiInputLabel-root': {
+                        color: 'rgba(255, 255, 255, 0.7)',
+                      },
+                      '& .MuiInputBase-input': {
+                        color: 'white',
+                      },
+                    }}
+                  />
+                  
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    onClick={handleViewLog}
+                    disabled={loadingViewLog}
+                    startIcon={loadingViewLog ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <History />}
+                    sx={{
+                      background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+                      borderRadius: '25px',
+                      px: 3,
+                      py: 1.5,
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      whiteSpace: 'nowrap',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%)',
+                        transform: 'translateY(-1px)',
+                      },
+                      '&:disabled': {
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.5)',
+                      }
+                    }}
+                  >
+                    {loadingViewLog ? 'Loading...' : 'View Log'}
+                  </Button>
+                </Box>
+              </Box>
+              
+              {viewLogError && (
+                <Box sx={{ mt: 2, p: 2, background: alpha('#f44336', 0.1), borderRadius: 2, border: `1px solid ${alpha('#f44336', 0.3)}` }}>
+                  <Typography variant="body2" sx={{ color: '#f44336', fontWeight: 600, mb: 0.5 }}>
+                    Error
+                  </Typography>
+                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'block', lineHeight: 1.4 }}>
+                    {viewLogError}
+                  </Typography>
+                </Box>
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+
         {/* Weekly Graph Widget */}
         <Box sx={{ mb: 4, width: '100%' }}>
           <Box sx={{ textAlign: 'center', mb: 2 }}>
@@ -722,8 +909,12 @@ export default function Dashboard() {
         {/* Daily Log Modal */}
         <DailyLogModal
           open={logModalOpen}
-          onClose={() => setLogModalOpen(false)}
+          onClose={() => {
+            setLogModalOpen(false);
+            setLogModalDate(null); // Reset date when closing
+          }}
           onSave={handleLogSave}
+          selectedDate={logModalDate}
         />
 
         {/* Insights Modal */}

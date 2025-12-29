@@ -35,7 +35,7 @@ import {
 } from '@mui/icons-material';
 import dailyLogService from '../services/dailyLog.service';
 
-const DailyLogModal = ({ open, onClose, onSave }) => {
+const DailyLogModal = ({ open, onClose, onSave, selectedDate = null }) => {
   const [activeStep, setActiveStep] = useState(0);
   const [loading, setLoading] = useState(false);
   const [hasExistingLog, setHasExistingLog] = useState(false);
@@ -66,6 +66,13 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
       String(today.getDate()).padStart(2, '0');
   };
 
+  // Helper function to format date for display
+  const formatDateForDisplay = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString + 'T00:00:00'); // Add time to avoid timezone issues
+    return date.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' });
+  };
+
   // Fetch existing log when modal opens
   useEffect(() => {
     if (open) {
@@ -76,8 +83,9 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
       const fetchExistingLog = async () => {
         setLoading(true);
         try {
-          const todayDate = getTodayDate();
-          const existingLog = await dailyLogService.getLogForDate(todayDate);
+          // Use selectedDate if provided, otherwise use today's date
+          const dateToFetch = selectedDate || getTodayDate();
+          const existingLog = await dailyLogService.getLogForDate(dateToFetch);
           
           // Mark that we have existing log
           setHasExistingLog(true);
@@ -97,7 +105,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
             painLocations: existingLog.painLocations || [],
             sleepDuration: existingLog.sleepDuration || '',
             nightWakeUps: existingLog.nightWakeUps || '',
-            restingHeartRate: existingLog.restingHeartRate || ''
+            restingHeartRate: existingLog.restingHeartRate ? String(existingLog.restingHeartRate) : ''
           });
         } catch (error) {
           // 404 is expected when no log exists - show empty form
@@ -130,7 +138,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
 
       fetchExistingLog();
     }
-  }, [open]);
+  }, [open, selectedDate]);
 
   // Update ref when step changes
   useEffect(() => {
@@ -155,8 +163,8 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
 
 
   const handleSave = () => {
-    // Get today's date in user's local timezone (YYYY-MM-DD format for LocalDate)
-    const localDate = getTodayDate();
+    // Use selectedDate if provided, otherwise use today's date
+    const localDate = selectedDate || getTodayDate();
     
     // Validate and parse resting heart rate (must be between 30-120)
     let restingHeartRate = null;
@@ -655,7 +663,7 @@ const DailyLogModal = ({ open, onClose, onSave }) => {
               </Typography>
             </Box>
             <Typography variant="body2" sx={{ color: 'rgba(0, 0, 0, 0.6)', ml: 5, fontSize: '0.85rem', fontWeight: 400 }}>
-              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
+              {formatDateForDisplay(selectedDate || getTodayDate())}
             </Typography>
           </Box>
           <IconButton onClick={handleClose} size="small">
