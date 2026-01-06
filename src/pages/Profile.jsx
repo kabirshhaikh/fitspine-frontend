@@ -242,18 +242,32 @@ const Profile = () => {
       formDataToSend.append('isResearchOpt', String(formData.isResearchOpt));
       // Note: isWearableConnected and wearableType are now managed from Dashboard
 
-      // Add lists
-      formData.userInjuries.forEach((injuryType, i) => {
-        formDataToSend.append(`userInjuries[${i}].injuryType`, injuryType);
-      });
+      // Add lists - always send, even when empty (send empty string so backend can clear them)
+      // Backend will filter out empty strings before processing
+      if (formData.userInjuries.length === 0) {
+        formDataToSend.append('userInjuries[0].injuryType', '');
+      } else {
+        formData.userInjuries.forEach((injuryType, i) => {
+          formDataToSend.append(`userInjuries[${i}].injuryType`, injuryType);
+        });
+      }
 
-      formData.userSurgeries.forEach((surgeryType, i) => {
-        formDataToSend.append(`userSurgeries[${i}].surgeryType`, surgeryType);
-      });
+      if (formData.userSurgeries.length === 0) {
+        formDataToSend.append('userSurgeries[0].surgeryType', '');
+      } else {
+        formData.userSurgeries.forEach((surgeryType, i) => {
+          formDataToSend.append(`userSurgeries[${i}].surgeryType`, surgeryType);
+        });
+      }
 
-      formData.userDiscIssues.forEach((discLevel, i) => {
-        formDataToSend.append(`userDiscIssues[${i}].discLevel`, discLevel);
-      });
+      if (formData.userDiscIssues.length === 0) {
+        formDataToSend.append('userDiscIssues[0].discLevel', '');
+      } else {
+        formData.userDiscIssues.forEach((discLevel, i) => {
+          formDataToSend.append(`userDiscIssues[${i}].discLevel`, discLevel);
+        });
+      }
+      
 
       // Debug: Log what we're sending
       console.log('Sending form data:', {
