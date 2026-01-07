@@ -10,7 +10,8 @@ import {
   Alert,
   Grid,
   CircularProgress,
-  TextField
+  TextField,
+  Backdrop
 } from "@mui/material";
 import { 
   FitnessCenter, 
@@ -923,6 +924,72 @@ export default function Dashboard() {
           onClose={() => setInsightsModalOpen(false)}
           insights={insights}
         />
+
+        {/* Full Dashboard Loading Overlay */}
+        <Backdrop
+          open={loadingInsights}
+          sx={{
+            zIndex: (theme) => theme.zIndex.modal + 1,
+            background: 'rgba(15, 15, 35, 0.85)',
+            backdropFilter: 'blur(8px)',
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 3,
+            }}
+          >
+            <Psychology
+              sx={{
+                fontSize: 64,
+                color: '#4facfe',
+                animation: 'pulse 2s ease-in-out infinite',
+                '@keyframes pulse': {
+                  '0%, 100%': {
+                    opacity: 1,
+                    transform: 'scale(1)',
+                  },
+                  '50%': {
+                    opacity: 0.7,
+                    transform: 'scale(1.1)',
+                  },
+                },
+              }}
+            />
+            <Typography
+              variant="h5"
+              sx={{
+                color: 'white',
+                fontWeight: 600,
+                background: 'linear-gradient(135deg, #ffffff 0%, #4facfe 100%)',
+                backgroundClip: 'text',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}
+            >
+              Generating Insights...
+            </Typography>
+            <Typography
+              variant="body1"
+              sx={{
+                color: 'rgba(255, 255, 255, 0.7)',
+                fontWeight: 400,
+                mt: -1,
+              }}
+            >
+              This might take a couple of seconds
+            </Typography>
+            <CircularProgress
+              size={48}
+              sx={{
+                color: '#4facfe',
+              }}
+            />
+          </Box>
+        </Backdrop>
       </Container>
     </DashboardLayout>
   );
