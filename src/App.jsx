@@ -15,6 +15,7 @@ import ResetPassword from "./pages/auth/ResetPassword";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
+import NewLanding from "./pages/NewLanding";
 
 // Create a simple theme
 const theme = createTheme({
@@ -43,6 +44,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Landing />} />
             <Route path="/landing" element={<Landing />} />
+            <Route path="/new-landing" element={<NewLanding />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
