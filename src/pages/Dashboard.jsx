@@ -20,7 +20,8 @@ import {
   Assessment,
   Psychology,
   Visibility,
-  History
+  History,
+  LinkOff
 } from "@mui/icons-material";
 import DashboardLayout from "../layout/DashboardLayout";
 import { useAuth } from "../context/AuthContext";
@@ -37,6 +38,7 @@ export default function Dashboard() {
   const { user, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [connecting, setConnecting] = useState(false);
+  const [revoking, setRevoking] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [logModalOpen, setLogModalOpen] = useState(false);
   const [logMessage, setLogMessage] = useState({ show: false, type: '', text: '' });
@@ -113,6 +115,50 @@ export default function Dashboard() {
     } catch (error) {
       console.error('Failed to connect Fitbit:', error);
       setConnecting(false);
+    }
+  };
+
+  const handleRevokeFitbit = async () => {
+    try {
+      setRevoking(true);
+      await fitbitService.revoke();
+      
+      // Update user context to reflect Fitbit disconnection
+      const updatedUser = {
+        ...user,
+        isWearableConnected: false,
+        wearableType: null
+      };
+      
+      // Update localStorage and context
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      window.dispatchEvent(new CustomEvent('userUpdated', { detail: updatedUser }));
+      
+      // Show success message
+      setLogMessage({
+        show: true,
+        type: 'success',
+        text: 'Fitbit disconnected successfully!'
+      });
+      
+      // Hide message after 5 seconds
+      setTimeout(() => {
+        setLogMessage({ show: false, type: '', text: '' });
+      }, 5000);
+    } catch (error) {
+      console.error('Failed to revoke Fitbit:', error);
+      setLogMessage({
+        show: true,
+        type: 'error',
+        text: error.message || 'Failed to disconnect Fitbit. Please try again.'
+      });
+      
+      // Hide message after 7 seconds
+      setTimeout(() => {
+        setLogMessage({ show: false, type: '', text: '' });
+      }, 7000);
+    } finally {
+      setRevoking(false);
     }
   };
 
@@ -539,7 +585,7 @@ export default function Dashboard() {
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
                   Track your daily activity
                 </Typography>
-                {!isFitbitConnected && (
+                {!isFitbitConnected ? (
                   <Button
                     variant="contained"
                     size="medium"
@@ -560,6 +606,33 @@ export default function Dashboard() {
                     }}
                   >
                     {connecting ? 'Connecting...' : 'Connect'}
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    size="medium"
+                    onClick={handleRevokeFitbit}
+                    disabled={revoking}
+                    startIcon={revoking ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <LinkOff />}
+                    sx={{
+                      background: 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)',
+                      borderRadius: '25px',
+                      px: 3,
+                      py: 1,
+                      fontSize: '0.9rem',
+                      fontWeight: 600,
+                      textTransform: 'none',
+                      '&:hover': {
+                        background: 'linear-gradient(135deg, #d32f2f 0%, #f44336 100%)',
+                        transform: 'translateY(-1px)',
+                      },
+                      '&:disabled': {
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.5)',
+                      }
+                    }}
+                  >
+                    {revoking ? 'Disconnecting...' : 'Disconnect'}
                   </Button>
                 )}
               </CardContent>

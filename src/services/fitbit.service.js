@@ -72,6 +72,17 @@ class FitbitService {
       throw new Error(error.response?.data?.message || 'Failed to fetch Fitbit heart rate');
     }
   }
+
+  /**
+   * Revoke Fitbit connection
+   */
+  async revoke() {
+    try {
+      await api.get('/oauth/fitbit/revoke');
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to revoke Fitbit connection');
+    }
+  }
 }
 
 export default new FitbitService();
