@@ -61,9 +61,13 @@ api.interceptors.response.use(
     });
     
     if (error.response?.status === 401) {
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Don't redirect to login for feedback endpoint (allows non-authenticated access)
+      const isFeedbackEndpoint = (error.config?.url || '').startsWith('/api/feedback');
+      if (!isFeedbackEndpoint) {
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('user');
+        window.location.href = '/login';
+      }
     }
     return Promise.reject(error);
   }

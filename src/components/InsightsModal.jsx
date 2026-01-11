@@ -32,6 +32,7 @@ import {
   Info,
   Assessment
 } from '@mui/icons-material';
+import { formatMetricComparison, formatFlareUpTriggerValue } from '../utils/insightFormatter';
 
 export default function InsightsModal({ open, onClose, insights }) {
   if (!insights) return null;
@@ -194,22 +195,26 @@ export default function InsightsModal({ open, onClose, insights }) {
               />
               <CardContent sx={{ color: 'white' }}>
                 <List dense sx={{ color: 'white' }}>
-                  {insights.worsened.map((item, index) => (
-                    <ListItem key={index} sx={{ px: 0 }}>
-                      <ListItemIcon>
-                        <Warning sx={{ color: '#f44336', fontSize: 20 }} />
-                      </ListItemIcon>
-                      <ListItemText 
-                        primary={item}
-                        primaryTypographyProps={{ 
-                          color: 'white', 
-                          fontSize: '0.9rem',
-                          lineHeight: 1.4,
-                          fontWeight: 400
-                        }}
-                      />
-                    </ListItem>
-                  ))}
+                  {insights.worsened.map((item, index) => {
+                    // Format the metric comparison string for better readability
+                    const formattedItem = formatMetricComparison(item);
+                    return (
+                      <ListItem key={index} sx={{ px: 0 }}>
+                        <ListItemIcon>
+                          <Warning sx={{ color: '#f44336', fontSize: 20 }} />
+                        </ListItemIcon>
+                        <ListItemText 
+                          primary={formattedItem}
+                          primaryTypographyProps={{ 
+                            color: 'white', 
+                            fontSize: '0.9rem',
+                            lineHeight: 1.4,
+                            fontWeight: 400
+                          }}
+                        />
+                      </ListItem>
+                    );
+                  })}
                 </List>
               </CardContent>
             </Card>
@@ -329,19 +334,23 @@ export default function InsightsModal({ open, onClose, insights }) {
                 titleTypographyProps={{ color: 'white', fontWeight: 600 }}
               />
               <CardContent sx={{ color: 'white' }}>
-                {insights.flareUpTriggers.map((trigger, index) => (
-                  <Box key={index} sx={{ mb: 2, p: 2, background: alpha('#f44336', 0.1), borderRadius: 2 }}>
-                    <Typography variant="subtitle2" sx={{ color: '#f44336', fontWeight: 600, mb: 1 }}>
-                      {trigger.metric}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'white', mb: 1, fontWeight: 400 }}>
-                      {trigger.value}
-                    </Typography>
-                    <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.4, fontWeight: 400 }}>
-                      {trigger.impact}
-                    </Typography>
-                  </Box>
-                ))}
+                {insights.flareUpTriggers.map((trigger, index) => {
+                  // Format the trigger value string for better readability
+                  const formattedValue = trigger.value ? formatFlareUpTriggerValue(trigger.metric, trigger.value) : trigger.value;
+                  return (
+                    <Box key={index} sx={{ mb: 2, p: 2, background: alpha('#f44336', 0.1), borderRadius: 2 }}>
+                      <Typography variant="subtitle2" sx={{ color: '#f44336', fontWeight: 600, mb: 1 }}>
+                        {trigger.metric}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'white', mb: 1, fontWeight: 400 }}>
+                        {formattedValue}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.4, fontWeight: 400 }}>
+                        {trigger.impact}
+                      </Typography>
+                    </Box>
+                  );
+                })}
               </CardContent>
             </Card>
           )}

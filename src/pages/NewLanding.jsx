@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
-import { Box, Container, Typography, Button, Grid, Card } from "@mui/material";
+import { useNavigate, Link as RouterLink } from "react-router-dom";
+import { Box, Container, Typography, Button, Grid, Card, Link } from "@mui/material";
 import { ArrowForward, Psychology, Shield, Assessment, Watch, TrendingUp, LocalHospital, SmartToy, Analytics, Warning, ErrorOutline, HelpOutline, PersonOff, Route } from "@mui/icons-material";
 import "../styles/new-landing.css";
 
@@ -899,9 +899,26 @@ const NewLanding = () => {
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box sx={{ py: { xs: 3, md: 4 }, textAlign: "center", px: { xs: 2, md: 0 } }}>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)", mb: 2, fontSize: { xs: "0.75rem", md: "0.875rem" }, lineHeight: 1.6 }}>
-              <strong>Medical Disclaimer:</strong> FitSpine provides insights and recommendations based on your data 
+              <strong>Medical Disclaimer:</strong> FitSpine provides insights and recommendations based on your data
               but does not replace professional medical advice. Always consult with your healthcare provider for medical decisions.
             </Typography>
+            <Box sx={{ mb: 2 }}>
+              <Link
+                component={RouterLink}
+                to="/feedback"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  textDecoration: "none",
+                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  "&:hover": {
+                    color: "#4facfe",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Share Feedback
+              </Link>
+            </Box>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
               © 2024 FitSpine. All rights reserved. | Privacy Policy | Terms of Service
             </Typography>

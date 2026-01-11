@@ -16,6 +16,7 @@ import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Landing from "./pages/Landing";
 import NewLanding from "./pages/NewLanding";
+import Feedback from "./pages/Feedback";
 
 // Create a simple theme
 const theme = createTheme({
@@ -51,6 +52,7 @@ function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/feedback" element={<Feedback />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
