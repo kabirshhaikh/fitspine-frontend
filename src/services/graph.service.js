@@ -28,6 +28,33 @@ class GraphService {
     const todayString = `${year}-${month}-${day}`;
     return this.getWeeklyGraph(todayString);
   }
+
+  /**
+   * Get dashboard insights data for a specific date (new backend structure)
+   * @param {string} date - Date in YYYY-MM-DD format
+   * @returns {Promise<Object>} Dashboard insights data (DashboardInsightDto)
+   */
+  async getDashboardInsights(date) {
+    try {
+      const { data } = await api.get(`/api/insights/dashboard-insights/weekly-graph/${date}`);
+      return data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to fetch dashboard insights');
+    }
+  }
+
+  /**
+   * Get today's dashboard insights
+   * @returns {Promise<Object>} Dashboard insights data (DashboardInsightDto)
+   */
+  async getTodaysDashboardInsights() {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const todayString = `${year}-${month}-${day}`;
+    return this.getDashboardInsights(todayString);
+  }
 }
 
 export default new GraphService();

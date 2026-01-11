@@ -1,11 +1,21 @@
 import React from 'react';
-import { Box, Typography, alpha, Paper, Card, CardContent, Chip, Grid } from '@mui/material';
+import { Box, Typography, alpha, Card, CardContent, Chip, Grid } from '@mui/material';
 import { TrendingUp, TrendingDown, Remove, Info, Lightbulb, EmojiEvents, Warning, CheckCircle } from '@mui/icons-material';
-import { getPainLabel, getTimeLabel, calculateAverage, calculateTrend, formatDayLabel, formatDate } from './chartUtils';
-import { detectPainActivityCorrelation, findBestWorstDays, getFirstAndLastLoggedDays, explainWhyMetricChanged } from '../../../utils/chartInsights';
+import { formatDayLabel, formatDate } from './chartUtils';
 
-export default function PainStiffnessChart({ dailyData, isFitbitConnected = false }) {
-  if (!dailyData || !dailyData.length) {
+// Helper to get color from label
+const getColorForLabel = (label) => {
+  if (!label) return '#888888';
+  const labelLower = label.toLowerCase();
+  if (labelLower === 'none') return '#4caf50';
+  if (labelLower === 'mild') return '#8bc34a';
+  if (labelLower === 'moderate') return '#ff9800';
+  if (labelLower === 'severe') return '#f44336';
+  return '#888888';
+};
+
+export default function PainStiffnessChart({ painStiffnessResultDto, isFitbitConnected = false }) {
+  if (!painStiffnessResultDto) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
         <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>
@@ -15,71 +25,32 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
     );
   }
 
-  // Calculate averages and trends
-  const painValues = dailyData.map(d => d.painLevel);
-  const stiffnessValues = dailyData.map(d => d.morningStiffness);
-  
-  const painAvg = calculateAverage(painValues);
-  const stiffnessAvg = calculateAverage(stiffnessValues);
-  const painTrend = calculateTrend(painValues, 'painLevel');
-  const stiffnessTrend = calculateTrend(stiffnessValues, 'morningStiffness');
-  
-  // Get insights
-  const activityCorrelations = detectPainActivityCorrelation(dailyData);
-  const painBestWorst = findBestWorstDays(dailyData, 'painLevel');
-  const stiffnessBestWorst = findBestWorstDays(dailyData, 'morningStiffness');
-  const { first, last } = getFirstAndLastLoggedDays(dailyData);
-  
-  // Get explanations for why pain/stiffness increased
-  const painExplanations = painBestWorst.best && painBestWorst.worst && painBestWorst.worst.painLevel > painBestWorst.best.painLevel
-    ? explainWhyMetricChanged(painBestWorst.worst, painBestWorst.best, 'pain', isFitbitConnected)
-    : [];
-  const stiffnessExplanations = stiffnessBestWorst.best && stiffnessBestWorst.worst && stiffnessBestWorst.worst.morningStiffness > stiffnessBestWorst.best.morningStiffness
-    ? explainWhyMetricChanged(stiffnessBestWorst.worst, stiffnessBestWorst.best, 'stiffness', isFitbitConnected)
-    : [];
-  
-  // Count logged days
-  const loggedDays = dailyData.filter(day => 
-    day.painLevel !== null || day.morningStiffness !== null
-  );
+  const {
+    painAverage,
+    stiffnessAverage,
+    painTrend,
+    stiffnessTrend,
+    bestPainDay,
+    worstPainDay,
+    bestStiffnessDay,
+    worstStiffnessDay,
+    bestPainFlareUpDay,
+    worstPainFlareUpDay,
+    bestStiffnessFlareUpDay,
+    worstStiffnessFlareUpDay,
+    correlations,
+    painExplanations,
+    stiffnessExplanation,
+    dailyBreakDown,
+  } = painStiffnessResultDto;
 
-  // Get color for pain/stiffness level
-  const getColorForValue = (value) => {
-    if (value === null || value === -1) return '#888888';
-    if (value === 0) return '#4caf50';
-    if (value === 1) return '#8bc34a';
-    if (value === 2) return '#ff9800';
-    return '#f44336';
-  };
 
-  // Generate trend text
-  const getTrendText = (trend, avg, label) => {
-    if (!trend || avg === null) return null;
-    if (trend.direction === 'better') {
-      return `${label} improved this week`;
-    } else if (trend.direction === 'worse') {
-      return `${label} increased this week`;
-    }
-    return `${label} remained stable`;
-  };
-
-  // Generate recommendations
-  const getRecommendations = () => {
-    const recs = [];
-    if (painBestWorst.best && painBestWorst.best.standingTime !== null) {
-      recs.push(`Your best day had ${getTimeLabel(painBestWorst.best.standingTime)} standing - aim for this daily`);
-    }
-    if (activityCorrelations.length > 0) {
-      activityCorrelations.forEach(insight => {
-        if (insight.includes('sedentary')) {
-          recs.push('Try to keep sedentary time below 10hrs to maintain lower pain levels');
-        }
-      });
-    }
-    if (painTrend && painTrend.direction === 'worsening') {
-      recs.push('Consider increasing standing time and reducing sedentary hours');
-    }
-    return recs.length > 0 ? recs : ['Continue tracking to identify patterns'];
+  // Helper to convert average to label (since backend provides averages as numbers)
+  const getPainLabelFromAvg = (avg) => {
+    if (avg === null || avg === undefined) return null;
+    const rounded = Math.round(avg);
+    const labels = ['None', 'Mild', 'Moderate', 'Severe'];
+    return labels[rounded] || 'Unknown';
   };
 
   return (
@@ -106,11 +77,11 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
           </Box>
           
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {first && last && (
+            {(bestPainDay || bestStiffnessDay) && (
               <Box>
-                {painAvg !== null && (
+                {painAverage !== null && (
                   <Typography variant="body1" sx={{ color: 'white', mb: 1, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                    <strong>Pain:</strong> {getPainLabel(Math.round(painAvg))} average
+                    <strong>Pain:</strong> {getPainLabelFromAvg(painAverage)} average
                     {painTrend && (
                       <>
                         {' '}
@@ -121,9 +92,9 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
                     )}
                   </Typography>
                 )}
-                {stiffnessAvg !== null && (
+                {stiffnessAverage !== null && (
                   <Typography variant="body1" sx={{ color: 'white', fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                    <strong>Stiffness:</strong> {getPainLabel(Math.round(stiffnessAvg))} average
+                    <strong>Stiffness:</strong> {getPainLabelFromAvg(stiffnessAverage)} average
                     {stiffnessTrend && (
                       <>
                         {' '}
@@ -136,16 +107,72 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
                 )}
               </Box>
             )}
-            
-            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
-              {loggedDays.length} out of 7 days logged
-            </Typography>
           </Box>
         </CardContent>
       </Card>
 
+      {/* Flare-Up Days Card */}
+      {(bestPainFlareUpDay || worstPainFlareUpDay || bestStiffnessFlareUpDay || worstStiffnessFlareUpDay) && (
+        <Card sx={{ 
+          background: `linear-gradient(135deg, ${alpha('#ff5722', 0.15)}, ${alpha('#ff5722', 0.05)})`,
+          border: `1px solid ${alpha('#ff5722', 0.3)}`,
+          width: '100%',
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
+              <Warning sx={{ color: '#ff5722', fontSize: { xs: 20, sm: 24 } }} />
+              <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+                Flare-Up Day Analysis
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {bestPainFlareUpDay && (
+                <Box>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Best Pain Day (with flare-up)
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                    {formatDate(bestPainFlareUpDay.date)} - {getPainLabelFromAvg(bestPainFlareUpDay.value)} pain
+                  </Typography>
+                </Box>
+              )}
+              {worstPainFlareUpDay && (
+                <Box>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Worst Pain Day (with flare-up)
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                    {formatDate(worstPainFlareUpDay.date)} - {getPainLabelFromAvg(worstPainFlareUpDay.value)} pain
+                  </Typography>
+                </Box>
+              )}
+              {bestStiffnessFlareUpDay && (
+                <Box>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Best Stiffness Day (with flare-up)
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                    {formatDate(bestStiffnessFlareUpDay.date)} - {getPainLabelFromAvg(bestStiffnessFlareUpDay.value)} stiffness
+                  </Typography>
+                </Box>
+              )}
+              {worstStiffnessFlareUpDay && (
+                <Box>
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Worst Stiffness Day (with flare-up)
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+                    {formatDate(worstStiffnessFlareUpDay.date)} - {getPainLabelFromAvg(worstStiffnessFlareUpDay.value)} stiffness
+                  </Typography>
+                </Box>
+              )}
+            </Box>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Best/Worst Days Card */}
-      {(painBestWorst.best || painBestWorst.worst) && (
+      {(bestPainDay || worstPainDay) && (
         <Card sx={{ 
           background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
           border: `1px solid ${alpha('#ffffff', 0.2)}`,
@@ -153,7 +180,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
         }}>
           <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
             <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-              {painBestWorst.best && (
+              {bestPainDay && (
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
                   <EmojiEvents sx={{ color: '#4caf50', fontSize: { xs: 24, sm: 28 }, flexShrink: 0 }} />
                   <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -161,7 +188,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
                       Best Day
                     </Typography>
                     <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
-                      {formatDate(painBestWorst.best.date)} - {getPainLabel(painBestWorst.best.painLevel)} pain
+                      {formatDate(bestPainDay.date)} - {getPainLabelFromAvg(bestPainDay.value)} pain
                     </Typography>
                     <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
                       What did you do differently?
@@ -169,7 +196,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
                   </Box>
                 </Box>
               )}
-              {painBestWorst.worst && painBestWorst.worst.painLevel > (painBestWorst.best?.painLevel || 0) && (
+              {worstPainDay && bestPainDay && worstPainDay.value > bestPainDay.value && (
                 <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: { xs: 1.5, sm: 2 }, flexWrap: 'wrap' }}>
                   <Warning sx={{ color: '#f44336', fontSize: { xs: 24, sm: 28 }, flexShrink: 0 }} />
                   <Box sx={{ flex: 1, minWidth: 0 }}>
@@ -177,7 +204,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
                       Highest Pain Day
                     </Typography>
                     <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' }, wordBreak: 'break-word' }}>
-                      {formatDate(painBestWorst.worst.date)} - {getPainLabel(painBestWorst.worst.painLevel)} pain
+                      {formatDate(worstPainDay.date)} - {getPainLabelFromAvg(worstPainDay.value)} pain
                     </Typography>
                   </Box>
                 </Box>
@@ -188,7 +215,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
       )}
 
       {/* Why Did Pain Increase? Card */}
-      {painExplanations.length > 0 && (
+      {painExplanations && painExplanations.length > 0 && worstPainDay && (
         <Card sx={{ 
           background: `linear-gradient(135deg, ${alpha('#f44336', 0.15)}, ${alpha('#f44336', 0.05)})`,
           border: `1px solid ${alpha('#f44336', 0.3)}`,
@@ -198,7 +225,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
               <Warning sx={{ color: '#f44336', fontSize: { xs: 20, sm: 24 } }} />
               <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-                Why did pain increase on {formatDate(painBestWorst.worst.date)}?
+                Why did pain increase on {formatDate(worstPainDay.date)}?
               </Typography>
             </Box>
             {painExplanations.map((explanation, index) => (
@@ -216,7 +243,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
       )}
 
       {/* Why Did Stiffness Increase? Card */}
-      {stiffnessExplanations.length > 0 && (
+      {stiffnessExplanation && stiffnessExplanation.length > 0 && worstStiffnessDay && (
         <Card sx={{ 
           background: `linear-gradient(135deg, ${alpha('#ff9800', 0.15)}, ${alpha('#ff9800', 0.05)})`,
           border: `1px solid ${alpha('#ff9800', 0.3)}`,
@@ -226,11 +253,11 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
               <Warning sx={{ color: '#ff9800', fontSize: { xs: 20, sm: 24 } }} />
               <Typography variant="h6" sx={{ color: 'white', fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-                Why did stiffness increase on {formatDate(stiffnessBestWorst.worst.date)}?
+                Why did stiffness increase on {formatDate(worstStiffnessDay.date)}?
               </Typography>
             </Box>
-            {stiffnessExplanations.map((explanation, index) => (
-              <Box key={index} sx={{ mb: 2, pb: index < stiffnessExplanations.length - 1 ? 2 : 0, borderBottom: index < stiffnessExplanations.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
+            {stiffnessExplanation.map((explanation, index) => (
+              <Box key={index} sx={{ mb: 2, pb: index < stiffnessExplanation.length - 1 ? 2 : 0, borderBottom: index < stiffnessExplanation.length - 1 ? `1px solid ${alpha('#ffffff', 0.1)}` : 'none' }}>
                 <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 600, mb: 0.5, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
                   • Because {explanation.cause}
                 </Typography>
@@ -244,7 +271,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
       )}
 
       {/* Pattern Insights Card */}
-      {activityCorrelations.length > 0 && (
+      {correlations && correlations.length > 0 && (
         <Card sx={{ 
           background: `linear-gradient(135deg, ${alpha('#9c27b0', 0.15)}, ${alpha('#9c27b0', 0.05)})`,
           border: `1px solid ${alpha('#9c27b0', 0.3)}`,
@@ -257,7 +284,7 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
                 Pattern Insights
               </Typography>
             </Box>
-            {activityCorrelations.map((insight, index) => (
+            {correlations.map((insight, index) => (
               <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
                 <CheckCircle sx={{ color: '#9c27b0', fontSize: { xs: 16, sm: 18 }, mt: 0.5, flexShrink: 0 }} />
                 <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
@@ -270,104 +297,91 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
       )}
 
       {/* Daily Breakdown */}
-      <Box sx={{ width: '100%' }}>
-        <Typography variant="h6" sx={{ color: 'white', mb: 2, fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
-          Daily Breakdown
-        </Typography>
-        <Grid container spacing={{ xs: 1.5, sm: 2 }}>
-          {dailyData.map((day, index) => {
-            const hasData = day.painLevel !== null || day.morningStiffness !== null;
-            const dayLabel = formatDayLabel(day.date);
-            const fullDate = formatDate(day.date);
-            
-            // Get key insight for the day
-            let dayInsight = null;
-            if (day.fitbitSedentaryHours !== null && day.fitbitSedentaryHours > 11) {
-              dayInsight = `High sedentary (${day.fitbitSedentaryHours.toFixed(1)}hrs)`;
-            } else if (day.standingTime !== null && day.standingTime >= 3) {
-              dayInsight = `Good standing time`;
-            } else if (day.stressLevel !== null && day.stressLevel >= 3) {
-              dayInsight = `High stress day`;
-            }
+      {dailyBreakDown && dailyBreakDown.length > 0 && (
+        <Box sx={{ width: '100%' }}>
+          <Typography variant="h6" sx={{ color: 'white', mb: 2, fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
+            Daily Breakdown
+          </Typography>
+          <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+            {dailyBreakDown.map((day, index) => {
+              const hasData = day.painLevel !== null || day.stiffnessLevel !== null;
+              const dayLabel = formatDayLabel(day.logDate);
+              const fullDate = formatDate(day.logDate);
 
-            return (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <Card sx={{ 
-                  background: hasData 
-                    ? `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`
-                    : alpha('#888888', 0.1),
-                  border: `1px solid ${hasData ? alpha('#ffffff', 0.2) : alpha('#888888', 0.2)}`,
-                  height: '100%',
-                  width: '100%',
-                }}>
-                  <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-                    <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {dayLabel}
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', display: 'block', mb: 1.5, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                      {fullDate}
-                    </Typography>
-                    
-                    {hasData ? (
-                      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                        {day.painLevel !== null && (
-                          <Box>
-                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                              Pain Level
-                            </Typography>
-                            <Chip 
-                              label={getPainLabel(day.painLevel)}
-                              size="small"
-                              sx={{
-                                background: alpha(getColorForValue(day.painLevel), 0.2),
-                                color: getColorForValue(day.painLevel),
-                                border: `1px solid ${alpha(getColorForValue(day.painLevel), 0.5)}`,
-                                fontWeight: 600,
-                                mt: 0.5,
-                                fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                                height: { xs: 24, sm: 28 },
-                              }}
-                            />
-                          </Box>
-                        )}
-                        {day.morningStiffness !== null && (
-                          <Box>
-                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                              Stiffness
-                            </Typography>
-                            <Chip 
-                              label={getPainLabel(day.morningStiffness)}
-                              size="small"
-                              sx={{
-                                background: alpha(getColorForValue(day.morningStiffness), 0.2),
-                                color: getColorForValue(day.morningStiffness),
-                                border: `1px solid ${alpha(getColorForValue(day.morningStiffness), 0.5)}`,
-                                fontWeight: 600,
-                                mt: 0.5,
-                                fontSize: { xs: '0.7rem', sm: '0.75rem' },
-                                height: { xs: 24, sm: 28 },
-                              }}
-                            />
-                          </Box>
-                        )}
-                        {dayInsight && (
-                          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', mt: 1, fontStyle: 'italic', fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
-                            {dayInsight}
-                          </Typography>
-                        )}
-                      </Box>
-                    ) : (
-                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)' }}>
-                        No data logged
+              return (
+                <Grid item xs={12} sm={6} md={4} key={index}>
+                  <Card sx={{ 
+                    background: hasData 
+                      ? `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`
+                      : alpha('#888888', 0.1),
+                    border: `1px solid ${hasData ? alpha('#ffffff', 0.2) : alpha('#888888', 0.2)}`,
+                    height: '100%',
+                    width: '100%',
+                  }}>
+                    <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
+                      <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                        {dayLabel}
                       </Typography>
-                    )}
-                  </CardContent>
-                </Card>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Box>
+                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', display: 'block', mb: 1.5, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                        {fullDate}
+                      </Typography>
+                      
+                      {hasData ? (
+                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                          {day.painLevel !== null && (
+                            <Box>
+                              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                                Pain Level
+                              </Typography>
+                              <Chip 
+                                label={day.painLevel}
+                                size="small"
+                                sx={{
+                                  background: alpha(getColorForLabel(day.painLevel), 0.2),
+                                  color: getColorForLabel(day.painLevel),
+                                  border: `1px solid ${alpha(getColorForLabel(day.painLevel), 0.5)}`,
+                                  fontWeight: 600,
+                                  mt: 0.5,
+                                  fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                  height: { xs: 24, sm: 28 },
+                                }}
+                              />
+                            </Box>
+                          )}
+                          {day.stiffnessLevel !== null && (
+                            <Box>
+                              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                                Stiffness
+                              </Typography>
+                              <Chip 
+                                label={day.stiffnessLevel}
+                                size="small"
+                                sx={{
+                                  background: alpha(getColorForLabel(day.stiffnessLevel), 0.2),
+                                  color: getColorForLabel(day.stiffnessLevel),
+                                  border: `1px solid ${alpha(getColorForLabel(day.stiffnessLevel), 0.5)}`,
+                                  fontWeight: 600,
+                                  mt: 0.5,
+                                  fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                                  height: { xs: 24, sm: 28 },
+                                }}
+                              />
+                            </Box>
+                          )}
+                        </Box>
+                      ) : (
+                        <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)' }}>
+                          No data logged
+                        </Typography>
+                      )}
+                    </CardContent>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        </Box>
+      )}
 
       {/* Recommendations Card */}
       <Card sx={{ 
@@ -382,14 +396,12 @@ export default function PainStiffnessChart({ dailyData, isFitbitConnected = fals
               Recommendations
             </Typography>
           </Box>
-          {getRecommendations().map((rec, index) => (
-            <Box key={index} sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
-              <CheckCircle sx={{ color: '#ff9800', fontSize: { xs: 16, sm: 18 }, mt: 0.5, flexShrink: 0 }} />
-              <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                {rec}
-              </Typography>
-            </Box>
-          ))}
+          <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 1, mb: 1.5 }}>
+            <CheckCircle sx={{ color: '#ff9800', fontSize: { xs: 16, sm: 18 }, mt: 0.5, flexShrink: 0 }} />
+            <Typography variant="body2" sx={{ color: 'white', lineHeight: 1.6, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
+              Continue tracking to identify patterns
+            </Typography>
+          </Box>
         </CardContent>
       </Card>
     </Box>

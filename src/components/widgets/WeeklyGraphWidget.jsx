@@ -21,17 +21,17 @@ import WeeklyInsights from '../WeeklyInsights';
 
 export default function WeeklyGraphWidget() {
   const location = useLocation();
-  const [graphData, setGraphData] = useState(null);
+  const [dashboardInsights, setDashboardInsights] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [tabValue, setTabValue] = useState(0);
 
-  const loadGraphData = async () => {
+  const loadDashboardInsights = async () => {
     try {
       setLoading(true);
       setError(null);
-      const data = await graphService.getTodaysWeeklyGraph();
-      setGraphData(data);
+      const data = await graphService.getTodaysDashboardInsights();
+      setDashboardInsights(data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -40,7 +40,7 @@ export default function WeeklyGraphWidget() {
   };
 
   useEffect(() => {
-    loadGraphData();
+    loadDashboardInsights();
   }, [location.pathname]);
 
   const handleTabChange = (event, newValue) => {
@@ -79,7 +79,7 @@ export default function WeeklyGraphWidget() {
     );
   }
 
-  if (!graphData || !graphData.dailyData || !Array.isArray(graphData.dailyData)) {
+  if (!dashboardInsights || !dashboardInsights.weeklySummaryResultDto) {
     return (
       <WidgetShell title="Weekly Health Overview">
         <Box textAlign="center" py={4}>
@@ -94,6 +94,15 @@ export default function WeeklyGraphWidget() {
       </WidgetShell>
     );
   }
+
+  const {
+    weeklySummaryResultDto,
+    painStiffnessResultDto,
+    activityResultDto,
+    heartResultDto,
+    sleepResultDto,
+    isFitbitConnected
+  } = dashboardInsights;
 
   return (
     <WidgetShell 
@@ -170,20 +179,20 @@ export default function WeeklyGraphWidget() {
         }}>
           {tabValue === 0 && (
             <Box sx={{ p: { xs: 2, sm: 3 }, width: '100%' }}>
-              <WeeklyInsights weeklyGraphData={graphData} />
+              <WeeklyInsights weeklySummaryResultDto={weeklySummaryResultDto} />
             </Box>
           )}
           {tabValue === 1 && (
-            <PainStiffnessChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
+            <PainStiffnessChart painStiffnessResultDto={painStiffnessResultDto} isFitbitConnected={isFitbitConnected === true} />
           )}
           {tabValue === 2 && (
-            <ActivityChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
+            <ActivityChart activityResultDto={activityResultDto} isFitbitConnected={isFitbitConnected === true} />
           )}
           {tabValue === 3 && (
-            <HeartRateChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
+            <HeartRateChart heartResultDto={heartResultDto} isFitbitConnected={isFitbitConnected === true} />
           )}
           {tabValue === 4 && (
-            <SleepChart dailyData={graphData.dailyData} isFitbitConnected={graphData.isFitbitConnected === true} />
+            <SleepChart sleepResultDto={sleepResultDto} isFitbitConnected={isFitbitConnected === true} />
           )}
         </Box>
       </Box>
