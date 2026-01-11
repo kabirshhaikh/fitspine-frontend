@@ -20,6 +20,7 @@ import {
   Psychology,
   Assessment,
   CheckCircle,
+  Info,
 } from '@mui/icons-material';
 
 export default function WeeklyInsights({ weeklySummaryResultDto }) {
@@ -68,9 +69,14 @@ export default function WeeklyInsights({ weeklySummaryResultDto }) {
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2, flexWrap: 'wrap' }}>
               <Assessment sx={{ color: '#4facfe', fontSize: { xs: 24, sm: 28 } }} />
               <Box sx={{ flex: 1, minWidth: 0 }}>
-                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                  Overall Spine Load
-                </Typography>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mb: 0.5 }}>
+                  <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
+                    Overall Spine Load
+                  </Typography>
+                  <Info sx={{ color: 'rgba(255, 255, 255, 0.5)', fontSize: { xs: 12, sm: 14 }, cursor: 'help' }} 
+                    title="Overall Spine Load is calculated as an average of your pain level, morning stiffness, sitting time, and sedentary hours. Scores range from 0-3: Low (<1.0), Moderate (1.0-2.0), High (>2.0)."
+                  />
+                </Box>
                 <Typography variant="h3" sx={{ 
                   color: getLoadCategoryColor(loadCategory),
                   fontWeight: 700,
@@ -87,10 +93,14 @@ export default function WeeklyInsights({ weeklySummaryResultDto }) {
                       background: alpha(getLoadCategoryColor(loadCategory), 0.3), 
                       color: getLoadCategoryColor(loadCategory), 
                       fontWeight: 600,
-                      fontSize: { xs: '0.7rem', sm: '0.75rem' }
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                      mb: 1
                     }} 
                   />
                 )}
+                <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', display: 'block', mt: 1, fontSize: { xs: '0.65rem', sm: '0.7rem' }, lineHeight: 1.4, wordBreak: 'break-word' }}>
+                  Combined score of pain, stiffness, sitting time, and sedentary hours (0-3 scale)
+                </Typography>
                 {painTrend && (
                   <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'block', mt: 1, fontSize: { xs: '0.7rem', sm: '0.75rem' }, wordBreak: 'break-word' }}>
                     Pain trend: {painTrend.charAt(0).toUpperCase() + painTrend.slice(1)}
