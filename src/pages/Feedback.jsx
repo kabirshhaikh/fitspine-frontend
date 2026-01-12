@@ -45,21 +45,12 @@ const Feedback = () => {
     rating: null,
     contactRequested: false,
     email: '',
-    name: user?.fullName || '',
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
 
-  useEffect(() => {
-    if (user) {
-      setFormData(prev => ({
-        ...prev,
-        name: user.fullName || '',
-      }));
-    }
-  }, [user]);
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -106,15 +97,11 @@ const Feedback = () => {
       newErrors.description = 'Description must be at most 500 characters';
     }
 
-    const emailRequired = !user || formData.contactRequested;
-    if (emailRequired && !formData.email.trim()) {
-      newErrors.email = 'Email is required';
+    // Email is required only if contactRequested is true
+    if (formData.contactRequested && !formData.email.trim()) {
+      newErrors.email = 'Email is required when contact is requested';
     } else if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email address';
-    }
-
-    if (!user && !formData.name.trim()) {
-      newErrors.name = 'Name is required';
     }
 
     setErrors(newErrors);
@@ -145,15 +132,14 @@ const Feedback = () => {
       setSubmitSuccess(true);
 
       setTimeout(() => {
-        setFormData(prev => ({
+        setFormData({
           feedbackType: 'GENERAL_FEEDBACK',
           subject: '',
           description: '',
           rating: null,
           contactRequested: false,
           email: '',
-          name: user?.fullName || '',
-        }));
+        });
         setSubmitSuccess(false);
       }, 3000);
 
@@ -363,21 +349,6 @@ const Feedback = () => {
                 </Select>
               </FormControl>
 
-              {/* Name - only for non-authenticated users */}
-              {!user && (
-                <TextField
-                  fullWidth
-                  label="Name"
-                  name="name"
-                  value={formData.name}
-                  onChange={handleChange}
-                  error={!!errors.name}
-                  helperText={errors.name}
-                  required
-                  sx={fieldStyle}
-                />
-              )}
-
               {/* Subject */}
               <TextField
                 fullWidth
@@ -437,59 +408,39 @@ const Feedback = () => {
                 />
               </Box>
 
-              {/* Contact Preference - only for authenticated users */}
-              {user && (
-                <>
-                  <Box
-                    sx={{
-                      p: 2,
-                      borderRadius: 2,
-                      backgroundColor: alpha('#ffffff', 0.05),
-                      border: `1px solid ${alpha('#ffffff', 0.1)}`,
-                    }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          name="contactRequested"
-                          checked={formData.contactRequested}
-                          onChange={handleChange}
-                          sx={{
-                            color: 'rgba(255, 255, 255, 0.7)',
-                            '&.Mui-checked': {
-                              color: '#4facfe',
-                            },
-                          }}
-                        />
-                      }
-                      label="I'd like to be contacted about this feedback"
+              {/* Contact Preference */}
+              <Box
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  backgroundColor: alpha('#ffffff', 0.05),
+                  border: `1px solid ${alpha('#ffffff', 0.1)}`,
+                }}
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="contactRequested"
+                      checked={formData.contactRequested}
+                      onChange={handleChange}
                       sx={{
-                        color: 'rgba(255, 255, 255, 0.9)',
-                        m: 0,
+                        color: 'rgba(255, 255, 255, 0.7)',
+                        '&.Mui-checked': {
+                          color: '#4facfe',
+                        },
                       }}
                     />
-                  </Box>
-                  
-                  {/* Email - show below checkbox when checked */}
-                  {formData.contactRequested && (
-                    <TextField
-                      fullWidth
-                      label="Email"
-                      name="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={handleChange}
-                      error={!!errors.email}
-                      helperText={errors.email}
-                      required
-                      sx={fieldStyle}
-                    />
-                  )}
-                </>
-              )}
-
-              {/* Email - for non-authenticated users */}
-              {!user && (
+                  }
+                  label="I'd like to be contacted about this feedback"
+                  sx={{
+                    color: 'rgba(255, 255, 255, 0.9)',
+                    m: 0,
+                  }}
+                />
+              </Box>
+              
+              {/* Email - show below checkbox when checked */}
+              {formData.contactRequested && (
                 <TextField
                   fullWidth
                   label="Email"
