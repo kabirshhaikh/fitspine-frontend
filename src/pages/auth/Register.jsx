@@ -117,6 +117,7 @@ const Register = () => {
     profilePicture: null,
     surgeryHistory: false,
     isResearchOpt: false,
+    acceptedTerms: false,
     userInjuries: [],
     userSurgeries: [],
     userDiscIssues: [],
@@ -190,6 +191,10 @@ const Register = () => {
       newErrors.gender = "Gender is required";
     }
 
+    if (!formData.acceptedTerms) {
+      newErrors.acceptedTerms = "You must accept the Terms of Service and Privacy Policy";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -208,6 +213,7 @@ const Register = () => {
 
       fd.append("surgeryHistory", String(formData.surgeryHistory));
       fd.append("isResearchOpt", String(formData.isResearchOpt));
+      fd.append("acceptedTerms", String(formData.acceptedTerms));
 
       if (formData.profilePicture) {
         fd.append("profilePicture", formData.profilePicture); // MultipartFile
@@ -993,6 +999,71 @@ const Register = () => {
                   </Select>
                 </FormControl>
               </Box>
+            </Box>
+
+            <Divider sx={{ my: 4 }} />
+
+            {/* Terms and Privacy Acceptance Section */}
+            <Box sx={{ mb: 4 }}>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="acceptedTerms"
+                    checked={formData.acceptedTerms}
+                    onChange={handleChange}
+                    color="primary"
+                    required
+                  />
+                }
+                label={
+                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.9)" }}>
+                    I accept the{" "}
+                    <Link
+                      component={RouterLink}
+                      to="/terms"
+                      sx={{
+                        color: "#4facfe",
+                        textDecoration: "none",
+                        fontWeight: 500,
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Terms of Service
+                    </Link>
+                    {" "}and{" "}
+                    <Link
+                      component={RouterLink}
+                      to="/privacy"
+                      sx={{
+                        color: "#4facfe",
+                        textDecoration: "none",
+                        fontWeight: 500,
+                        "&:hover": {
+                          textDecoration: "underline",
+                        },
+                      }}
+                    >
+                      Privacy Policy
+                    </Link>
+                  </Typography>
+                }
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  backgroundColor: "rgba(255, 255, 255, 0.05)",
+                  border: errors.acceptedTerms ? "1px solid #f44336" : "1px solid rgba(255, 255, 255, 0.1)",
+                  "&:hover": {
+                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                  },
+                }}
+              />
+              {errors.acceptedTerms && (
+                <Typography variant="caption" sx={{ color: "#f44336", ml: 4, mt: 0.5, display: "block" }}>
+                  {errors.acceptedTerms}
+                </Typography>
+              )}
             </Box>
 
             <Button

@@ -104,7 +104,7 @@ const NewLanding = () => {
                 maxWidth: "100%"
               }}
             >
-              AI-Powered Spine Health Care
+              AI-Powered Spine Health Tracking
             </Typography>
             <Typography variant="h5" className="hero-subtitle-new">
               Prevent flare-ups, understand your triggers, and get personalized, clinically-informed advice for your spine health.
