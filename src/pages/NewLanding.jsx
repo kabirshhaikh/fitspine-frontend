@@ -919,9 +919,44 @@ const NewLanding = () => {
                 Share Feedback
               </Link>
             </Box>
-            <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
-              © 2024 FitSpine. All rights reserved. | Privacy Policy | Terms of Service
-            </Typography>
+            <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2, alignItems: "center" }}>
+              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
+                © 2024 FitSpine. All rights reserved.
+              </Typography>
+              <Link
+                component={RouterLink}
+                to="/privacy"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  textDecoration: "none",
+                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  "&:hover": {
+                    color: "#4facfe",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Privacy Policy
+              </Link>
+              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
+                |
+              </Typography>
+              <Link
+                component={RouterLink}
+                to="/terms"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  textDecoration: "none",
+                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  "&:hover": {
+                    color: "#4facfe",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Terms of Service
+              </Link>
+            </Box>
           </Box>
         </Container>
       </Box>
