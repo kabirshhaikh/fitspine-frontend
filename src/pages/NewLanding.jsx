@@ -240,13 +240,10 @@ const NewLanding = () => {
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
           <Box className="section-content animate-on-scroll">
             <Typography variant="h2" className="section-title">
-              Sphinic: Your AI-Powered Spine Health Partner
+              Sphinic: Your AI-Powered Spine Health Companion
             </Typography>
             <Typography variant="body1" className="section-description">
-              Sphinic combines manual symptom tracking, wearable device integration, and AI-powered clinical insights 
-              to help you manage chronic spine conditions, recover from injuries, and prevent flare-ups. Our platform 
-              thinks like a spine surgeon and physiotherapist combined, providing personalized recommendations based on 
-              biomechanical and neurological principles.
+              Sphinic integrates self-reported symptom tracking, wearable data, and AI-powered analytics to help users monitor spine health trends, recognize flare-up patterns, and build healthier daily habits. The platform translates complex biomechanical and neurological concepts into practical, easy-to-understand insights for everyday spine care awareness.
             </Typography>
           </Box>
         </Container>
