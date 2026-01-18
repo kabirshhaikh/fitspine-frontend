@@ -146,8 +146,6 @@ const Profile = () => {
         try {
           const response = await api.get('/api/user/me');
           const profileData = response.data;
-          console.log('Profile data from backend:', profileData);
-          console.log('Role value:', profileData.role);
           
           setUserProfile(profileData);
           setFormData({
@@ -163,7 +161,6 @@ const Profile = () => {
             userDiscIssues: profileData.userDiscIssues?.map(issue => issue.discLevel) || [],
           });
         } catch (error) {
-          console.error('Failed to load user profile:', error);
           setSnackbar({
             open: true,
             message: 'Failed to load profile data. Please try again.',
@@ -269,22 +266,8 @@ const Profile = () => {
       }
       
 
-      // Debug: Log what we're sending
-      console.log('Sending form data:', {
-        age: formData.age,
-        gender: formData.gender,
-        surgeryHistory: formData.surgeryHistory,
-        isResearchOpt: formData.isResearchOpt,
-        userInjuries: formData.userInjuries,
-        userSurgeries: formData.userSurgeries,
-        userDiscIssues: formData.userDiscIssues
-      });
-
       // Make API call
       const response = await api.patch('/api/user/me', formDataToSend);
-      
-      // Debug: Log the response
-      console.log('Update response:', response.data);
       
       // Update user context with new data
       updateUserFromResponse(response.data);
@@ -300,8 +283,6 @@ const Profile = () => {
       });
 
     } catch (error) {
-      console.error('Profile update failed:', error);
-      
       let errorMessage = 'Failed to update profile. Please try again.';
       if (error.response?.data?.message) {
         errorMessage = error.response.data.message;

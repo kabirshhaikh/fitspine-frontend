@@ -252,7 +252,6 @@ export default function HeartRateChart({ heartResultDto, isFitbitConnected = fal
     </Box>
     );
   } catch (error) {
-    console.error('Error rendering HeartRateChart:', error);
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
         <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.5)' }}>

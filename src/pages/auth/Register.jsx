@@ -244,8 +244,6 @@ const Register = () => {
 
       timerRef.current = setTimeout(() => navigate("/login"), 1500);
     } catch (err) {
-      console.error("Registration failed:", err);
-
       let apiMsg = "Registration failed. Please try again.";
       if (err.response) {
         // Backend responded with an error

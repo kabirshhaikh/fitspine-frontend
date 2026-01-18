@@ -23,7 +23,6 @@ class FitbitService {
       // Redirect user to Fitbit OAuth
       window.location.href = authUrl;
     } catch (error) {
-      console.error('Failed to get auth URL:', error);
       throw new Error('Failed to initiate Fitbit connection');
     }
   }

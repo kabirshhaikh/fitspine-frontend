@@ -82,7 +82,6 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (err) {
       // Error is handled by the auth context
-      console.error('Login failed:', err);
     }
   };
 

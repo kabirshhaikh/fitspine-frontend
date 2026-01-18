@@ -9,13 +9,9 @@ class FeedbackService {
    */
   async submitFeedback(feedbackData) {
     try {
-      console.log('Submitting feedback:', feedbackData);
       const response = await api.post('/api/feedback', feedbackData);
-      console.log('Feedback submitted successfully:', response.data);
       return response.data;
     } catch (error) {
-      console.error('Error submitting feedback:', error);
-      
       if (error.response) {
         throw new Error(error.response?.data?.message || `Server error: ${error.response.status}`);
       } else if (error.request) {

@@ -9,22 +9,12 @@ const api = axios.create({
 const AUTH_WHITELIST = ['/api/user/login', '/api/user/register'];
 
 api.interceptors.request.use((config) => {
-  console.log('API Request:', {
-    method: config.method,
-    url: config.url,
-    baseURL: config.baseURL,
-    fullURL: `${config.baseURL}${config.url}`,
-  });
-  
   // Don't add Authorization on auth endpoints
   const isAuthEndpoint = AUTH_WHITELIST.some(path => (config.url || '').startsWith(path));
   if (!isAuthEndpoint) {
     const token = localStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log('Authorization header added');
-    } else {
-      console.warn('No auth token found');
     }
   } else {
     delete config.headers.Authorization;
@@ -44,22 +34,9 @@ api.interceptors.request.use((config) => {
 
 api.interceptors.response.use(
   (res) => {
-    console.log('API Response:', {
-      status: res.status,
-      url: res.config.url,
-      data: res.data,
-    });
     return res;
   },
   (error) => {
-    console.error('API Error:', {
-      message: error.message,
-      status: error.response?.status,
-      url: error.config?.url,
-      data: error.response?.data,
-      stack: error.stack,
-    });
-    
     if (error.response?.status === 401) {
       // Don't redirect to login for feedback endpoint (allows non-authenticated access)
       const isFeedbackEndpoint = (error.config?.url || '').startsWith('/api/feedback');

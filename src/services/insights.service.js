@@ -9,19 +9,9 @@ class InsightsService {
    */
   async generateDailyInsight(date) {
     try {
-      console.log('Calling insights API for date:', date);
       const { data } = await api.get(`/api/insights/generate/${date}`);
-      console.log('Insights API response received:', data);
       return data;
     } catch (error) {
-      console.error('Insights API error:', {
-        message: error.message,
-        response: error.response,
-        data: error.response?.data,
-        status: error.response?.status,
-        config: error.config,
-      });
-      
       // More detailed error handling
       if (error.response) {
         // Server responded with error
@@ -56,20 +46,11 @@ class InsightsService {
    */
   async getAiInsightForDay(date) {
     try {
-      console.log('Fetching AI insight for date:', date);
       const { data } = await api.get(`/api/insights/day`, {
         params: { date }
       });
-      console.log('AI insight response received:', data);
       return data;
     } catch (error) {
-      console.error('AI insight fetch error:', {
-        message: error.message,
-        response: error.response,
-        data: error.response?.data,
-        status: error.response?.status,
-      });
-      
       if (error.response) {
         throw new Error(error.response?.data?.message || `Server error: ${error.response.status}`);
       } else if (error.request) {

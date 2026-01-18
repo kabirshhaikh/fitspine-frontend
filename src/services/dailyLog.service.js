@@ -7,7 +7,6 @@ class DailyLogService {
       const response = await api.post('/api/manual-daily-log', logData);
       return response.data;
     } catch (error) {
-      console.error('Error creating daily log:', error);
       throw new Error('Failed to create daily log');
     }
   }
@@ -20,7 +19,6 @@ class DailyLogService {
       });
       return response.data;
     } catch (error) {
-      console.error('Error fetching daily log:', error);
       // Preserve the original error so we can check status code (404 for not found)
       throw error;
     }

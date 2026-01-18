@@ -144,7 +144,6 @@ const Feedback = () => {
       }, 3000);
 
     } catch (error) {
-      console.error('Failed to submit feedback:', error);
       setSubmitError(error.message || 'Failed to submit feedback. Please try again.');
     } finally {
       setLoading(false);

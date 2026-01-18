@@ -109,9 +109,6 @@ const DailyLogModal = ({ open, onClose, onSave, selectedDate = null }) => {
           });
         } catch (error) {
           // 404 is expected when no log exists - show empty form
-          if (error.response?.status !== 404) {
-            console.error('Error fetching daily log:', error);
-          }
           // Mark that we don't have existing log
           setHasExistingLog(false);
           // Reset to empty form if no log exists

@@ -103,11 +103,8 @@ class AuthService {
       // In a real app, you'd have a separate /api/user/profile endpoint
       // But since we don't have that, we'll simulate a refresh
       // The user would need to login again to get updated data
-      
-      console.log('User data needs to be refreshed. Please login again to see updated Fitbit connection status.');
       return currentUser;
     } catch (error) {
-      console.error('Failed to refresh user data:', error);
       return null;
     }
   }

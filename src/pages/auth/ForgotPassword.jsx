@@ -58,7 +58,6 @@ const ForgotPassword = () => {
       await authService.forgotPassword(email.trim().toLowerCase());
       setSuccess(true);
     } catch (err) {
-      console.error('Forgot password error:', err);
       const errorMessage = err.response?.data?.message || err.message || 'Failed to send reset email. Please try again.';
       setError(errorMessage);
     } finally {

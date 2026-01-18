@@ -93,12 +93,6 @@ const ResetPassword = () => {
 
     try {
       setLoading(true);
-      console.log('Reset Password Data:', {
-        email: emailFromUrl,
-        securityToken: formData.token,
-        newPassword: formData.newPassword,
-        confirmPassword: formData.confirmPassword
-      });
       await authService.verifyResetToken(
         emailFromUrl, 
         formData.token, 
@@ -112,7 +106,6 @@ const ResetPassword = () => {
         navigate('/login', { replace: true });
       }, 3000);
     } catch (err) {
-      console.error('Reset password error:', err);
       const errorMessage = err.response?.data?.message || err.message || 'Failed to reset password. Please try again.';
       setError(errorMessage);
     } finally {

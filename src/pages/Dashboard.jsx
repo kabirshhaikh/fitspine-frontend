@@ -95,10 +95,7 @@ export default function Dashboard() {
           
           // Use AuthContext method to properly update user state
           updateUserFromResponse(updatedUserData);
-          
-          console.log('User data refreshed after Fitbit connection:', updatedUserData);
         } catch (error) {
-          console.error('Failed to refresh user data after Fitbit connection:', error);
           // Fallback: still show success message even if refresh fails
           // The user can manually refresh the page if needed
         }
@@ -121,7 +118,6 @@ export default function Dashboard() {
       setConnecting(true);
       await fitbitService.connect();
     } catch (error) {
-      console.error('Failed to connect Fitbit:', error);
       setConnecting(false);
     }
   };
@@ -154,7 +150,6 @@ export default function Dashboard() {
         setLogMessage({ show: false, type: '', text: '' });
       }, 5000);
     } catch (error) {
-      console.error('Failed to revoke Fitbit:', error);
       setLogMessage({
         show: true,
         type: 'error',
@@ -176,15 +171,8 @@ export default function Dashboard() {
       setInsightsError(null);
       setLoadingInsights(true);
       
-      console.log('Starting insights generation...');
-      const startTime = Date.now();
-      
       // Wait for insights
       const data = await insightsService.getTodaysInsights();
-      
-      const endTime = Date.now();
-      console.log(`Insights generated successfully in ${endTime - startTime}ms`);
-      console.log('Insights data:', data);
       
       // Set insights and open modal
       setInsights(data);
@@ -193,14 +181,6 @@ export default function Dashboard() {
       // Clear loading state
       setLoadingInsights(false);
     } catch (error) {
-      console.error('Failed to generate insights:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        stack: error.stack
-      });
-      
       // More detailed error message for user
       let errorMessage = 'Failed to generate insights. ';
       
@@ -227,15 +207,8 @@ export default function Dashboard() {
       setViewInsightsError(null);
       setLoadingViewInsights(true);
       
-      console.log('Fetching insights for date:', viewDate);
-      const startTime = Date.now();
-      
       // Try to get existing insight for the selected date
       const data = await insightsService.getAiInsightForDay(viewDate);
-      
-      const endTime = Date.now();
-      console.log(`Insights fetched successfully in ${endTime - startTime}ms`);
-      console.log('Insights data:', data);
       
       // If we have data, open modal
       if (data) {
@@ -249,14 +222,6 @@ export default function Dashboard() {
       // Clear loading state
       setLoadingViewInsights(false);
     } catch (error) {
-      console.error('Failed to fetch insights:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-        stack: error.stack
-      });
-      
       // More detailed error message for user
       let errorMessage = 'Failed to fetch insights. ';
       
@@ -283,12 +248,8 @@ export default function Dashboard() {
       setViewLogError(null);
       setLoadingViewLog(true);
       
-      console.log('Fetching log for date:', viewLogDate);
-      
       // Try to get existing log for the selected date
       const logData = await dailyLogService.getLogForDate(viewLogDate);
-      
-      console.log('Log data fetched successfully:', logData);
       
       // If we have data, open modal with pre-filled data
       if (logData) {
@@ -302,13 +263,6 @@ export default function Dashboard() {
       // Clear loading state
       setLoadingViewLog(false);
     } catch (error) {
-      console.error('Failed to fetch log:', error);
-      console.error('Error details:', {
-        message: error.message,
-        response: error.response?.data,
-        status: error.response?.status,
-      });
-      
       // More detailed error message for user
       let errorMessage = 'Failed to fetch log. ';
       
@@ -334,8 +288,7 @@ export default function Dashboard() {
       // Remove internal flag before sending to API
       const { _isUpdate, ...cleanLogData } = logData;
       
-      const result = await dailyLogService.createDailyLog(cleanLogData);
-      console.log('Daily log saved:', result);
+      await dailyLogService.createDailyLog(cleanLogData);
       
       // Show appropriate success message based on create/update
       setLogMessage({
@@ -352,8 +305,6 @@ export default function Dashboard() {
       }, 5000);
       
     } catch (error) {
-      console.error('Failed to save log:', error);
-      
       // Show error message
       setLogMessage({
         show: true,
