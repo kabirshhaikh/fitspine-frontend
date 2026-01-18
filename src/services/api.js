@@ -38,9 +38,10 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Don't redirect to login for feedback endpoint (allows non-authenticated access)
+      // Don't redirect to login for feedback endpoint or login endpoint (allows non-authenticated access or shows error on login page)
       const isFeedbackEndpoint = (error.config?.url || '').startsWith('/api/feedback');
-      if (!isFeedbackEndpoint) {
+      const isLoginEndpoint = (error.config?.url || '').startsWith('/api/user/login');
+      if (!isFeedbackEndpoint && !isLoginEndpoint) {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         window.location.href = '/login';
