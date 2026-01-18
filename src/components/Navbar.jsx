@@ -50,7 +50,7 @@ export default function Navbar() {
             backgroundClip: 'text',
           }}
         >
-          FitSpine
+          Sphinic
         </Typography>
 
         {/* User menu (Profile + Logout) */}

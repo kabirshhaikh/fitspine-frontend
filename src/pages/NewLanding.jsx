@@ -89,25 +89,6 @@ const NewLanding = () => {
     { number: "4", title: "Track Progress", description: "Monitor your recovery trajectory and disc protection score" }
   ];
 
-  const faqs = [
-    {
-      question: "Is FitSpine a replacement for medical advice?",
-      answer: "No. FitSpine provides insights and recommendations based on your data, but it does not replace professional medical advice. Always consult with your healthcare provider for medical decisions."
-    },
-    {
-      question: "How is my data protected?",
-      answer: "We use industry-standard encryption, JWT authentication, and secure cloud storage. Your health data is private and never shared with third parties."
-    },
-    {
-      question: "Which wearables are supported?",
-      answer: "Currently, Fitbit devices are fully supported and ready to use. Apple Watch, Oura Ring, and Whoop integrations are coming soon. You can also use the platform with manual logging only."
-    },
-    {
-      question: "How accurate are the AI insights?",
-      answer: "Our AI analyzes biomechanical, neurological, and lifestyle patterns using clinically-informed principles. Insights improve as you log more data over time."
-    }
-  ];
-
   return (
     <Box className="new-landing-container">
       {/* Hero Section */}
@@ -259,10 +240,10 @@ const NewLanding = () => {
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
           <Box className="section-content animate-on-scroll">
             <Typography variant="h2" className="section-title">
-              FitSpine: Your AI-Powered Spine Health Partner
+              Sphinic: Your AI-Powered Spine Health Partner
             </Typography>
             <Typography variant="body1" className="section-description">
-              FitSpine combines manual symptom tracking, wearable device integration, and AI-powered clinical insights 
+              Sphinic combines manual symptom tracking, wearable device integration, and AI-powered clinical insights 
               to help you manage chronic spine conditions, recover from injuries, and prevent flare-ups. Our platform 
               thinks like a spine surgeon and physiotherapist combined, providing personalized recommendations based on 
               biomechanical and neurological principles.
@@ -828,49 +809,6 @@ const NewLanding = () => {
         </Container>
       </Box>
 
-      {/* FAQ */}
-      <Box className="section-new section-alt">
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
-          <Box className="section-content animate-on-scroll">
-            <Typography variant="h2" className="section-title">
-              Frequently Asked Questions
-            </Typography>
-            <Box sx={{ mt: { xs: 4, md: 6 }, display: "flex", flexDirection: "column", gap: { xs: 3, md: 4 } }}>
-              {faqs.map((faq, index) => (
-                <Box 
-                  key={index} 
-                  className="faq-item-new"
-                  sx={{ 
-                    mb: { xs: 2, md: 0 },
-                    pb: { xs: 3, md: 4 },
-                    borderBottom: index < faqs.length - 1 ? "1px solid rgba(255, 255, 255, 0.1)" : "none"
-                  }}
-                >
-                  <Typography variant="h5" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.25rem", md: "1.5rem" },
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {faq.question}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {faq.answer}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-
       {/* Final CTA */}
       <Box className="section-new cta-section">
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
@@ -899,8 +837,7 @@ const NewLanding = () => {
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
           <Box sx={{ py: { xs: 3, md: 4 }, textAlign: "center", px: { xs: 2, md: 0 } }}>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)", mb: 2, fontSize: { xs: "0.75rem", md: "0.875rem" }, lineHeight: 1.6 }}>
-              <strong>Medical Disclaimer:</strong> FitSpine provides insights and recommendations based on your data
-              but does not replace professional medical advice. Always consult with your healthcare provider for medical decisions.
+              Sphinic is an informational wellness and data-analysis platform. The content, insights, and outputs provided by Sphinic are for general informational purposes only and are not intended to diagnose, treat, cure, prevent, or manage any disease or medical condition. Sphinic is not a medical device and does not provide medical or clinical advice. Users should not rely on Sphinic for medical decisions and should always consult a qualified healthcare professional for medical concerns.
             </Typography>
             <Box sx={{ mb: 2 }}>
               <Link
@@ -921,7 +858,7 @@ const NewLanding = () => {
             </Box>
             <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2, alignItems: "center" }}>
               <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
-                © 2024 FitSpine. All rights reserved.
+                © 2026 Sphinic. All rights reserved.
               </Typography>
               <Link
                 component={RouterLink}

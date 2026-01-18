@@ -60,74 +60,168 @@ const Privacy = () => {
             <strong>Last Updated:</strong> {new Date().toLocaleDateString()}
           </Typography>
 
+          <Typography variant="body1" sx={{ mb: 4, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.9)" }}>
+            Sphinic ("Sphinic," "we," "our," or "us") respects your privacy. This Privacy Policy explains how we collect, use, disclose, and protect your information when you use our website, applications, and services (collectively, the "Service").
+          </Typography>
+
+          <Typography variant="body1" sx={{ mb: 4, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.9)" }}>
+            By using Sphinic, you agree to the practices described in this Privacy Policy.
+          </Typography>
+
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
             1. Information We Collect
           </Typography>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            We may collect the following categories of information:
+          </Typography>
+          
+          <Typography variant="body1" sx={{ mb: 1, mt: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)", fontWeight: 500 }}>
+            a. Information You Provide
+          </Typography>
+          <Box component="ul" sx={{ mb: 2, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>Account information (such as email address)</li>
+            <li>User-entered wellness or activity data</li>
+            <li>Feedback, messages, or support requests</li>
+          </Box>
+
+          <Typography variant="body1" sx={{ mb: 1, mt: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)", fontWeight: 500 }}>
+            b. Automatically Collected Information
+          </Typography>
+          <Box component="ul" sx={{ mb: 2, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>Device information (browser type, operating system)</li>
+            <li>Usage data (pages visited, interactions, timestamps)</li>
+            <li>Log data and basic analytics information</li>
+          </Box>
+
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            We collect information that you provide directly to us, including your name, email address, health data, activity logs, and any other information you choose to provide. We also collect data from connected wearable devices (such as Fitbit) with your permission.
+            We do not knowingly collect sensitive personal data such as government identifiers or payment information unless explicitly stated.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
             2. How We Use Your Information
           </Typography>
+          <Typography variant="body1" sx={{ mb: 1, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            We use your information to:
+          </Typography>
+          <Box component="ul" sx={{ mb: 2, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>Provide and operate the Service</li>
+            <li>Analyze data to generate informational insights and patterns</li>
+            <li>Improve functionality, performance, and user experience</li>
+            <li>Respond to support requests</li>
+            <li>Maintain security and prevent misuse</li>
+          </Box>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            We use the information we collect to provide, maintain, and improve our services, generate personalized insights, communicate with you, and ensure the security of our platform.
+            Sphinic does not use your data to provide medical advice, diagnosis, or treatment.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            3. Data Storage and Security
+            3. Use of Artificial Intelligence
           </Typography>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            Sphinic uses automated systems and artificial intelligence technologies to analyze user-provided data and generate insights.
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            This means:
+          </Typography>
+          <Box component="ul" sx={{ mb: 3, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>Your data may be processed by algorithmic and AI-based systems</li>
+            <li>We may use trusted third-party AI service providers to support analysis</li>
+            <li>AI systems are used solely to generate informational insights and analytics</li>
+            <li>AI-generated outputs are probabilistic and may not always be accurate or complete.</li>
+          </Box>
+
+          <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
+            4. Data Sharing and Disclosure
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            We may share your information only in the following circumstances:
+          </Typography>
+          <Box component="ul" sx={{ mb: 2, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>With trusted third-party service providers (including cloud infrastructure and AI providers) solely to operate and support the Service</li>
+            <li>When required by law, regulation, or legal process</li>
+            <li>To protect the rights, safety, or security of Sphinic, our users, or others</li>
+          </Box>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            We implement appropriate technical and organizational measures to protect your personal information. However, no method of transmission over the Internet is 100% secure, and we cannot guarantee absolute security.
+            We do not sell your personal data.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            4. Sharing Your Information
+            5. Data Retention
           </Typography>
+          <Typography variant="body1" sx={{ mb: 1, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            We retain personal data only for as long as necessary to:
+          </Typography>
+          <Box component="ul" sx={{ mb: 2, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>Provide the Service</li>
+            <li>Comply with legal obligations</li>
+            <li>Resolve disputes</li>
+            <li>Enforce our agreements</li>
+          </Box>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            We do not sell your personal information. We may share your information only in limited circumstances, such as with your consent, to comply with legal obligations, or to protect our rights and safety.
+            You may request deletion of your data, subject to legal and operational requirements.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            5. Your Rights
+            6. Data Security
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            We use reasonable administrative, technical, and organizational measures to protect your information.
           </Typography>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            You have the right to access, update, or delete your personal information at any time through your account settings. You may also opt out of certain data collection practices.
+            However, no system is completely secure, and we cannot guarantee absolute security of your data.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            6. Cookies and Tracking
+            7. Your Rights and Choices
           </Typography>
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            We use cookies and similar tracking technologies to track activity on our service and hold certain information. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+          <Typography variant="body1" sx={{ mb: 1, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            Depending on your location, you may have the right to:
           </Typography>
-
-          <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            7. Third-Party Services
-          </Typography>
-          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            Our service may contain links to third-party websites or services. We are not responsible for the privacy practices of these third parties. We encourage you to read their privacy policies.
+          <Box component="ul" sx={{ mb: 2, pl: 3, color: "rgba(255, 255, 255, 0.8)" }}>
+            <li>Access the personal data we hold about you</li>
+            <li>Request correction or deletion of your data</li>
+            <li>Object to or restrict certain processing activities</li>
+          </Box>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            Requests can be made by contacting us at{" "}
+            <Box component="span" sx={{ color: "#4facfe" }}>support@sphinic.com</Box>.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
             8. Children's Privacy
           </Typography>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            Our service is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13.
+            Sphinic is not intended for use by individuals under the age of 18. We do not knowingly collect personal data from children.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            9. Changes to This Policy
+            9. Third-Party Services
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            The Service may rely on third-party services (such as hosting providers, analytics tools, or AI providers). Their use of data is governed by their own privacy policies.
           </Typography>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date.
+            Sphinic is not responsible for third-party privacy practices.
           </Typography>
 
           <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
-            10. Contact Us
+            10. Changes to This Privacy Policy
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            We may update this Privacy Policy from time to time. Changes will be reflected by updating the "Last Updated" date.
           </Typography>
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
-            If you have any questions about this Privacy Policy, please contact us through the feedback form on our website.
+            Continued use of the Service after changes constitutes acceptance of the updated Privacy Policy.
+          </Typography>
+
+          <Typography variant="h6" sx={{ mb: 2, mt: 4, color: "#4facfe", fontWeight: 600 }}>
+            11. Contact Us
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.8)" }}>
+            If you have questions about this Privacy Policy or our data practices, contact us at:
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "#4facfe" }}>
+            support@sphinic.com
           </Typography>
         </Box>
       </Container>

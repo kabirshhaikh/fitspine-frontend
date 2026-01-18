@@ -982,7 +982,7 @@ export default function Dashboard() {
                 px: 2,
               }}
             >
-              ⚠️ Disclaimer: The information and insights provided are for informational purposes only and are not intended as medical advice, diagnosis, or treatment. Always seek the advice of your physician or other qualified health provider with any questions you may have regarding a medical condition.
+              ⚠️ Disclaimer: Sphinic is an informational wellness and data-analysis platform. The content, insights, and outputs provided by Sphinic are for general informational purposes only and are not intended to diagnose, treat, cure, prevent, or manage any disease or medical condition. Sphinic is not a medical device and does not provide medical or clinical advice. Users should not rely on Sphinic for medical decisions and should always consult a qualified healthcare professional for medical concerns.
             </Typography>
           </Box>
           <WeeklyGraphWidget />

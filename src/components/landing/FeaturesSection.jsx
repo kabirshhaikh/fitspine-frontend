@@ -10,7 +10,7 @@ const FeaturesSection = () => {
       icon: TrendingUp,
       title: "Your habits tell the story",
       description:
-        "Every day, just log how your spine feels — pain level, stiffness, sitting hours, or stress. FitSpine learns from these entries and combines them with your wearable data to generate your daily Disc Protection Score and actionable insights. Small habits, big awareness.",
+        "Every day, just log how your spine feels — pain level, stiffness, sitting hours, or stress. Sphinic learns from these entries and combines them with your wearable data to generate your daily Disc Protection Score and actionable insights. Small habits, big awareness.",
       color: "#4fc3f7",
       hoverColor: "rgba(79, 195, 247, 0.4)",
       borderHoverColor: "rgba(79, 195, 247, 0.3)",
@@ -35,7 +35,7 @@ const FeaturesSection = () => {
       icon: Psychology,
       title: "AI that learns from your lifestyle",
       description:
-        "FitSpine's AI studies patterns in your sleep, activity, heart rate and daily logs to uncover early signs of strain and stress. It turns your data into daily Disc Protection Insights — showing what's improving, what needs attention, and how your habits shape your recovery journey. Gentle nudges help you stay consistent and protect your spine over time.",
+        "Sphinic's AI studies patterns in your sleep, activity, heart rate and daily logs to uncover early signs of strain and stress. It turns your data into daily Disc Protection Insights — showing what's improving, what needs attention, and how your habits shape your recovery journey. Gentle nudges help you stay consistent and protect your spine over time.",
       color: "#4caf50",
       hoverColor: "rgba(76, 175, 80, 0.4)",
       borderHoverColor: "rgba(76, 175, 80, 0.3)",
@@ -171,7 +171,7 @@ const FeaturesSection = () => {
                       <Box className="security-banner">
                         <Box className="security-icon">🔒</Box>
                         <Typography variant="body2" className="security-text">
-                          FitSpine connects securely using official APIs and
+                          Sphinic connects securely using official APIs and
                           never stores your wearable credentials. Your health
                           data remains private and encrypted.
                         </Typography>

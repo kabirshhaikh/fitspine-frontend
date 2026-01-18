@@ -33,7 +33,7 @@ const CTASection = () => {
               className="cta-subtitle"
             >
               We understand the frustration of chronic back pain. That's why
-              we built FitSpine - to give you control over your spine health
+              we built Sphinic - to give you control over your spine health
               through data, insights, and personalized recommendations. Start
               with simple daily logs, connect your wearable device, and watch
               as your understanding of your body transforms into actionable

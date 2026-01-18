@@ -19,10 +19,7 @@ const Footer = () => {
         className="footer-disclaimer"
         sx={{ textAlign: 'center', width: '100%', mb: 2 }}
       >
-        Disclaimer: FitSpine does not provide medical advice, diagnosis, or
-        treatment. The insights and scores are for informational and educational
-        purposes only. Always consult a qualified healthcare professional for
-        medical concerns or before making changes to your health routine.
+        Sphinic is an informational wellness and data-analysis platform. The content, insights, and outputs provided by Sphinic are for general informational purposes only and are not intended to diagnose, treat, cure, prevent, or manage any disease or medical condition. Sphinic is not a medical device and does not provide medical or clinical advice. Users should not rely on Sphinic for medical decisions and should always consult a qualified healthcare professional for medical concerns.
       </Typography>
       <Box sx={{ textAlign: 'center', mt: 2 }}>
         <Link

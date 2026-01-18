@@ -1,4 +1,4 @@
-# FitSpine Authentication App
+# Sphinic Authentication App
 
 A simple React application that provides user authentication functionality with login and registration features.
 
@@ -50,7 +50,7 @@ src/
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd fitspine-auth
+cd sphinic-auth
 ```
 
 2. Install dependencies:

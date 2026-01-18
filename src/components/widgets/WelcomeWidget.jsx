@@ -8,7 +8,7 @@ export default function WelcomeWidget() {
     <WidgetShell title="Welcome to Your Spine Health Hub">
       <Box sx={{ mb: 3 }}>
         <Typography variant="h6" sx={{ mb: 2, fontWeight: 500, color: 'text.primary' }}>
-          This is your FitSpine dashboard. We'll surface your spine routine, logs, and insights here.
+          This is your Sphinic dashboard. We'll surface your spine routine, logs, and insights here.
         </Typography>
         
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>

@@ -55,7 +55,7 @@ const StorySection = () => {
       title: "Enhanced Insights",
       subtitle: "Connect + Log for Best Results",
       description:
-        "FitSpine's AI combines your daily logs and wearable data to create meaningful insights — tracking what's improving, what's worsening, and what may be causing your flare-ups. You'll receive personalized summaries each day, including your Disc Protection Score, recovery insights, and simple, data-backed advice to help you protect your spine.",
+        "Sphinic's AI combines your daily logs and wearable data to create meaningful insights — tracking what's improving, what's worsening, and what may be causing your flare-ups. You'll receive personalized summaries each day, including your Disc Protection Score, recovery insights, and simple, data-backed advice to help you protect your spine.",
       additionalText:
         "For the most accurate results, we recommend connecting your wearable device along with adding manual logs about your pain levels, posture, and activities — the more context you provide, the smarter your insights become.",
       color: "#ff9800",
@@ -83,7 +83,7 @@ const StorySection = () => {
               mx: 'auto'
             }}
           >
-            From data collection to actionable insights - see how FitSpine transforms your daily habits into powerful health intelligence.
+            From data collection to actionable insights - see how Sphinic transforms your daily habits into powerful health intelligence.
           </Typography>
         </Box>
 

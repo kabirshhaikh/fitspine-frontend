@@ -274,7 +274,7 @@ const Feedback = () => {
               fontSize: { xs: '0.9rem', sm: '1rem' },
             }}
           >
-            Help us improve FitSpine
+            Help us improve Sphinic
           </Typography>
         </Box>
 
