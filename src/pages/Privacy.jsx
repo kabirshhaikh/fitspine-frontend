@@ -57,7 +57,7 @@ const Privacy = () => {
           }}
         >
           <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.9)" }}>
-            <strong>Last Updated:</strong> {new Date().toLocaleDateString()}
+            <strong>Version:</strong> v1.0 | <strong>Last Updated:</strong> {new Date().toLocaleDateString()}
           </Typography>
 
           <Typography variant="body1" sx={{ mb: 4, lineHeight: 1.8, color: "rgba(255, 255, 255, 0.9)" }}>
