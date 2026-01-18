@@ -33,9 +33,10 @@ import dailyLogService from "../services/dailyLog.service";
 import insightsService from "../services/insights.service";
 import InsightsModal from "../components/InsightsModal";
 import WeeklyGraphWidget from "../components/widgets/WeeklyGraphWidget";
+import api from "../services/api";
 
 export default function Dashboard() {
-  const { user, isAuthenticated, loading } = useAuth();
+  const { user, isAuthenticated, loading, updateUserFromResponse } = useAuth();
   const navigate = useNavigate();
   const [connecting, setConnecting] = useState(false);
   const [revoking, setRevoking] = useState(false);
@@ -80,32 +81,39 @@ export default function Dashboard() {
 
   // Check for OAuth callback success
   useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    if (urlParams.get('fitbit') === 'connected' && !hasProcessedFitbitConnection.current) {
-      hasProcessedFitbitConnection.current = true;
-      setShowSuccessMessage(true);
-      
-      // Update user context to reflect Fitbit connection
-      // Since backend has updated the user's wearable status,
-      // we need to update the frontend context immediately
-      const updatedUser = {
-        ...user,
-        isWearableConnected: true,
-        wearableType: 'FITBIT'
-      };
-      
-      // Update localStorage and context
-      localStorage.setItem('user', JSON.stringify(updatedUser));
-      window.dispatchEvent(new CustomEvent('userUpdated', { detail: updatedUser }));
-      
-      // Clear the URL parameter
-      window.history.replaceState({}, document.title, '/dashboard');
-      
-      // Hide success message after 5 seconds
-      setTimeout(() => {
-        setShowSuccessMessage(false);
-      }, 5000);
-    }
+    const handleFitbitCallback = async () => {
+      const urlParams = new URLSearchParams(location.search);
+      if (urlParams.get('fitbit') === 'connected' && !hasProcessedFitbitConnection.current) {
+        hasProcessedFitbitConnection.current = true;
+        setShowSuccessMessage(true);
+        
+        // Fetch fresh user data from backend after Fitbit connection
+        // The backend has updated the user's wearable status, so we need to get the complete user data
+        try {
+          const response = await api.get('/api/user/me');
+          const updatedUserData = response.data;
+          
+          // Use AuthContext method to properly update user state
+          updateUserFromResponse(updatedUserData);
+          
+          console.log('User data refreshed after Fitbit connection:', updatedUserData);
+        } catch (error) {
+          console.error('Failed to refresh user data after Fitbit connection:', error);
+          // Fallback: still show success message even if refresh fails
+          // The user can manually refresh the page if needed
+        }
+        
+        // Clear the URL parameter
+        window.history.replaceState({}, document.title, '/dashboard');
+        
+        // Hide success message after 5 seconds
+        setTimeout(() => {
+          setShowSuccessMessage(false);
+        }, 5000);
+      }
+    };
+
+    handleFitbitCallback();
   }, [location]); // Removed 'user' from dependency array to prevent infinite loop
 
   const handleConnectFitbit = async () => {
