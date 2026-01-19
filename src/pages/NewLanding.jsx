@@ -38,47 +38,47 @@ const NewLanding = () => {
     {
       icon: <Psychology />,
       title: "AI-Powered Daily Insights",
-      description: "Personalized insights analyzing your day against a 7-day baseline with recovery trajectory analysis and clinically-informed recommendations."
+      description: "Daily educational insights that analyze your activity patterns against a rolling 7-day baseline, highlighting recovery trends and behavioral signals for spine health awareness."
     },
     {
       icon: <Shield />,
       title: "Disc Protection Score",
-      description: "Daily score (0-100) measuring how well-protected your spine was based on activity, sleep, stress, and pain metrics."
+      description: "A daily informational score (0–100) reflecting spine-supportive habits based on activity, sleep, stress, and self-reported discomfort metrics."
     },
     {
       icon: <Assessment />,
       title: "Comprehensive Symptom Tracking",
-      description: "Track pain levels, flare-ups, numbness, stiffness, stress, activity, sleep, and more with detailed daily logs."
+      description: "Track pain levels, flare-ups, numbness, stiffness, stress, activity, and sleep through detailed daily logs to better understand personal patterns over time."
     },
     {
       icon: <Watch />,
       title: "Wearable Device Integration",
-      description: "Seamless Fitbit connection with automatic data collection for steps, heart rate, sleep quality, and activity."
+      description: "Seamless Fitbit integration with automatic collection of steps, heart rate, sleep quality, and activity data."
     },
     {
       icon: <Warning />,
-      title: "Flare-Up Management",
-      description: "Identifies potential triggers before flare-ups occur and provides early warning based on activity, sleep, and stress patterns."
+      title: "Flare-Up Pattern Awareness",
+      description: "Highlights activity, sleep, and stress patterns commonly associated with flare-ups to support early awareness and habit adjustments."
     },
     {
       icon: <TrendingUp />,
-      title: "Risk Forecasting",
-      description: "Predictive analytics forecasting flare-up risk (0-10 scale) with risk buckets: Safe, Caution, Elevated, High Risk."
+      title: "Risk Awareness Indicators",
+      description: "Trend-based risk signals (0–10 scale) that categorize flare-up-related patterns into awareness levels such as Safe, Caution, Elevated, and High."
     },
     {
       icon: <LocalHospital />,
-      title: "Personalized Medical Profile",
-      description: "Track spine injuries, affected disc levels, and surgery history. Platform adjusts recommendations based on your condition."
+      title: "Personal Spine Profile",
+      description: "Track spine injuries, affected disc levels, and surgery history to personalize data visualization and insight context."
     },
     {
       icon: <SmartToy />,
-      title: "Actionable Interventions",
-      description: "Daily recommendations for spine-safe activities with timing, duration guidance, and physiological rationale."
+      title: "Actionable Wellness Guidance",
+      description: "Daily spine-friendly activity suggestions with general timing and duration context, designed for education and habit support."
     },
     {
       icon: <Analytics />,
       title: "Comprehensive Dashboard",
-      description: "Weekly trend graphs, pain patterns, activity correlation, heart rate insights, and sleep quality trends."
+      description: "Weekly trend visualizations covering pain patterns, activity correlations, heart rate metrics, and sleep quality insights."
     }
   ];
 
