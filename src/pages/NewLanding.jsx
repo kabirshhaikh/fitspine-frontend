@@ -90,38 +90,307 @@ const NewLanding = () => {
     <Box className="new-landing-container">
       {/* Hero Section */}
       <Box className="hero-section-new">
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-          <Box className="hero-content-new animate-on-scroll">
-            <Typography 
-              variant="h1" 
-              className="hero-title-new"
-              sx={{ 
-                wordBreak: "break-word",
-                overflowWrap: "break-word",
-                maxWidth: "100%"
+        <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%" }}>
+          <Box 
+            sx={{ 
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+              gap: { xs: 4, md: 6, lg: 8 },
+              alignItems: "center",
+              minHeight: "100vh",
+              py: { xs: 6, md: 8 }
+            }}
+          >
+            {/* Left Side - Content */}
+            <Box 
+              className="hero-content-new animate-on-scroll"
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: { xs: 3, sm: 4, md: 5 },
+                order: { xs: 2, md: 1 }
               }}
             >
-              Sphinic: AI-Powered Spine Health Tracking
-            </Typography>
-            <Typography variant="body1" className="hero-subtitle-new" sx={{ 
-              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
-              maxWidth: "700px",
-              lineHeight: 1.7,
-              color: "rgba(255, 255, 255, 0.85)",
-              mt: 2
-            }}>
-              Track your symptoms, connect your wearable, and get AI-powered insights to prevent flare-ups and protect your spine.
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleGetStarted}
-              endIcon={<ArrowForward />}
-              className="cta-button-new"
-              sx={{ fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.4rem" } }}
+              {/* Badge */}
+              <Box
+                sx={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: 1.5,
+                  background: "rgba(79, 172, 254, 0.15)",
+                  backdropFilter: "blur(10px)",
+                  border: "1px solid rgba(79, 172, 254, 0.3)",
+                  borderRadius: "50px",
+                  padding: { xs: "8px 16px", sm: "10px 20px" },
+                  width: "fit-content",
+                  mb: { xs: 1, sm: 2 }
+                }}
+              >
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    background: "linear-gradient(135deg, #4facfe, #00f2fe)",
+                    animation: "pulse 2s ease-in-out infinite",
+                    "@keyframes pulse": {
+                      "0%, 100%": { opacity: 1, transform: "scale(1)" },
+                      "50%": { opacity: 0.7, transform: "scale(1.2)" }
+                    }
+                  }}
+                />
+                <Typography
+                  sx={{
+                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
+                    fontWeight: 600,
+                    color: "#4facfe",
+                    letterSpacing: "0.5px"
+                  }}
+                >
+                  AI-Powered Health Insights
+                </Typography>
+              </Box>
+
+              {/* Main Headline */}
+              <Typography 
+                variant="h1" 
+                sx={{ 
+                  fontSize: { xs: "2.5rem", sm: "3.5rem", md: "4.5rem", lg: "5.5rem" },
+                  fontWeight: 900,
+                  lineHeight: 1.1,
+                  letterSpacing: "-0.02em",
+                  background: "linear-gradient(135deg, #ffffff 0%, #a8edea 30%, #4facfe 60%, #00f2fe 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                  mb: { xs: 1, sm: 2 }
+                }}
+              >
+                Take Control of Your Spine Health
+              </Typography>
+
+              {/* Subheadline */}
+              <Typography 
+                variant="h5"
+                sx={{ 
+                  fontSize: { xs: "1.125rem", sm: "1.25rem", md: "1.5rem" },
+                  fontWeight: 400,
+                  lineHeight: 1.6,
+                  color: "rgba(255, 255, 255, 0.8)",
+                  maxWidth: "600px"
+                }}
+              >
+                Real-time tracking, AI insights, and personalized guidance to prevent flare-ups and protect your spine.
+              </Typography>
+
+              {/* CTA Button */}
+              <Box
+                sx={{
+                  mt: { xs: 2, sm: 3 }
+                }}
+              >
+                <Button
+                  variant="contained"
+                  size="large"
+                  onClick={handleGetStarted}
+                  endIcon={<ArrowForward />}
+                  className="cta-button-new"
+                  sx={{ 
+                    fontSize: { xs: "1rem", sm: "1.125rem", md: "1.25rem" },
+                    padding: { xs: "14px 32px", sm: "16px 40px" },
+                    borderRadius: "12px",
+                    textTransform: "none",
+                    fontWeight: 600
+                  }}
+                >
+                  Get Started Free
+                </Button>
+              </Box>
+            </Box>
+
+            {/* Right Side - Animated Visualization */}
+            <Box
+              sx={{
+                position: "relative",
+                order: { xs: 1, md: 2 },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: { xs: "300px", sm: "400px", md: "500px" },
+                width: "100%"
+              }}
             >
-              Start Tracking Your Spine Health
-            </Button>
+              {/* Animated Container */}
+              <Box
+                sx={{
+                  position: "relative",
+                  width: "100%",
+                  height: "100%",
+                  maxWidth: { xs: "100%", md: "500px", lg: "550px" },
+                  aspectRatio: "1/1",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center"
+                }}
+              >
+                {/* Animated Orbiting Rings */}
+                {[0, 1, 2].map((ring, i) => (
+                  <Box
+                    key={i}
+                    sx={{
+                      position: "absolute",
+                      width: `${60 + i * 25}%`,
+                      height: `${60 + i * 25}%`,
+                      border: `2px solid rgba(79, 172, 254, ${0.3 - i * 0.1})`,
+                      borderRadius: "50%",
+                      animation: `rotate${i} ${8 + i * 2}s linear infinite`,
+                      "@keyframes rotate0": {
+                        "0%": { transform: "rotate(0deg)" },
+                        "100%": { transform: "rotate(360deg)" }
+                      },
+                      "@keyframes rotate1": {
+                        "0%": { transform: "rotate(360deg)" },
+                        "100%": { transform: "rotate(0deg)" }
+                      },
+                      "@keyframes rotate2": {
+                        "0%": { transform: "rotate(180deg)" },
+                        "100%": { transform: "rotate(540deg)" }
+                      }
+                    }}
+                  />
+                ))}
+
+                {/* Central Pulsing Core */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    width: { xs: "120px", sm: "150px", md: "180px" },
+                    height: { xs: "120px", sm: "150px", md: "180px" },
+                    borderRadius: "50%",
+                    background: "radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.3) 50%, transparent 70%)",
+                    animation: "pulseCore 3s ease-in-out infinite",
+                    "@keyframes pulseCore": {
+                      "0%, 100%": { 
+                        transform: "scale(1)",
+                        opacity: 0.8
+                      },
+                      "50%": { 
+                        transform: "scale(1.2)",
+                        opacity: 1
+                      }
+                    },
+                    filter: "blur(20px)"
+                  }}
+                />
+
+                {/* Floating Particles */}
+                {Array.from({ length: 20 }).map((_, i) => {
+                  const angle = (i * 18) * Math.PI / 180;
+                  const radius = 40 + (i % 3) * 15;
+                  return (
+                    <Box
+                      key={i}
+                      sx={{
+                        position: "absolute",
+                        width: { xs: 6, sm: 8 },
+                        height: { xs: 6, sm: 8 },
+                        borderRadius: "50%",
+                        background: "linear-gradient(135deg, #4facfe, #00f2fe)",
+                        left: `calc(50% + ${Math.cos(angle) * radius}% - 4px)`,
+                        top: `calc(50% + ${Math.sin(angle) * radius}% - 4px)`,
+                        boxShadow: "0 0 12px rgba(79, 172, 254, 0.8)",
+                        animation: `particleFloat ${3 + (i % 3) * 0.5}s ease-in-out infinite`,
+                        animationDelay: `${i * 0.1}s`,
+                        "@keyframes particleFloat": {
+                          "0%, 100%": {
+                            transform: "translate(0, 0) scale(1)",
+                            opacity: 0.6
+                          },
+                          "50%": {
+                            transform: "translate(0, -20px) scale(1.3)",
+                            opacity: 1
+                          }
+                        }
+                      }}
+                    />
+                  );
+                })}
+
+                {/* Data Stream Particles */}
+                {Array.from({ length: 12 }).map((_, i) => (
+                  <Box
+                    key={`stream-${i}`}
+                    sx={{
+                      position: "absolute",
+                      width: "3px",
+                      height: "20px",
+                      background: "linear-gradient(180deg, #4facfe, #00f2fe)",
+                      borderRadius: "2px",
+                      left: `${20 + (i % 4) * 20}%`,
+                      top: `${10 + (i % 3) * 30}%`,
+                      boxShadow: "0 0 8px rgba(79, 172, 254, 0.6)",
+                      animation: `dataStream ${2 + (i % 2) * 0.5}s ease-in-out infinite`,
+                      animationDelay: `${i * 0.15}s`,
+                      "@keyframes dataStream": {
+                        "0%": {
+                          transform: "translateY(-100px) scale(0.5)",
+                          opacity: 0
+                        },
+                        "50%": {
+                          opacity: 1
+                        },
+                        "100%": {
+                          transform: "translateY(100px) scale(0.5)",
+                          opacity: 0
+                        }
+                      }
+                    }}
+                  />
+                ))}
+
+                {/* Health Indicator Waves */}
+                <Box
+                  sx={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    border: "3px solid rgba(79, 172, 254, 0.2)",
+                    animation: "waveExpand 4s ease-out infinite",
+                    "@keyframes waveExpand": {
+                      "0%": {
+                        transform: "scale(0.8)",
+                        opacity: 0.8
+                      },
+                      "100%": {
+                        transform: "scale(1.4)",
+                        opacity: 0
+                      }
+                    }
+                  }}
+                />
+                <Box
+                  sx={{
+                    position: "absolute",
+                    width: "100%",
+                    height: "100%",
+                    borderRadius: "50%",
+                    border: "3px solid rgba(0, 242, 254, 0.2)",
+                    animation: "waveExpand 4s ease-out infinite 1s",
+                    "@keyframes waveExpand": {
+                      "0%": {
+                        transform: "scale(0.8)",
+                        opacity: 0.8
+                      },
+                      "100%": {
+                        transform: "scale(1.4)",
+                        opacity: 0
+                      }
+                    }
+                  }}
+                />
+              </Box>
+            </Box>
           </Box>
         </Container>
       </Box>
