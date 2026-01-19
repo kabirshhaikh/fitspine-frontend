@@ -1232,8 +1232,8 @@ const NewLanding = () => {
 
       {/* Footer */}
       <Box className="footer-new">
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
-          <Box sx={{ py: { xs: 3, md: 4 }, textAlign: "center", px: { xs: 2, md: 0 } }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 1, sm: 2, md: 4 } }}>
+          <Box sx={{ py: { xs: 3, md: 4 }, textAlign: "center", px: { xs: 1, sm: 1, md: 0 } }}>
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)", mb: 2, fontSize: { xs: "0.75rem", md: "0.875rem" }, lineHeight: 1.6 }}>
               Sphinic is an informational wellness and data-analysis platform. The content, insights, and outputs provided by Sphinic are for general informational purposes only and are not intended to diagnose, treat, cure, prevent, or manage any disease or medical condition. Sphinic is not a medical device and does not provide medical or clinical advice. Users should not rely on Sphinic for medical decisions and should always consult a qualified healthcare professional for medical concerns.
             </Typography>
@@ -1254,8 +1254,25 @@ const NewLanding = () => {
                 Share Feedback
               </Link>
             </Box>
-            <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center", gap: 2, alignItems: "center" }}>
-              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
+            <Box sx={{ 
+              display: "flex", 
+              flexWrap: "nowrap", 
+              justifyContent: "center", 
+              gap: { xs: 0.75, sm: 1.5, md: 2 }, 
+              alignItems: "center",
+              width: "100%",
+              overflow: "visible",
+              whiteSpace: "nowrap",
+              flexShrink: 0
+            }}>
+              <Typography variant="body2" sx={{ 
+                color: "rgba(255,255,255,0.5)", 
+                fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" },
+                whiteSpace: "nowrap",
+                flexShrink: 0,
+                overflow: "visible",
+                textOverflow: "clip"
+              }}>
                 © 2026 Sphinic. All rights reserved.
               </Typography>
               <Link
@@ -1264,7 +1281,10 @@ const NewLanding = () => {
                 sx={{
                   color: "rgba(255,255,255,0.7)",
                   textDecoration: "none",
-                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" },
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  overflow: "visible",
                   "&:hover": {
                     color: "#4facfe",
                     textDecoration: "underline",
@@ -1273,7 +1293,12 @@ const NewLanding = () => {
               >
                 Privacy Policy
               </Link>
-              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.75rem", md: "0.875rem" } }}>
+              <Typography variant="body2" sx={{ 
+                color: "rgba(255,255,255,0.5)", 
+                fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" },
+                whiteSpace: "nowrap",
+                flexShrink: 0
+              }}>
                 |
               </Typography>
               <Link
@@ -1282,7 +1307,10 @@ const NewLanding = () => {
                 sx={{
                   color: "rgba(255,255,255,0.7)",
                   textDecoration: "none",
-                  fontSize: { xs: "0.75rem", md: "0.875rem" },
+                  fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" },
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  overflow: "visible",
                   "&:hover": {
                     color: "#4facfe",
                     textDecoration: "underline",
