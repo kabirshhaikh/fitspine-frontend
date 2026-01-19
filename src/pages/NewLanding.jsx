@@ -208,7 +208,7 @@ const NewLanding = () => {
               </Box>
             </Box>
 
-            {/* Right Side - Animated Visualization */}
+            {/* Right Side - Rotating Spine Video */}
             <Box
               sx={{
                 position: "relative",
@@ -220,7 +220,7 @@ const NewLanding = () => {
                 width: "100%"
               }}
             >
-              {/* Animated Container */}
+              {/* Video Container */}
               <Box
                 sx={{
                   position: "relative",
@@ -230,161 +230,226 @@ const NewLanding = () => {
                   aspectRatio: "1/1",
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "center",
+                  borderRadius: "20px",
+                  overflow: "hidden",
+                  boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(79, 172, 254, 0.2)",
+                  border: "1px solid rgba(79, 172, 254, 0.2)"
                 }}
               >
-                {/* Animated Orbiting Rings */}
-                {[0, 1, 2].map((ring, i) => (
-                  <Box
-                    key={i}
-                    sx={{
-                      position: "absolute",
-                      width: `${60 + i * 25}%`,
-                      height: `${60 + i * 25}%`,
-                      border: `2px solid rgba(79, 172, 254, ${0.3 - i * 0.1})`,
-                      borderRadius: "50%",
-                      animation: `rotate${i} ${8 + i * 2}s linear infinite`,
-                      "@keyframes rotate0": {
-                        "0%": { transform: "rotate(0deg)" },
-                        "100%": { transform: "rotate(360deg)" }
-                      },
-                      "@keyframes rotate1": {
-                        "0%": { transform: "rotate(360deg)" },
-                        "100%": { transform: "rotate(0deg)" }
-                      },
-                      "@keyframes rotate2": {
-                        "0%": { transform: "rotate(180deg)" },
-                        "100%": { transform: "rotate(540deg)" }
-                      }
-                    }}
-                  />
-                ))}
-
-                {/* Central Pulsing Core */}
+                {/* 3D Rotating Spine Animation */}
                 <Box
                   sx={{
-                    position: "absolute",
-                    width: { xs: "120px", sm: "150px", md: "180px" },
-                    height: { xs: "120px", sm: "150px", md: "180px" },
-                    borderRadius: "50%",
-                    background: "radial-gradient(circle, rgba(79, 172, 254, 0.4) 0%, rgba(0, 242, 254, 0.3) 50%, transparent 70%)",
-                    animation: "pulseCore 3s ease-in-out infinite",
-                    "@keyframes pulseCore": {
-                      "0%, 100%": { 
-                        transform: "scale(1)",
-                        opacity: 0.8
-                      },
-                      "50%": { 
-                        transform: "scale(1.2)",
-                        opacity: 1
-                      }
-                    },
-                    filter: "blur(20px)"
+                    position: "relative",
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    perspective: "1000px",
+                    zIndex: 1
                   }}
-                />
+                >
+                  {/* Spine Container with 3D Rotation */}
+                  <Box
+                    sx={{
+                      position: "relative",
+                      width: { xs: "200px", sm: "250px", md: "300px" },
+                      height: { xs: "300px", sm: "375px", md: "450px" },
+                      transformStyle: "preserve-3d",
+                      animation: "spineRotate 8s linear infinite",
+                      "@keyframes spineRotate": {
+                        "0%": {
+                          transform: "rotateY(0deg) rotateX(5deg)"
+                        },
+                        "100%": {
+                          transform: "rotateY(360deg) rotateX(5deg)"
+                        }
+                      }
+                    }}
+                  >
+                    {/* Spine Vertebrae */}
+                    {Array.from({ length: 24 }).map((_, i) => {
+                      const height = 100 / 24;
+                      const yPos = (i - 12) * (height * 0.8);
+                      const scale = 0.6 + (Math.abs(i - 12) / 12) * 0.4;
+                      const delay = i * 0.05;
+                      
+                      return (
+                        <Box
+                          key={`vertebra-${i}`}
+                          sx={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            width: { xs: "40px", sm: "50px", md: "60px" },
+                            height: { xs: "12px", sm: "15px", md: "18px" },
+                            transform: `translate(-50%, -50%) translateY(${yPos}px) scale(${scale})`,
+                            transformStyle: "preserve-3d",
+                            animation: `vertebraPulse ${2 + (i % 3) * 0.3}s ease-in-out infinite`,
+                            animationDelay: `${delay}s`,
+                            "@keyframes vertebraPulse": {
+                              "0%, 100%": {
+                                opacity: 0.7,
+                                filter: "brightness(1)"
+                              },
+                              "50%": {
+                                opacity: 1,
+                                filter: "brightness(1.3)"
+                              }
+                            }
+                          }}
+                        >
+                          {/* Vertebra Body */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              width: "100%",
+                              height: "100%",
+                              background: `linear-gradient(135deg, 
+                                rgba(79, 172, 254, ${0.6 + scale * 0.2}) 0%, 
+                                rgba(0, 242, 254, ${0.7 + scale * 0.2}) 50%, 
+                                rgba(79, 172, 254, ${0.5 + scale * 0.2}) 100%)`,
+                              borderRadius: "8px",
+                              border: "1px solid rgba(79, 172, 254, 0.8)",
+                              boxShadow: `
+                                0 0 15px rgba(79, 172, 254, 0.6),
+                                0 0 30px rgba(79, 172, 254, 0.3),
+                                inset 0 0 10px rgba(79, 172, 254, 0.2)
+                              `,
+                              transform: "translateZ(0px)"
+                            }}
+                          />
+                          {/* Vertebra Highlight */}
+                          <Box
+                            sx={{
+                              position: "absolute",
+                              top: "20%",
+                              left: "20%",
+                              width: "60%",
+                              height: "60%",
+                              background: "radial-gradient(circle, rgba(255, 255, 255, 0.4) 0%, transparent 70%)",
+                              borderRadius: "50%",
+                              filter: "blur(4px)"
+                            }}
+                          />
+                        </Box>
+                      );
+                    })}
 
-                {/* Floating Particles */}
-                {Array.from({ length: 20 }).map((_, i) => {
-                  const angle = (i * 18) * Math.PI / 180;
-                  const radius = 40 + (i % 3) * 15;
-                  return (
+                    {/* Central Spine Column */}
                     <Box
-                      key={i}
                       sx={{
                         position: "absolute",
-                        width: { xs: 6, sm: 8 },
-                        height: { xs: 6, sm: 8 },
+                        left: "50%",
+                        top: "50%",
+                        width: { xs: "8px", sm: "10px", md: "12px" },
+                        height: "90%",
+                        background: "linear-gradient(180deg, rgba(79, 172, 254, 0.8) 0%, rgba(0, 242, 254, 0.9) 50%, rgba(79, 172, 254, 0.8) 100%)",
+                        transform: "translate(-50%, -50%)",
+                        borderRadius: "6px",
+                        boxShadow: "0 0 20px rgba(79, 172, 254, 0.6), inset 0 0 10px rgba(79, 172, 254, 0.3)",
+                        zIndex: -1
+                      }}
+                    />
+
+                    {/* Connecting Lines */}
+                    {Array.from({ length: 23 }).map((_, i) => {
+                      const yPos = ((i - 11.5) * (100 / 24) * 0.8);
+                      return (
+                        <Box
+                          key={`connector-${i}`}
+                          sx={{
+                            position: "absolute",
+                            left: "50%",
+                            top: "50%",
+                            width: "2px",
+                            height: { xs: "10px", sm: "12px", md: "15px" },
+                            background: "linear-gradient(180deg, rgba(79, 172, 254, 0.6), rgba(0, 242, 254, 0.6))",
+                            transform: `translate(-50%, -50%) translateY(${yPos}px)`,
+                            boxShadow: "0 0 8px rgba(79, 172, 254, 0.4)",
+                            zIndex: -1
+                          }}
+                        />
+                      );
+                    })}
+                  </Box>
+
+                  {/* Orbital Rings */}
+                  {[0, 1, 2].map((ring) => (
+                    <Box
+                      key={`ring-${ring}`}
+                      sx={{
+                        position: "absolute",
+                        width: `${60 + ring * 20}%`,
+                        height: `${60 + ring * 20}%`,
+                        border: `2px solid rgba(79, 172, 254, ${0.2 - ring * 0.05})`,
                         borderRadius: "50%",
-                        background: "linear-gradient(135deg, #4facfe, #00f2fe)",
-                        left: `calc(50% + ${Math.cos(angle) * radius}% - 4px)`,
-                        top: `calc(50% + ${Math.sin(angle) * radius}% - 4px)`,
-                        boxShadow: "0 0 12px rgba(79, 172, 254, 0.8)",
-                        animation: `particleFloat ${3 + (i % 3) * 0.5}s ease-in-out infinite`,
-                        animationDelay: `${i * 0.1}s`,
-                        "@keyframes particleFloat": {
-                          "0%, 100%": {
-                            transform: "translate(0, 0) scale(1)",
-                            opacity: 0.6
+                        animation: `ringRotate ${10 + ring * 2}s linear infinite`,
+                        animationDirection: ring % 2 === 0 ? "normal" : "reverse",
+                        "@keyframes ringRotate": {
+                          "0%": {
+                            transform: "rotate(0deg)"
                           },
-                          "50%": {
-                            transform: "translate(0, -20px) scale(1.3)",
-                            opacity: 1
+                          "100%": {
+                            transform: "rotate(360deg)"
                           }
                         }
                       }}
                     />
-                  );
-                })}
+                  ))}
 
-                {/* Data Stream Particles */}
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <Box
-                    key={`stream-${i}`}
-                    sx={{
-                      position: "absolute",
-                      width: "3px",
-                      height: "20px",
-                      background: "linear-gradient(180deg, #4facfe, #00f2fe)",
-                      borderRadius: "2px",
-                      left: `${20 + (i % 4) * 20}%`,
-                      top: `${10 + (i % 3) * 30}%`,
-                      boxShadow: "0 0 8px rgba(79, 172, 254, 0.6)",
-                      animation: `dataStream ${2 + (i % 2) * 0.5}s ease-in-out infinite`,
-                      animationDelay: `${i * 0.15}s`,
-                      "@keyframes dataStream": {
-                        "0%": {
-                          transform: "translateY(-100px) scale(0.5)",
-                          opacity: 0
-                        },
-                        "50%": {
-                          opacity: 1
-                        },
-                        "100%": {
-                          transform: "translateY(100px) scale(0.5)",
-                          opacity: 0
-                        }
-                      }
-                    }}
-                  />
-                ))}
+                  {/* Glowing Particles */}
+                  {Array.from({ length: 12 }).map((_, i) => {
+                    const angle = (i * 30) * Math.PI / 180;
+                    const radius = 45 + (i % 3) * 10;
+                    return (
+                      <Box
+                        key={`particle-${i}`}
+                        sx={{
+                          position: "absolute",
+                          width: "6px",
+                          height: "6px",
+                          borderRadius: "50%",
+                          background: "radial-gradient(circle, #4facfe, #00f2fe)",
+                          boxShadow: "0 0 10px rgba(79, 172, 254, 0.8)",
+                          left: `calc(50% + ${Math.cos(angle) * radius}% - 3px)`,
+                          top: `calc(50% + ${Math.sin(angle) * radius}% - 3px)`,
+                          animation: `particleOrbit ${3 + (i % 2) * 0.5}s ease-in-out infinite`,
+                          animationDelay: `${i * 0.2}s`,
+                          "@keyframes particleOrbit": {
+                            "0%, 100%": {
+                              transform: "scale(1)",
+                              opacity: 0.6
+                            },
+                            "50%": {
+                              transform: "scale(1.5)",
+                              opacity: 1
+                            }
+                          }
+                        }}
+                      />
+                    );
+                  })}
+                </Box>
 
-                {/* Health Indicator Waves */}
+                {/* Subtle Glow Effect Overlay */}
                 <Box
                   sx={{
                     position: "absolute",
                     width: "100%",
                     height: "100%",
-                    borderRadius: "50%",
-                    border: "3px solid rgba(79, 172, 254, 0.2)",
-                    animation: "waveExpand 4s ease-out infinite",
-                    "@keyframes waveExpand": {
-                      "0%": {
-                        transform: "scale(0.8)",
+                    borderRadius: "20px",
+                    background: "radial-gradient(circle, transparent 0%, rgba(79, 172, 254, 0.15) 50%, transparent 100%)",
+                    pointerEvents: "none",
+                    zIndex: 2,
+                    animation: "glowPulse 4s ease-in-out infinite",
+                    "@keyframes glowPulse": {
+                      "0%, 100%": {
                         opacity: 0.8
                       },
-                      "100%": {
-                        transform: "scale(1.4)",
-                        opacity: 0
-                      }
-                    }
-                  }}
-                />
-                <Box
-                  sx={{
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    borderRadius: "50%",
-                    border: "3px solid rgba(0, 242, 254, 0.2)",
-                    animation: "waveExpand 4s ease-out infinite 1s",
-                    "@keyframes waveExpand": {
-                      "0%": {
-                        transform: "scale(0.8)",
-                        opacity: 0.8
-                      },
-                      "100%": {
-                        transform: "scale(1.4)",
-                        opacity: 0
+                      "50%": {
+                        opacity: 1
                       }
                     }
                   }}
