@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Container, Typography, Button, alpha } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
@@ -6,6 +6,10 @@ import "../styles/new-landing.css";
 
 const Terms = () => {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   return (
     <Box
@@ -15,9 +19,12 @@ const Terms = () => {
         color: "white",
         pt: { xs: 10, md: 12 },
         pb: 6,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "flex-start",
       }}
     >
-      <Container maxWidth="md">
+      <Container maxWidth="md" sx={{ width: "100%" }}>
         <Button
           startIcon={<ArrowBack />}
           onClick={() => navigate(-1)}
