@@ -435,16 +435,17 @@ const Login = () => {
             </Button>
 
             <Box sx={{ textAlign: 'center' }}>
-              <Typography variant="body2" sx={{ color: 'text.secondary', mb: 2 }}>
+              <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 2 }}>
                 Don't have an account?{' '}
                 <Link
                   component={RouterLink}
                   to="/register"
                   sx={{
-                    color: 'primary.main',
+                    color: '#4facfe',
                     textDecoration: 'none',
                     fontWeight: 500,
                     '&:hover': {
+                      color: '#00f2fe',
                       textDecoration: 'underline',
                     },
                   }}
@@ -457,11 +458,13 @@ const Login = () => {
                 component={RouterLink}
                 to="/forgot-password"
                 sx={{
-                  color: 'text.secondary',
+                  color: 'rgba(255, 255, 255, 0.8)',
                   textDecoration: 'none',
                   fontSize: '0.875rem',
+                  display: 'block',
+                  mb: 1,
                   '&:hover': {
-                    color: 'primary.main',
+                    color: '#4facfe',
                     textDecoration: 'underline',
                   },
                 }}
@@ -476,10 +479,12 @@ const Login = () => {
           <Typography variant="body2" sx={{ color: 'text.secondary' }}>
             By signing in, you agree to our{' '}
             <Link
-              href="#"
+              component={RouterLink}
+              to="/terms"
               sx={{
-                color: 'primary.main',
+                color: '#4facfe',
                 textDecoration: 'none',
+                fontWeight: 500,
                 '&:hover': {
                   textDecoration: 'underline',
                 },
@@ -489,10 +494,12 @@ const Login = () => {
             </Link>{' '}
             and{' '}
             <Link
-              href="#"
+              component={RouterLink}
+              to="/privacy"
               sx={{
-                color: 'primary.main',
+                color: '#4facfe',
                 textDecoration: 'none',
+                fontWeight: 500,
                 '&:hover': {
                   textDecoration: 'underline',
                 },

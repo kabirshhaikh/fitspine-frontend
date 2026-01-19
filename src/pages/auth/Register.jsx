@@ -1130,16 +1130,17 @@ const Register = () => {
             </Button>
 
             <Box sx={{ textAlign: "center" }}>
-              <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)" }}>
                 Already have an account?{" "}
                 <Link
                   component={RouterLink}
                   to="/login"
                   sx={{
-                    color: "primary.main",
+                    color: "#4facfe",
                     textDecoration: "none",
                     fontWeight: 500,
                     "&:hover": {
+                      color: "#00f2fe",
                       textDecoration: "underline",
                     },
                   }}
@@ -1150,30 +1151,6 @@ const Register = () => {
             </Box>
           </form>
         </Paper>
-
-        <Box sx={{ textAlign: "center", mt: 4 }}>
-          <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
-            By creating an account, you'll get:
-          </Typography>
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              gap: 3,
-              flexWrap: "wrap",
-            }}
-          >
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              ✓ Personalized spine routines
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              ✓ Flare-up tracking
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              ✓ Sitting timer reminders
-            </Typography>
-          </Box>
-        </Box>
       </Container>
 
       {/* CSS Animations */}
