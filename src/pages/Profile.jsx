@@ -412,7 +412,16 @@ const Profile = () => {
           <form onSubmit={handleSubmit}>
             {/* Profile Picture Section */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
+              <Typography
+                variant="h5"
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
+              >
                 Profile Picture
               </Typography>
               
@@ -437,13 +446,33 @@ const Profile = () => {
                       variant="outlined"
                       component="span"
                       startIcon={<PhotoCamera />}
-                      sx={{ borderRadius: 2 }}
+                      sx={{ 
+                        minHeight: 56, 
+                        borderRadius: "12px",
+                        background: "rgba(255, 255, 255, 0.05)",
+                        backdropFilter: "blur(10px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        color: "rgba(255, 255, 255, 0.9)",
+                        textTransform: "none",
+                        "&:hover": {
+                          background: "rgba(255, 255, 255, 0.1)",
+                          border: "1px solid rgba(79, 195, 247, 0.3)",
+                        },
+                      }}
                     >
                       {formData.profilePicture ? formData.profilePicture.name : 'Choose New Photo'}
                     </Button>
                   </label>
                   {formData.profilePicture && (
-                    <Typography variant="caption" display="block" sx={{ mt: 1, color: 'text.secondary' }}>
+                    <Typography 
+                      variant="caption" 
+                      display="block" 
+                      sx={{ 
+                        mt: 1, 
+                        color: "rgba(255, 255, 255, 0.7)",
+                        fontSize: "0.875rem",
+                      }}
+                    >
                       Selected: {formData.profilePicture.name}
                     </Typography>
                   )}
@@ -455,290 +484,756 @@ const Profile = () => {
 
             {/* Personal Information */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
+              <Typography
+                variant="h5"
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
+              >
                 Personal Information
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Full Name"
-                    name="fullName"
-                    value={userProfile?.fullName || ''}
-                    disabled
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
-                </Grid>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                {/* Full Name - Disabled */}
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  name="fullName"
+                  value={userProfile?.fullName || user?.fullName || ''}
+                  disabled
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
+                      },
+                      "&.Mui-disabled": {
+                        background: "rgba(255, 255, 255, 0.03)",
+                        "& .MuiInputBase-input": {
+                          color: "rgba(255, 255, 255, 0.5)",
+                        },
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-disabled": {
+                        color: "rgba(255, 255, 255, 0.5)",
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Email"
-                    name="email"
-                    value={userProfile?.email || ''}
-                    disabled
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
-                </Grid>
+                {/* Email - Disabled */}
+                <TextField
+                  fullWidth
+                  label="Email Address"
+                  name="email"
+                  value={userProfile?.email || user?.email || ''}
+                  disabled
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
+                      },
+                      "&.Mui-disabled": {
+                        background: "rgba(255, 255, 255, 0.03)",
+                        "& .MuiInputBase-input": {
+                          color: "rgba(255, 255, 255, 0.5)",
+                        },
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-disabled": {
+                        color: "rgba(255, 255, 255, 0.5)",
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Age"
-                    name="age"
-                    type="number"
-                    value={formData.age}
-                    onChange={handleChange}
-                    error={!!errors.age}
-                    helperText={errors.age}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
-                </Grid>
+                {/* Age */}
+                <TextField
+                  fullWidth
+                  label="Age"
+                  name="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={handleChange}
+                  error={!!errors.age}
+                  helperText={errors.age}
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
+                      },
+                      "&:hover fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                    "& .MuiFormHelperText-root": {
+                      color: "rgba(255, 255, 255, 0.6)",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    select
-                    label="Gender"
-                    name="gender"
+                {/* Gender Dropdown - styled like injuries dropdown */}
+                <FormControl fullWidth>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Gender
+                  </InputLabel>
+                  <Select
                     value={formData.gender}
                     onChange={handleChange}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    name="gender"
+                    label="Gender"
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
+                    sx={{
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
                   >
                     {GENDERS.map((gender) => (
-                      <MenuItem key={gender} value={gender}>
-                        {gender.replace('_', ' ')}
+                      <MenuItem 
+                        key={gender} 
+                        value={gender}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(79, 195, 247, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(79, 195, 247, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(79, 195, 247, 0.3)",
+                            },
+                          },
+                        }}
+                      >
+                        {gender.replace("_", " ")}
                       </MenuItem>
                     ))}
-                  </TextField>
-                </Grid>
+                  </Select>
+                </FormControl>
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Role"
-                    name="role"
-                    value={userProfile?.role || user?.role || 'USER'}
-                    disabled
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
-                  />
-                </Grid>
-              </Grid>
+                {/* Role - Disabled */}
+                <TextField
+                  fullWidth
+                  label="Role"
+                  name="role"
+                  value={userProfile?.role || user?.role || 'USER'}
+                  disabled
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
+                      },
+                      "&.Mui-disabled": {
+                        background: "rgba(255, 255, 255, 0.03)",
+                        "& .MuiInputBase-input": {
+                          color: "rgba(255, 255, 255, 0.5)",
+                        },
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                      "&.Mui-disabled": {
+                        color: "rgba(255, 255, 255, 0.5)",
+                      },
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                  }}
+                />
+              </Box>
             </Box>
 
             <Divider sx={{ my: 4 }} />
 
             {/* Preferences */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
+              <Typography
+                variant="h5"
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
+              >
                 Preferences
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="surgeryHistory"
-                        checked={formData.surgeryHistory}
-                        onChange={handleChange}
-                        color="primary"
-                      />
-                    }
-                    label="Surgery History"
-                    sx={{
-                      p: 2,
-                      border: '1px solid #E5E7EB',
-                      borderRadius: 2,
-                      backgroundColor: 'background.default',
-                    }}
-                  />
-                </Grid>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="surgeryHistory"
+                      checked={formData.surgeryHistory}
+                      onChange={handleChange}
+                      sx={{
+                        color: "rgba(79, 195, 247, 0.7)",
+                        "&.Mui-checked": {
+                          color: "#4fc3f7",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 28,
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 500,
+                        color: "rgba(255, 255, 255, 0.9)",
+                      }}
+                    >
+                      Surgery History
+                    </Typography>
+                  }
+                  sx={{
+                    p: 2.5,
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(79, 195, 247, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="isResearchOpt"
-                        checked={formData.isResearchOpt}
-                        onChange={handleChange}
-                        color="primary"
-                      />
-                    }
-                    label="Research Opt-in"
-                    sx={{
-                      p: 2,
-                      border: '1px solid #E5E7EB',
-                      borderRadius: 2,
-                      backgroundColor: 'background.default',
-                    }}
-                  />
-                </Grid>
-              </Grid>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="isResearchOpt"
+                      checked={formData.isResearchOpt}
+                      onChange={handleChange}
+                      sx={{
+                        color: "rgba(79, 195, 247, 0.7)",
+                        "&.Mui-checked": {
+                          color: "#4fc3f7",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 28,
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 500,
+                        color: "rgba(255, 255, 255, 0.9)",
+                      }}
+                    >
+                      Research Opt-in
+                    </Typography>
+                  }
+                  sx={{
+                    p: 2.5,
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(79, 195, 247, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                />
+              </Box>
             </Box>
 
             <Divider sx={{ my: 4 }} />
 
             {/* Wearable Integration */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
+              <Typography
+                variant="h5"
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
+              >
                 Wearable Integration
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="isWearableConnected"
-                        checked={formData.isWearableConnected}
-                        disabled
-                        color="primary"
-                      />
-                    }
-                    label="Connect Wearable Device"
-                    sx={{
-                      p: 2,
-                      border: '1px solid #E5E7EB',
-                      borderRadius: 2,
-                      backgroundColor: 'background.default',
-                    }}
-                  />
-                  <Typography variant="caption" color="text.secondary" sx={{ ml: 2 }}>
-                    Manage wearable connection from Dashboard
-                  </Typography>
-                </Grid>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="isWearableConnected"
+                      checked={formData.isWearableConnected}
+                      disabled
+                      sx={{
+                        color: "rgba(79, 195, 247, 0.4)",
+                        "&.Mui-checked": {
+                          color: "rgba(79, 195, 247, 0.5)",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 28,
+                        },
+                        "&.Mui-disabled": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 500,
+                        color: "rgba(255, 255, 255, 0.7)",
+                      }}
+                    >
+                      Connect Wearable Device
+                    </Typography>
+                  }
+                  sx={{
+                    p: 2.5,
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.03)",
+                    backdropFilter: "blur(10px)",
+                    opacity: 0.7,
+                  }}
+                />
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    ml: 5, 
+                    color: "rgba(255, 255, 255, 0.6)",
+                    fontSize: "0.875rem",
+                  }}
+                >
+                  Manage wearable connection from Dashboard
+                </Typography>
 
                 {formData.isWearableConnected && (
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      fullWidth
-                      select
-                      label="Wearable Type"
-                      name="wearableType"
+                  <FormControl fullWidth>
+                    <InputLabel 
+                      sx={{ 
+                        color: "rgba(255, 255, 255, 0.5)",
+                        "&.Mui-disabled": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
+                    >
+                      Wearable Type
+                    </InputLabel>
+                    <Select
                       value={formData.wearableType}
                       disabled
-                      sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                      label="Wearable Type"
+                      sx={{
+                        borderRadius: "12px",
+                        background: "rgba(255, 255, 255, 0.03)",
+                        backdropFilter: "blur(10px)",
+                        border: "1px solid rgba(255, 255, 255, 0.1)",
+                        "& .MuiOutlinedInput-notchedOutline": {
+                          border: "none",
+                        },
+                        "&.Mui-disabled": {
+                          "& .MuiSelect-select": {
+                            color: "rgba(255, 255, 255, 0.5)",
+                          },
+                        },
+                        "& .MuiSelect-select": {
+                          padding: "16.5px 14px",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "rgba(255, 255, 255, 0.3)",
+                        },
+                      }}
                     >
                       {WEARABLE_TYPES.map((type) => (
                         <MenuItem key={type} value={type}>
-                          {type.replace('_', ' ')}
+                          {type.replace("_", " ")}
                         </MenuItem>
                       ))}
-                    </TextField>
-                  </Grid>
+                    </Select>
+                  </FormControl>
                 )}
-              </Grid>
+              </Box>
             </Box>
 
             <Divider sx={{ my: 4 }} />
 
             {/* Medical Information */}
             <Box sx={{ mb: 4 }}>
-              <Typography variant="h6" sx={{ mb: 3, color: 'white', fontWeight: 600 }}>
+              <Typography
+                variant="h5"
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
+              >
                 Medical Information
               </Typography>
 
-              {/* Injuries */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
+              {/* User Injuries Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ 
+                    mb: 2, 
+                    color: "rgba(255, 255, 255, 0.9)", 
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                  }}
+                >
                   Injuries
                 </Typography>
                 <FormControl fullWidth>
-                  <InputLabel>Select Injuries</InputLabel>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Select Injuries
+                  </InputLabel>
                   <Select
                     multiple
                     value={formData.userInjuries}
                     onChange={(e) => setFormData(prev => ({ ...prev, userInjuries: e.target.value }))}
                     label="Select Injuries"
                     renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                         {selected.map((value) => (
                           <Chip
                             key={value}
-                            label={value.replace(/_/g, ' ')}
+                            label={value.replace(/_/g, " ")}
                             size="small"
-                            sx={{ backgroundColor: 'primary.light', color: 'primary.contrastText' }}
+                            sx={{
+                              backgroundColor: "#764ba2",
+                              color: "white",
+                              fontWeight: 500,
+                            }}
                           />
                         ))}
                       </Box>
                     )}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
+                    sx={{
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
                   >
                     {INJURY_TYPE.map((type) => (
-                      <MenuItem key={type} value={type}>
-                        {type.replace(/_/g, ' ')}
+                      <MenuItem 
+                        key={type} 
+                        value={type}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(79, 195, 247, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(79, 195, 247, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(79, 195, 247, 0.3)",
+                            },
+                          },
+                        }}
+                      >
+                        {type.replace(/_/g, " ")}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Box>
 
-              {/* Surgeries */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
+              {/* User Surgeries Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ 
+                    mb: 2, 
+                    color: "rgba(255, 255, 255, 0.9)", 
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                  }}
+                >
                   Surgeries
                 </Typography>
                 <FormControl fullWidth>
-                  <InputLabel>Select Surgeries</InputLabel>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Select Surgeries
+                  </InputLabel>
                   <Select
                     multiple
                     value={formData.userSurgeries}
                     onChange={(e) => setFormData(prev => ({ ...prev, userSurgeries: e.target.value }))}
                     label="Select Surgeries"
                     renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                         {selected.map((value) => (
                           <Chip
                             key={value}
-                            label={value.replace(/_/g, ' ')}
+                            label={value.replace(/_/g, " ")}
                             size="small"
-                            sx={{ backgroundColor: 'secondary.light', color: 'secondary.contrastText' }}
+                            sx={{
+                              backgroundColor: "#764ba2",
+                              color: "white",
+                              fontWeight: 500,
+                            }}
                           />
                         ))}
                       </Box>
                     )}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
+                    sx={{
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
                   >
                     {SURGERY_TYPE.map((type) => (
-                      <MenuItem key={type} value={type}>
-                        {type.replace(/_/g, ' ')}
+                      <MenuItem 
+                        key={type} 
+                        value={type}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(79, 195, 247, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(79, 195, 247, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(79, 195, 247, 0.3)",
+                            },
+                          },
+                        }}
+                      >
+                        {type.replace(/_/g, " ")}
                       </MenuItem>
                     ))}
                   </Select>
                 </FormControl>
               </Box>
 
-              {/* Disc Issues */}
-              <Box sx={{ mb: 3 }}>
-                <Typography variant="subtitle1" sx={{ mb: 2, fontWeight: 600, color: 'white' }}>
+              {/* User Disc Issues Section */}
+              <Box sx={{ mb: 4 }}>
+                <Typography
+                  variant="h6"
+                  sx={{ 
+                    mb: 2, 
+                    color: "rgba(255, 255, 255, 0.9)", 
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                  }}
+                >
                   Disc Issues
                 </Typography>
                 <FormControl fullWidth>
-                  <InputLabel>Select Disc Levels</InputLabel>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Select Disc Levels
+                  </InputLabel>
                   <Select
                     multiple
                     value={formData.userDiscIssues}
                     onChange={(e) => setFormData(prev => ({ ...prev, userDiscIssues: e.target.value }))}
                     label="Select Disc Levels"
                     renderValue={(selected) => (
-                      <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.5 }}>
                         {selected.map((value) => (
                           <Chip
                             key={value}
-                            label={value.replace(/_/g, ' ')}
+                            label={value.replace(/_/g, " ")}
                             size="small"
-                            sx={{ backgroundColor: 'info.light', color: 'info.contrastText' }}
+                            sx={{
+                              backgroundColor: "#764ba2",
+                              color: "white",
+                              fontWeight: 500,
+                            }}
                           />
                         ))}
                       </Box>
                     )}
-                    sx={{ '& .MuiOutlinedInput-root': { borderRadius: 2 } }}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
+                    sx={{
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
+                      },
+                    }}
                   >
                     {DISC_LEVEL.map((level) => (
-                      <MenuItem key={level} value={level}>
-                        {level.replace(/_/g, ' ')}
+                      <MenuItem 
+                        key={level} 
+                        value={level}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(79, 195, 247, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(79, 195, 247, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(79, 195, 247, 0.3)",
+                            },
+                          },
+                        }}
+                      >
+                        {level.replace(/_/g, " ")}
                       </MenuItem>
                     ))}
                   </Select>
