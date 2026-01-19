@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, alpha, Card, CardContent, Chip, Grid } from '@mui/material';
+import { Box, Typography, alpha, Card, CardContent, Chip } from '@mui/material';
 import { TrendingUp, TrendingDown, Remove, Bedtime, EmojiEvents, Warning } from '@mui/icons-material';
 import { formatDayLabel, formatDate } from './chartUtils';
 
@@ -183,14 +183,32 @@ export default function SleepChart({ sleepResultDto, isFitbitConnected = false }
           <Typography variant="h6" sx={{ color: 'white', mb: 2, fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
             Daily Sleep
           </Typography>
-          <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: 'repeat(2, 1fr)',
+                sm: 'repeat(3, 1fr)',
+                md: 'repeat(4, 1fr)',
+                lg: 'repeat(7, 1fr)',
+              },
+              gap: { xs: 1.5, sm: 2, md: 2.5 },
+              width: '100%',
+            }}
+          >
             {dailyBreakDowns.map((day, index) => {
               const hasData = day.timeAsleep !== null;
               const dayLabel = formatDayLabel(day.logDate);
               const fullDate = formatDate(day.logDate);
 
               return (
-                <Grid item xs={12} sm={6} md={4} key={index}>
+                <Box
+                  key={index}
+                  sx={{
+                    display: 'flex',
+                    minHeight: { xs: 'auto', sm: '140px' },
+                  }}
+                >
                   <Card sx={{ 
                     background: hasData 
                       ? `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`
@@ -198,40 +216,107 @@ export default function SleepChart({ sleepResultDto, isFitbitConnected = false }
                     border: `1px solid ${hasData ? alpha('#ffffff', 0.2) : alpha('#888888', 0.2)}`,
                     height: '100%',
                     width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    },
                   }}>
-                    <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-                      <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                        {dayLabel}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', display: 'block', mb: 2, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                        {fullDate}
-                      </Typography>
-                      
-                      {hasData ? (
-                        <Box>
-                          <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                            Sleep Duration
-                          </Typography>
-                          <Typography variant="body2" sx={{ color: '#4facfe', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                            {day.timeAsleep}
-                          </Typography>
-                          {day.nightWakeUps !== null && (
-                            <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', mt: 1, display: 'block', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                              Wake-ups: {day.nightWakeUps}
-                            </Typography>
-                          )}
-                        </Box>
-                      ) : (
-                        <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)' }}>
-                          No data logged
+                    <CardContent sx={{ 
+                      p: { xs: 1.5, sm: 2 },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      height: '100%',
+                    }}>
+                      <Box sx={{ mb: 1.5, flexShrink: 0 }}>
+                        <Typography 
+                          variant="subtitle2" 
+                          sx={{ 
+                            color: 'rgba(255, 255, 255, 0.8)', 
+                            mb: 0.5, 
+                            fontWeight: 600, 
+                            fontSize: { xs: '0.875rem', sm: '0.9375rem', md: '1rem' },
+                            lineHeight: 1.2,
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {dayLabel}
                         </Typography>
-                      )}
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'rgba(255, 255, 255, 0.5)', 
+                            display: 'block', 
+                            fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                            lineHeight: 1.2,
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {fullDate}
+                        </Typography>
+                      </Box>
+                      
+                      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                        {hasData ? (
+                          <Box>
+                            <Typography 
+                              variant="caption" 
+                              sx={{ 
+                                color: 'rgba(255, 255, 255, 0.6)', 
+                                fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                                display: 'block',
+                                mb: 0.5,
+                              }}
+                            >
+                              Sleep Duration
+                            </Typography>
+                            <Typography 
+                              variant="body2" 
+                              sx={{ 
+                                color: '#4facfe', 
+                                fontWeight: 600, 
+                                fontSize: { xs: '0.8125rem', sm: '0.875rem', md: '0.9375rem' }, 
+                                wordBreak: 'break-word',
+                                lineHeight: 1.2,
+                                mb: day.nightWakeUps !== null ? 1 : 0,
+                              }}
+                            >
+                              {day.timeAsleep}
+                            </Typography>
+                            {day.nightWakeUps !== null && (
+                              <Typography 
+                                variant="caption" 
+                                sx={{ 
+                                  color: 'rgba(255, 255, 255, 0.6)', 
+                                  fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                                  display: 'block',
+                                }}
+                              >
+                                Wake-ups: {day.nightWakeUps}
+                              </Typography>
+                            )}
+                          </Box>
+                        ) : (
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: 'rgba(255, 255, 255, 0.4)',
+                              fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                            }}
+                          >
+                            No data logged
+                          </Typography>
+                        )}
+                      </Box>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Box>
               );
             })}
-          </Grid>
+          </Box>
         </Box>
       )}
     </Box>

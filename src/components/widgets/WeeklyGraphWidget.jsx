@@ -121,50 +121,83 @@ export default function WeeklyGraphWidget() {
     >
       <Box>
         {/* Tabs */}
-        <Box sx={{ borderBottom: 1, borderColor: 'divider', px: { xs: 1, sm: 2 }, overflowX: 'auto' }}>
+        <Box sx={{ 
+          borderBottom: 1, 
+          borderColor: 'divider', 
+          px: { xs: 0.5, sm: 1, md: 2 }, 
+          overflowX: 'auto',
+          '&::-webkit-scrollbar': {
+            height: 6,
+          },
+          '&::-webkit-scrollbar-track': {
+            background: 'rgba(255, 255, 255, 0.1)',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: 'rgba(255, 255, 255, 0.3)',
+            borderRadius: 3,
+          },
+        }}>
           <Tabs
             value={tabValue}
             onChange={handleTabChange}
             variant="scrollable"
             scrollButtons="auto"
+            allowScrollButtonsMobile
             sx={{
+              minHeight: { xs: 48, sm: 56 },
               '& .MuiTab-root': {
                 color: 'rgba(255, 255, 255, 0.6)',
                 textTransform: 'none',
-                fontSize: { xs: '0.75rem', sm: '0.875rem' },
-                minHeight: { xs: 40, sm: 48 },
-                px: { xs: 1, sm: 2 },
+                fontSize: { xs: '0.7rem', sm: '0.8125rem', md: '0.875rem' },
+                minHeight: { xs: 48, sm: 56 },
+                px: { xs: 1, sm: 1.5, md: 2 },
+                py: { xs: 1, sm: 1.5 },
+                gap: { xs: 0.5, sm: 0.75 },
+                flexDirection: { xs: 'column', sm: 'row' },
+                alignItems: 'center',
+                justifyContent: 'center',
+                '& .MuiTab-iconWrapper': {
+                  margin: 0,
+                  marginBottom: { xs: 0.25, sm: 0 },
+                },
                 '&.Mui-selected': {
                   color: '#4facfe',
                 },
               },
               '& .MuiTabs-indicator': {
                 backgroundColor: '#4facfe',
+                height: 3,
+              },
+              '& .MuiTabs-scrollButtons': {
+                color: 'rgba(255, 255, 255, 0.6)',
+                '&.Mui-disabled': {
+                  opacity: 0.3,
+                },
               },
             }}
           >
             <Tab 
-              icon={<Psychology sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
+              icon={<Psychology sx={{ fontSize: { xs: 18, sm: 20, md: 22 } }} />} 
               iconPosition="start"
               label="Insights" 
             />
             <Tab 
-              icon={<LocalHospital sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
+              icon={<LocalHospital sx={{ fontSize: { xs: 18, sm: 20, md: 22 } }} />} 
               iconPosition="start"
               label="Pain & Stiffness" 
             />
             <Tab 
-              icon={<FitnessCenter sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
+              icon={<FitnessCenter sx={{ fontSize: { xs: 18, sm: 20, md: 22 } }} />} 
               iconPosition="start"
               label="Activity" 
             />
             <Tab 
-              icon={<Favorite sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
+              icon={<Favorite sx={{ fontSize: { xs: 18, sm: 20, md: 22 } }} />} 
               iconPosition="start"
               label="Heart Rate" 
             />
             <Tab 
-              icon={<Bedtime sx={{ fontSize: { xs: 16, sm: 18 }, mb: 0.5 }} />} 
+              icon={<Bedtime sx={{ fontSize: { xs: 18, sm: 20, md: 22 } }} />} 
               iconPosition="start"
               label="Sleep" 
             />
@@ -175,7 +208,10 @@ export default function WeeklyGraphWidget() {
         <Box sx={{ 
           minHeight: { xs: 300, sm: 400 },
           width: '100%',
-          overflow: 'auto'
+          overflow: 'hidden',
+          '& > *': {
+            width: '100%',
+          }
         }}>
           {tabValue === 0 && (
             <Box sx={{ p: { xs: 2, sm: 3 }, width: '100%' }}>

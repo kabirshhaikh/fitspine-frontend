@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Typography, alpha, Card, CardContent, Chip, Grid, LinearProgress } from '@mui/material';
+import { Box, Typography, alpha, Card, CardContent, Chip, LinearProgress } from '@mui/material';
 import { TrendingUp, TrendingDown, Remove, Info, Assessment, Lightbulb, CheckCircle, EmojiEvents, Warning } from '@mui/icons-material';
 import { getTimeLabel, formatDayLabel, formatDate } from './chartUtils';
 
@@ -268,14 +268,32 @@ export default function ActivityChart({ activityResultDto, isFitbitConnected = f
           <Typography variant="h6" sx={{ color: 'white', mb: 2, fontWeight: 600, fontSize: { xs: '1rem', sm: '1.25rem' } }}>
             Daily Activity
           </Typography>
-          <Grid container spacing={{ xs: 1.5, sm: 2 }}>
+          <Box
+            sx={{
+              display: 'grid',
+              gridTemplateColumns: {
+                xs: 'repeat(2, 1fr)',
+                sm: 'repeat(3, 1fr)',
+                md: 'repeat(4, 1fr)',
+                lg: 'repeat(7, 1fr)',
+              },
+              gap: { xs: 1.5, sm: 2, md: 2.5 },
+              width: '100%',
+            }}
+          >
             {dailyBreakDown.map((day, index) => {
               const hasData = day.standingTime !== null || day.sittingTime !== null || day.fitbitSedentaryHours !== null;
               const dayLabel = formatDayLabel(day.logDate);
               const fullDate = formatDate(day.logDate);
 
               return (
-                <Grid item xs={12} sm={6} md={4} key={index}>
+                <Box
+                  key={index}
+                  sx={{
+                    display: 'flex',
+                    minHeight: { xs: 'auto', sm: '140px' },
+                  }}
+                >
                   <Card sx={{ 
                     background: hasData 
                       ? `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`
@@ -283,60 +301,156 @@ export default function ActivityChart({ activityResultDto, isFitbitConnected = f
                     border: `1px solid ${hasData ? alpha('#ffffff', 0.2) : alpha('#888888', 0.2)}`,
                     height: '100%',
                     width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transition: 'all 0.2s ease',
+                    '&:hover': {
+                      transform: 'translateY(-2px)',
+                      boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+                    },
                   }}>
-                    <CardContent sx={{ p: { xs: 1.5, sm: 2 } }}>
-                      <Typography variant="subtitle2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1, fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                        {dayLabel}
-                      </Typography>
-                      <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.5)', display: 'block', mb: 2, fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                        {fullDate}
-                      </Typography>
-                      
-                      {hasData ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
-                          {day.standingTime !== null && (
-                            <Box>
-                              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                                Standing
-                              </Typography>
-                              <Typography variant="body2" sx={{ color: '#4caf50', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                                {day.standingTime}
-                              </Typography>
-                            </Box>
-                          )}
-                          {day.sittingTime !== null && (
-                            <Box>
-                              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                                Sitting
-                              </Typography>
-                              <Typography variant="body2" sx={{ color: '#ff9800', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                                {day.sittingTime}
-                              </Typography>
-                            </Box>
-                          )}
-                          {day.fitbitSedentaryHours !== null && (
-                            <Box>
-                              <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.6)', fontSize: { xs: '0.7rem', sm: '0.75rem' } }}>
-                                Sedentary
-                              </Typography>
-                              <Typography variant="body2" sx={{ color: day.fitbitSedentaryHours < 11 ? '#4caf50' : '#f44336', fontWeight: 600, fontSize: { xs: '0.875rem', sm: '1rem' }, wordBreak: 'break-word' }}>
-                                {day.fitbitSedentaryHours.toFixed(1)} hrs
-                                {day.fitbitSedentaryHours < 11 && <CheckCircle sx={{ fontSize: { xs: 14, sm: 16 }, color: '#4caf50', ml: 0.5, verticalAlign: 'middle' }} />}
-                              </Typography>
-                            </Box>
-                          )}
-                        </Box>
-                      ) : (
-                        <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.4)' }}>
-                          No data logged
+                    <CardContent sx={{ 
+                      p: { xs: 1.5, sm: 2 },
+                      display: 'flex',
+                      flexDirection: 'column',
+                      flex: 1,
+                      height: '100%',
+                    }}>
+                      <Box sx={{ mb: 1.5, flexShrink: 0 }}>
+                        <Typography 
+                          variant="subtitle2" 
+                          sx={{ 
+                            color: 'rgba(255, 255, 255, 0.8)', 
+                            mb: 0.5, 
+                            fontWeight: 600, 
+                            fontSize: { xs: '0.875rem', sm: '0.9375rem', md: '1rem' },
+                            lineHeight: 1.2,
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {dayLabel}
                         </Typography>
-                      )}
+                        <Typography 
+                          variant="caption" 
+                          sx={{ 
+                            color: 'rgba(255, 255, 255, 0.5)', 
+                            display: 'block', 
+                            fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                            lineHeight: 1.2,
+                            wordBreak: 'break-word',
+                          }}
+                        >
+                          {fullDate}
+                        </Typography>
+                      </Box>
+                      
+                      <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-start' }}>
+                        {hasData ? (
+                          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1.5 }}>
+                            {day.standingTime !== null && (
+                              <Box>
+                                <Typography 
+                                  variant="caption" 
+                                  sx={{ 
+                                    color: 'rgba(255, 255, 255, 0.6)', 
+                                    fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                                    display: 'block',
+                                    mb: 0.5,
+                                  }}
+                                >
+                                  Standing
+                                </Typography>
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    color: '#4caf50', 
+                                    fontWeight: 600, 
+                                    fontSize: { xs: '0.8125rem', sm: '0.875rem', md: '0.9375rem' }, 
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2,
+                                  }}
+                                >
+                                  {day.standingTime}
+                                </Typography>
+                              </Box>
+                            )}
+                            {day.sittingTime !== null && (
+                              <Box>
+                                <Typography 
+                                  variant="caption" 
+                                  sx={{ 
+                                    color: 'rgba(255, 255, 255, 0.6)', 
+                                    fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                                    display: 'block',
+                                    mb: 0.5,
+                                  }}
+                                >
+                                  Sitting
+                                </Typography>
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    color: '#ff9800', 
+                                    fontWeight: 600, 
+                                    fontSize: { xs: '0.8125rem', sm: '0.875rem', md: '0.9375rem' }, 
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2,
+                                  }}
+                                >
+                                  {day.sittingTime}
+                                </Typography>
+                              </Box>
+                            )}
+                            {day.fitbitSedentaryHours !== null && (
+                              <Box>
+                                <Typography 
+                                  variant="caption" 
+                                  sx={{ 
+                                    color: 'rgba(255, 255, 255, 0.6)', 
+                                    fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                                    display: 'block',
+                                    mb: 0.5,
+                                  }}
+                                >
+                                  Sedentary
+                                </Typography>
+                                <Typography 
+                                  variant="body2" 
+                                  sx={{ 
+                                    color: day.fitbitSedentaryHours < 11 ? '#4caf50' : '#f44336', 
+                                    fontWeight: 600, 
+                                    fontSize: { xs: '0.8125rem', sm: '0.875rem', md: '0.9375rem' }, 
+                                    wordBreak: 'break-word',
+                                    lineHeight: 1.2,
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: 0.5,
+                                  }}
+                                >
+                                  {day.fitbitSedentaryHours.toFixed(1)} hrs
+                                  {day.fitbitSedentaryHours < 11 && <CheckCircle sx={{ fontSize: { xs: 14, sm: 16 } }} />}
+                                </Typography>
+                              </Box>
+                            )}
+                          </Box>
+                        ) : (
+                          <Typography 
+                            variant="caption" 
+                            sx={{ 
+                              color: 'rgba(255, 255, 255, 0.4)',
+                              fontSize: { xs: '0.6875rem', sm: '0.75rem' },
+                            }}
+                          >
+                            No data logged
+                          </Typography>
+                        )}
+                      </Box>
                     </CardContent>
                   </Card>
-                </Grid>
+                </Box>
               );
             })}
-          </Grid>
+          </Box>
         </Box>
       )}
 
