@@ -36,6 +36,10 @@ const FEEDBACK_TYPES = [
 ];
 
 const Feedback = () => {
+  useEffect(() => {
+    document.title = 'Feedback - Sphinic';
+  }, []);
+
   const navigate = useNavigate();
   const { user } = useAuth();
   const [formData, setFormData] = useState({

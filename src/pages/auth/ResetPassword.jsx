@@ -16,6 +16,10 @@ import authService from '../../services/auth.service';
 import '../auth/Auth.css';
 
 const ResetPassword = () => {
+  useEffect(() => {
+    document.title = 'Reset Password - Sphinic';
+  }, []);
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const emailFromUrl = searchParams.get('email') || '';

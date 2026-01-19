@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
@@ -16,6 +16,10 @@ import authService from '../../services/auth.service';
 import '../auth/Auth.css';
 
 const ForgotPassword = () => {
+  useEffect(() => {
+    document.title = 'Forgot Password - Sphinic';
+  }, []);
+
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);

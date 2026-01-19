@@ -36,6 +36,10 @@ import WeeklyGraphWidget from "../components/widgets/WeeklyGraphWidget";
 import api from "../services/api";
 
 export default function Dashboard() {
+  useEffect(() => {
+    document.title = 'Dashboard - Sphinic';
+  }, []);
+
   const { user, isAuthenticated, loading, updateUserFromResponse } = useAuth();
   const navigate = useNavigate();
   const [connecting, setConnecting] = useState(false);

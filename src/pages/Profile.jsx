@@ -111,6 +111,10 @@ const GENDERS = ["MALE", "FEMALE", "OTHER"];
   ];
 
 const Profile = () => {
+  useEffect(() => {
+    document.title = 'Profile - Sphinic';
+  }, []);
+
   const navigate = useNavigate();
   const { user, updateUserFromResponse } = useAuth();
 

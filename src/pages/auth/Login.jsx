@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -17,6 +17,9 @@ import { useAuth } from '../../context/AuthContext';
 import '../auth/Auth.css'; // Import Auth-specific CSS
 
 const Login = () => {
+  useEffect(() => {
+    document.title = 'Login - Sphinic';
+  }, []);
   const [formData, setFormData] = useState({
     email: '',
     password: '',

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import {
   Box,
@@ -36,6 +36,10 @@ import { useAuth } from "../../context/AuthContext";
 import "../auth/Auth.css"; // Import Auth-specific CSS
 
 const Register = () => {
+  useEffect(() => {
+    document.title = 'Register - Sphinic';
+  }, []);
+
   const GENDERS = ["MALE", "FEMALE", "OTHER"];
   const DISC_LEVEL = [
     "C1_C2",

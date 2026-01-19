@@ -8,6 +8,7 @@ const Privacy = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'Privacy Policy - Sphinic';
     window.scrollTo(0, 0);
   }, []);
 

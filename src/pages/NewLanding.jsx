@@ -9,6 +9,10 @@ const NewLanding = () => {
   const observerRef = useRef();
 
   useEffect(() => {
+    document.title = 'Sphinic - AI-Powered Spine Health Tracking';
+  }, []);
+
+  useEffect(() => {
     observerRef.current = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {

@@ -8,6 +8,7 @@ const Terms = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = 'Terms of Service - Sphinic';
     window.scrollTo(0, 0);
   }, []);
 
