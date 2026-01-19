@@ -507,153 +507,112 @@ const Register = () => {
                 Personal Information
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Full Name"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    error={!!errors.fullName}
-                    helperText={errors.fullName}
-                    required
-                    autoComplete="name"
-                    autoFocus
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "rgba(255, 255, 255, 0.05)",
-                        backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        "& fieldset": {
-                          border: "none",
-                        },
-                        "&:hover fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.3)",
-                        },
-                        "&.Mui-focused fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.5)",
-                        },
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                {/* Full Name */}
+                <TextField
+                  fullWidth
+                  label="Full Name"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  error={!!errors.fullName}
+                  helperText={errors.fullName}
+                  required
+                  autoComplete="name"
+                  autoFocus
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
                       },
-                      "& .MuiInputLabel-root": {
-                        color: "rgba(255, 255, 255, 0.7)",
+                      "&:hover fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
                       },
-                      "& .MuiInputBase-input": {
-                        color: "white",
+                      "&.Mui-focused fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
                       },
-                    }}
-                  />
-                </Grid>
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Email Address"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    error={!!errors.email}
-                    helperText={errors.email}
-                    required
-                    autoComplete="email"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "rgba(255, 255, 255, 0.05)",
-                        backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        "& fieldset": {
-                          border: "none",
-                        },
-                        "&:hover fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.3)",
-                        },
-                        "&.Mui-focused fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.5)",
-                        },
+                {/* Email Address */}
+                <TextField
+                  fullWidth
+                  label="Email Address"
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  error={!!errors.email}
+                  helperText={errors.email}
+                  required
+                  autoComplete="email"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
                       },
-                      "& .MuiInputLabel-root": {
-                        color: "rgba(255, 255, 255, 0.7)",
+                      "&:hover fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
                       },
-                      "& .MuiInputBase-input": {
-                        color: "white",
+                      "&.Mui-focused fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
                       },
-                    }}
-                  />
-                </Grid>
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    label="Age"
-                    name="age"
-                    type="number"
-                    value={formData.age}
-                    onChange={handleChange}
-                    error={!!errors.age}
-                    helperText={errors.age}
-                    required
-                    autoComplete="age"
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "rgba(255, 255, 255, 0.05)",
-                        backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        "& fieldset": {
-                          border: "none",
-                        },
-                        "&:hover fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.3)",
-                        },
-                        "&.Mui-focused fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.5)",
-                        },
-                      },
-                      "& .MuiInputLabel-root": {
-                        color: "rgba(255, 255, 255, 0.7)",
-                      },
-                      "& .MuiInputBase-input": {
-                        color: "white",
-                      },
-                    }}
-                  />
-                </Grid>
-
-                <Grid item xs={12} sm={6}>
-                  <TextField
-                    fullWidth
-                    select
-                    label="Gender"
-                    name="gender"
+                {/* Gender Dropdown - styled like injuries dropdown */}
+                <FormControl fullWidth error={!!errors.gender}>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Gender
+                  </InputLabel>
+                  <Select
                     value={formData.gender}
                     onChange={handleChange}
-                    error={!!errors.gender}
-                    helperText={errors.gender}
+                    name="gender"
+                    label="Gender"
                     required
                     sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "rgba(255, 255, 255, 0.05)",
-                        backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        "& fieldset": {
-                          border: "none",
-                        },
-                        "&:hover fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.3)",
-                        },
-                        "&.Mui-focused fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.5)",
-                        },
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
                       },
-                      "& .MuiInputLabel-root": {
-                        color: "rgba(255, 255, 255, 0.7)",
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
                       },
-                      "& .MuiInputBase-input": {
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
                         color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
                       },
                     }}
                   >
@@ -662,53 +621,108 @@ const Register = () => {
                         {gender.replace("_", " ")}
                       </MenuItem>
                     ))}
-                  </TextField>
-                </Grid>
-              </Grid>
+                  </Select>
+                  {errors.gender && (
+                    <FormHelperText sx={{ color: "#f44336" }}>
+                      {errors.gender}
+                    </FormHelperText>
+                  )}
+                </FormControl>
 
-              <Grid container spacing={3} sx={{ mt: 2 }}>
-                <Grid item xs={12}>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 2,
-                      height: 56,
+                {/* Age */}
+                <TextField
+                  fullWidth
+                  label="Age"
+                  name="age"
+                  type="number"
+                  value={formData.age}
+                  onChange={handleChange}
+                  error={!!errors.age}
+                  helperText={errors.age}
+                  required
+                  autoComplete="age"
+                  sx={{
+                    "& .MuiOutlinedInput-root": {
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& fieldset": {
+                        border: "none",
+                      },
+                      "&:hover fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused fieldset": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                    },
+                    "& .MuiInputLabel-root": {
+                      color: "rgba(255, 255, 255, 0.7)",
+                    },
+                    "& .MuiInputBase-input": {
+                      color: "white",
+                    },
+                  }}
+                />
+
+                {/* Profile Picture */}
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    minHeight: 56,
+                  }}
+                >
+                  <Typography
+                    variant="body2"
+                    sx={{ 
+                      color: "rgba(255, 255, 255, 0.7)", 
+                      whiteSpace: "nowrap",
+                      minWidth: "fit-content",
                     }}
                   >
-                    <Typography
-                      variant="body2"
-                      sx={{ color: "text.secondary", whiteSpace: "nowrap" }}
-                    >
-                      Profile Picture (Optional)
-                    </Typography>
+                    Profile Picture (Optional)
+                  </Typography>
 
-                    <input
-                      accept="image/*"
-                      id="profile-picture-upload"
-                      type="file"
-                      hidden
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] || null;
-                        setFormData((prev) => ({
-                          ...prev,
-                          profilePicture: file,
-                        }));
-                      }}
-                    />
-                    <Button
-                      variant="outlined"
-                      component="label"
-                      htmlFor="profile-picture-upload"
-                      sx={{ height: 56, borderRadius: 2 }}
-                    >
-                      {formData.profilePicture
-                        ? formData.profilePicture.name
-                        : "Choose File"}
-                    </Button>
-                  </Box>
-                </Grid>
-              </Grid>
+                  <input
+                    accept="image/*"
+                    id="profile-picture-upload"
+                    type="file"
+                    hidden
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setFormData((prev) => ({
+                        ...prev,
+                        profilePicture: file,
+                      }));
+                    }}
+                  />
+                  <Button
+                    variant="outlined"
+                    component="label"
+                    htmlFor="profile-picture-upload"
+                    sx={{ 
+                      minHeight: 56, 
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      color: "rgba(255, 255, 255, 0.9)",
+                      textTransform: "none",
+                      "&:hover": {
+                        background: "rgba(255, 255, 255, 0.1)",
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                    }}
+                  >
+                    {formData.profilePicture
+                      ? formData.profilePicture.name
+                      : "Choose File"}
+                  </Button>
+                </Box>
+              </Box>
             </Box>
 
             <Divider sx={{ my: 4 }} />
@@ -717,68 +731,71 @@ const Register = () => {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="h5"
-                sx={{ mb: 3, color: "primary.main", fontWeight: 600 }}
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
               >
                 Account Security
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={formData.password}
-                    onChange={handleChange}
-                    error={!!errors.password}
-                    helperText={errors.password}
-                    required
-                    autoComplete="new-password"
-                    InputProps={{
-                      endAdornment: (
-                        <Button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          sx={{
-                            minWidth: "auto",
-                            p: 1,
-                            color: "text.secondary",
-                            "&:hover": {
-                              backgroundColor: "transparent",
-                            },
-                          }}
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </Button>
-                      ),
-                    }}
-                    sx={{
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: "12px",
-                        background: "rgba(255, 255, 255, 0.05)",
-                        backdropFilter: "blur(10px)",
-                        border: "1px solid rgba(255, 255, 255, 0.1)",
-                        "& fieldset": {
-                          border: "none",
-                        },
-                        "&:hover fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.3)",
-                        },
-                        "&.Mui-focused fieldset": {
-                          border: "1px solid rgba(79, 195, 247, 0.5)",
-                        },
-                      },
-                      "& .MuiInputLabel-root": {
+              <TextField
+                fullWidth
+                label="Password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
+                onChange={handleChange}
+                error={!!errors.password}
+                helperText={errors.password}
+                required
+                autoComplete="new-password"
+                InputProps={{
+                  endAdornment: (
+                    <Button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      sx={{
+                        minWidth: "auto",
+                        p: 1,
                         color: "rgba(255, 255, 255, 0.7)",
-                      },
-                      "& .MuiInputBase-input": {
-                        color: "white",
-                      },
-                    }}
-                  />
-                </Grid>
-              </Grid>
+                        "&:hover": {
+                          backgroundColor: "transparent",
+                          color: "rgba(255, 255, 255, 0.9)",
+                        },
+                      }}
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </Button>
+                  ),
+                }}
+                sx={{
+                  "& .MuiOutlinedInput-root": {
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    "& fieldset": {
+                      border: "none",
+                    },
+                    "&:hover fieldset": {
+                      border: "1px solid rgba(79, 195, 247, 0.3)",
+                    },
+                    "&.Mui-focused fieldset": {
+                      border: "1px solid rgba(79, 195, 247, 0.5)",
+                    },
+                  },
+                  "& .MuiInputLabel-root": {
+                    color: "rgba(255, 255, 255, 0.7)",
+                  },
+                  "& .MuiInputBase-input": {
+                    color: "white",
+                  },
+                }}
+              />
             </Box>
 
             <Divider sx={{ my: 4 }} />
@@ -787,66 +804,106 @@ const Register = () => {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="h5"
-                sx={{ mb: 3, color: "primary.main", fontWeight: 600 }}
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
               >
                 Preferences
               </Typography>
 
-              <Grid container spacing={3}>
-                <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="surgeryHistory"
-                        checked={formData.surgeryHistory}
-                        onChange={handleChange}
-                        color="primary"
-                      />
-                    }
-                    label={
-                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                        Surgery History
-                      </Typography>
-                    }
-                    sx={{
-                      p: 2,
-                      border: "1px solid #E5E7EB",
-                      borderRadius: 2,
-                      backgroundColor: "background.default",
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                  />
-                </Grid>
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="surgeryHistory"
+                      checked={formData.surgeryHistory}
+                      onChange={handleChange}
+                      sx={{
+                        color: "rgba(79, 195, 247, 0.7)",
+                        "&.Mui-checked": {
+                          color: "#4fc3f7",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 28,
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 500,
+                        color: "rgba(255, 255, 255, 0.9)",
+                      }}
+                    >
+                      Surgery History
+                    </Typography>
+                  }
+                  sx={{
+                    p: 2.5,
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(79, 195, 247, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                />
 
-                <Grid item xs={12} sm={6}>
-                  <FormControlLabel
-                    control={
-                      <Checkbox
-                        name="isResearchOpt"
-                        checked={formData.isResearchOpt}
-                        onChange={handleChange}
-                        color="primary"
-                      />
-                    }
-                    label={
-                      <Typography variant="body1" sx={{ fontWeight: 500 }}>
-                        Research Opt-in
-                      </Typography>
-                    }
-                    sx={{
-                      p: 2,
-                      border: "1px solid #E5E7EB",
-                      borderRadius: 2,
-                      backgroundColor: "background.default",
-                      "&:hover": {
-                        backgroundColor: "action.hover",
-                      },
-                    }}
-                  />
-                </Grid>
-              </Grid>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="isResearchOpt"
+                      checked={formData.isResearchOpt}
+                      onChange={handleChange}
+                      sx={{
+                        color: "rgba(79, 195, 247, 0.7)",
+                        "&.Mui-checked": {
+                          color: "#4fc3f7",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 28,
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        fontWeight: 500,
+                        color: "rgba(255, 255, 255, 0.9)",
+                      }}
+                    >
+                      Research Opt-in
+                    </Typography>
+                  }
+                  sx={{
+                    p: 2.5,
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      background: "rgba(255, 255, 255, 0.08)",
+                      border: "1px solid rgba(79, 195, 247, 0.3)",
+                      transform: "translateY(-2px)",
+                      boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
+                    },
+                  }}
+                />
+              </Box>
             </Box>
 
             <Divider sx={{ my: 4 }} />
@@ -1018,62 +1075,124 @@ const Register = () => {
 
             {/* Terms and Privacy Acceptance Section */}
             <Box sx={{ mb: 4 }}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="acceptedTerms"
-                    checked={formData.acceptedTerms}
-                    onChange={handleChange}
-                    color="primary"
-                    required
-                  />
-                }
-                label={
-                  <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.9)" }}>
-                    I accept the{" "}
-                    <Link
-                      component={RouterLink}
-                      to="/terms"
-                      sx={{
-                        color: "#4facfe",
-                        textDecoration: "none",
-                        fontWeight: 500,
-                        "&:hover": {
-                          textDecoration: "underline",
-                        },
-                      }}
-                    >
-                      Terms of Service
-                    </Link>
-                    {" "}and{" "}
-                    <Link
-                      component={RouterLink}
-                      to="/privacy"
-                      sx={{
-                        color: "#4facfe",
-                        textDecoration: "none",
-                        fontWeight: 500,
-                        "&:hover": {
-                          textDecoration: "underline",
-                        },
-                      }}
-                    >
-                      Privacy Policy
-                    </Link>
-                  </Typography>
-                }
+              <Box
                 sx={{
-                  p: 2,
-                  borderRadius: 2,
-                  backgroundColor: "rgba(255, 255, 255, 0.05)",
-                  border: errors.acceptedTerms ? "1px solid #f44336" : "1px solid rgba(255, 255, 255, 0.1)",
+                  borderRadius: "12px",
+                  background: errors.acceptedTerms 
+                    ? "rgba(244, 67, 54, 0.1)" 
+                    : "rgba(255, 255, 255, 0.05)",
+                  backdropFilter: "blur(10px)",
+                  border: errors.acceptedTerms 
+                    ? "1px solid rgba(244, 67, 54, 0.5)" 
+                    : "1px solid rgba(255, 255, 255, 0.1)",
+                  transition: "all 0.3s ease",
                   "&:hover": {
-                    backgroundColor: "rgba(255, 255, 255, 0.08)",
+                    border: errors.acceptedTerms 
+                      ? "1px solid rgba(244, 67, 54, 0.6)" 
+                      : "1px solid rgba(79, 195, 247, 0.3)",
+                  },
+                  "&:focus-within": {
+                    border: errors.acceptedTerms 
+                      ? "1px solid rgba(244, 67, 54, 0.6)" 
+                      : "1px solid rgba(79, 195, 247, 0.5)",
                   },
                 }}
-              />
+              >
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="acceptedTerms"
+                      checked={formData.acceptedTerms}
+                      onChange={handleChange}
+                      required
+                      sx={{
+                        color: "rgba(79, 195, 247, 0.7)",
+                        "&.Mui-checked": {
+                          color: "#4fc3f7",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          fontSize: 28,
+                        },
+                      }}
+                    />
+                  }
+                  label={
+                    <Typography 
+                      variant="body1" 
+                      sx={{ 
+                        color: "rgba(255, 255, 255, 0.9)",
+                        fontWeight: 400,
+                        lineHeight: 1.6,
+                      }}
+                    >
+                      I accept the{" "}
+                      <Link
+                        component={RouterLink}
+                        to="/terms"
+                        sx={{
+                          color: "#4fc3f7",
+                          textDecoration: "none",
+                          fontWeight: 600,
+                          transition: "all 0.2s ease",
+                          "&:hover": {
+                            color: "#00f2fe",
+                            textDecoration: "underline",
+                            textShadow: "0 0 8px rgba(79, 195, 247, 0.5)",
+                          },
+                        }}
+                      >
+                        Terms of Service
+                      </Link>
+                      {" "}and{" "}
+                      <Link
+                        component={RouterLink}
+                        to="/privacy"
+                        sx={{
+                          color: "#4fc3f7",
+                          textDecoration: "none",
+                          fontWeight: 600,
+                          transition: "all 0.2s ease",
+                          "&:hover": {
+                            color: "#00f2fe",
+                            textDecoration: "underline",
+                            textShadow: "0 0 8px rgba(79, 195, 247, 0.5)",
+                          },
+                        }}
+                      >
+                        Privacy Policy
+                      </Link>
+                      <Typography
+                        component="span"
+                        sx={{
+                          color: "#f44336",
+                          ml: 0.5,
+                          fontSize: "1.2rem",
+                          verticalAlign: "middle",
+                        }}
+                      >
+                        *
+                      </Typography>
+                    </Typography>
+                  }
+                  sx={{
+                    p: "16.5px 14px",
+                    m: 0,
+                    width: "100%",
+                    alignItems: "center",
+                  }}
+                />
+              </Box>
               {errors.acceptedTerms && (
-                <Typography variant="caption" sx={{ color: "#f44336", ml: 4, mt: 0.5, display: "block" }}>
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: "#f44336", 
+                    ml: 1.5, 
+                    mt: 0.5, 
+                    display: "block",
+                    fontSize: "0.75rem",
+                  }}
+                >
                   {errors.acceptedTerms}
                 </Typography>
               )}
