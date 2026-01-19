@@ -476,17 +476,27 @@ const Login = () => {
         </Paper>
 
         <Box sx={{ textAlign: 'center', mt: 4 }}>
-          <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+          <Typography 
+            variant="body2" 
+            sx={{ 
+              color: 'rgba(255, 255, 255, 0.7)',
+              fontSize: '0.875rem',
+              lineHeight: 1.6,
+            }}
+          >
             By signing in, you agree to our{' '}
             <Link
               component={RouterLink}
               to="/terms"
               sx={{
-                color: '#4facfe',
+                color: '#4fc3f7',
                 textDecoration: 'none',
-                fontWeight: 500,
+                fontWeight: 600,
+                transition: 'all 0.2s ease',
                 '&:hover': {
+                  color: '#00f2fe',
                   textDecoration: 'underline',
+                  textShadow: '0 0 8px rgba(79, 195, 247, 0.5)',
                 },
               }}
             >
@@ -497,11 +507,14 @@ const Login = () => {
               component={RouterLink}
               to="/privacy"
               sx={{
-                color: '#4facfe',
+                color: '#4fc3f7',
                 textDecoration: 'none',
-                fontWeight: 500,
+                fontWeight: 600,
+                transition: 'all 0.2s ease',
                 '&:hover': {
+                  color: '#00f2fe',
                   textDecoration: 'underline',
+                  textShadow: '0 0 8px rgba(79, 195, 247, 0.5)',
                 },
               }}
             >

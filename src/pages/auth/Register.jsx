@@ -441,7 +441,7 @@ const Register = () => {
                 textShadow: "0 2px 4px rgba(0,0,0,0.3)",
               }}
             >
-              Start your journey to better spine health today
+              Your path to better spine health begins here
             </Typography>
           </Box>
         </Box>
@@ -912,7 +912,13 @@ const Register = () => {
             <Box sx={{ mb: 4 }}>
               <Typography
                 variant="h5"
-                sx={{ mb: 3, color: "primary.main", fontWeight: 600 }}
+                sx={{ 
+                  mb: 3, 
+                  color: "#4fc3f7", 
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.3)",
+                  fontSize: "1.5rem",
+                }}
               >
                 Medical Information
               </Typography>
@@ -921,12 +927,19 @@ const Register = () => {
               <Box sx={{ mb: 4 }}>
                 <Typography
                   variant="h6"
-                  sx={{ mb: 2, color: "text.primary", fontWeight: 600 }}
+                  sx={{ 
+                    mb: 2, 
+                    color: "rgba(255, 255, 255, 0.9)", 
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                  }}
                 >
                   Injuries
                 </Typography>
                 <FormControl fullWidth>
-                  <InputLabel>Select Injuries</InputLabel>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Select Injuries
+                  </InputLabel>
                   <Select
                     multiple
                     value={formData.userInjuries}
@@ -945,22 +958,65 @@ const Register = () => {
                             label={value.replace(/_/g, " ")}
                             size="small"
                             sx={{
-                              backgroundColor: "primary.light",
-                              color: "primary.contrastText",
+                              backgroundColor: "#764ba2",
+                              color: "white",
+                              fontWeight: 500,
                             }}
                           />
                         ))}
                       </Box>
                     )}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
                     sx={{
-                      borderRadius: 2,
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
                       },
                     }}
                   >
                     {INJURY_TYPE.map((type) => (
-                      <MenuItem key={type} value={type}>
+                      <MenuItem 
+                        key={type} 
+                        value={type}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(79, 195, 247, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(79, 195, 247, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(79, 195, 247, 0.3)",
+                            },
+                          },
+                        }}
+                      >
                         {type.replace(/_/g, " ")}
                       </MenuItem>
                     ))}
@@ -972,12 +1028,19 @@ const Register = () => {
               <Box sx={{ mb: 4 }}>
                 <Typography
                   variant="h6"
-                  sx={{ mb: 2, color: "text.primary", fontWeight: 600 }}
+                  sx={{ 
+                    mb: 2, 
+                    color: "rgba(255, 255, 255, 0.9)", 
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                  }}
                 >
                   Surgeries
                 </Typography>
                 <FormControl fullWidth>
-                  <InputLabel>Select Surgeries</InputLabel>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Select Surgeries
+                  </InputLabel>
                   <Select
                     multiple
                     value={formData.userSurgeries}
@@ -996,22 +1059,65 @@ const Register = () => {
                             label={value.replace(/_/g, " ")}
                             size="small"
                             sx={{
-                              backgroundColor: "secondary.light",
-                              color: "secondary.contrastText",
+                              backgroundColor: "#764ba2",
+                              color: "white",
+                              fontWeight: 500,
                             }}
                           />
                         ))}
                       </Box>
                     )}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
                     sx={{
-                      borderRadius: 2,
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
                       },
                     }}
                   >
                     {SURGERY_TYPE.map((type) => (
-                      <MenuItem key={type} value={type}>
+                      <MenuItem 
+                        key={type} 
+                        value={type}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(118, 75, 162, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(118, 75, 162, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(118, 75, 162, 0.3)",
+                            },
+                          },
+                        }}
+                      >
                         {type.replace(/_/g, " ")}
                       </MenuItem>
                     ))}
@@ -1023,12 +1129,19 @@ const Register = () => {
               <Box sx={{ mb: 4 }}>
                 <Typography
                   variant="h6"
-                  sx={{ mb: 2, color: "text.primary", fontWeight: 600 }}
+                  sx={{ 
+                    mb: 2, 
+                    color: "rgba(255, 255, 255, 0.9)", 
+                    fontWeight: 600,
+                    fontSize: "1.1rem",
+                  }}
                 >
                   Disc Issues
                 </Typography>
                 <FormControl fullWidth>
-                  <InputLabel>Select Disc Levels</InputLabel>
+                  <InputLabel sx={{ color: "rgba(255, 255, 255, 0.7)" }}>
+                    Select Disc Levels
+                  </InputLabel>
                   <Select
                     multiple
                     value={formData.userDiscIssues}
@@ -1047,22 +1160,65 @@ const Register = () => {
                             label={value.replace(/_/g, " ")}
                             size="small"
                             sx={{
-                              backgroundColor: "info.light",
-                              color: "info.contrastText",
+                              backgroundColor: "#764ba2",
+                              color: "white",
+                              fontWeight: 500,
                             }}
                           />
                         ))}
                       </Box>
                     )}
+                    MenuProps={{
+                      PaperProps: {
+                        sx: {
+                          backgroundColor: "white",
+                          boxShadow: "0 8px 32px rgba(0, 0, 0, 0.3)",
+                          borderRadius: "12px",
+                          mt: 1,
+                        },
+                      },
+                    }}
                     sx={{
-                      borderRadius: 2,
-                      "& .MuiOutlinedInput-root": {
-                        borderRadius: 2,
+                      borderRadius: "12px",
+                      background: "rgba(255, 255, 255, 0.05)",
+                      backdropFilter: "blur(10px)",
+                      border: "1px solid rgba(255, 255, 255, 0.1)",
+                      "& .MuiOutlinedInput-notchedOutline": {
+                        border: "none",
+                      },
+                      "&:hover .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.3)",
+                      },
+                      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+                        border: "1px solid rgba(79, 195, 247, 0.5)",
+                      },
+                      "& .MuiSelect-select": {
+                        color: "white",
+                        padding: "16.5px 14px",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "rgba(255, 255, 255, 0.7)",
                       },
                     }}
                   >
                     {DISC_LEVEL.map((level) => (
-                      <MenuItem key={level} value={level}>
+                      <MenuItem 
+                        key={level} 
+                        value={level}
+                        sx={{
+                          color: "#1a1a2e",
+                          "&:hover": {
+                            backgroundColor: "rgba(0, 242, 254, 0.1)",
+                          },
+                          "&.Mui-selected": {
+                            backgroundColor: "rgba(0, 242, 254, 0.2)",
+                            color: "#1a1a2e",
+                            "&:hover": {
+                              backgroundColor: "rgba(0, 242, 254, 0.3)",
+                            },
+                          },
+                        }}
+                      >
                         {level.replace(/_/g, " ")}
                       </MenuItem>
                     ))}
