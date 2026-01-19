@@ -1214,7 +1214,7 @@ const NewLanding = () => {
             <Typography variant="h2" className="section-title">
               Ready to Take Control of Your Spine Health?
             </Typography>
-            <Typography variant="h6" className="section-description" sx={{ mb: 4, fontSize: { xs: "1rem", md: "1.25rem" } }}>
+            <Typography variant="h6" className="section-description" sx={{ mt: { xs: 2, md: 3 }, mb: 4, fontSize: { xs: "1rem", md: "1.25rem" } }}>
               Start your journey to better spine health. Understand your patterns, get personalized AI-powered insights, and prevent flare-ups proactively.
             </Typography>
             <Button

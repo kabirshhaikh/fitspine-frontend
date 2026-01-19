@@ -190,14 +190,14 @@
 }
 
 .section-title {
-  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-size: clamp(1.65rem, 4.5vw, 3.5rem);
   font-weight: 800;
   line-height: 1.2;
   text-align: center;
   color: white;
   margin-bottom: clamp(30px, 5vw, 50px);
   margin-top: 0;
-  background: linear-gradient(135deg, #ffffff 0%, #a8edea 50%, #fed6e3 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #a8edea 30%, #4facfe 60%, #00f2fe 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -437,6 +437,7 @@
   
   .section-title {
     margin-bottom: clamp(24px, 4vw, 36px);
+    font-size: clamp(1.5rem, 4.5vw, 2.5rem) !important;
   }
   
   .section-description {
@@ -513,7 +514,7 @@
   }
 
   .section-title {
-    font-size: clamp(1.5rem, 8vw, 2rem);
+    font-size: clamp(1.4rem, 4.5vw, 1.9rem);
     padding: 0 16px;
   }
 
