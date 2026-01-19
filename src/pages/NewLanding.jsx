@@ -95,10 +95,10 @@ const NewLanding = () => {
             sx={{ 
               display: "grid",
               gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-              gap: { xs: 4, md: 6, lg: 8 },
-              alignItems: "center",
-              minHeight: "100vh",
-              py: { xs: 6, md: 8 }
+              gap: { xs: 3, sm: 4, md: 6, lg: 8 },
+              alignItems: { xs: "flex-start", md: "center" },
+              minHeight: { xs: "auto", md: "100vh" },
+              py: { xs: 4, sm: 5, md: 8 }
             }}
           >
             {/* Left Side - Content */}
@@ -108,49 +108,10 @@ const NewLanding = () => {
                 display: "flex",
                 flexDirection: "column",
                 gap: { xs: 3, sm: 4, md: 5 },
-                order: { xs: 2, md: 1 }
+                order: { xs: 1, md: 1 },
+                textAlign: { xs: "center", md: "left" }
               }}
             >
-              {/* Badge */}
-              <Box
-                sx={{
-                  display: "inline-flex",
-                  alignItems: "center",
-                  gap: 1.5,
-                  background: "rgba(79, 172, 254, 0.15)",
-                  backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(79, 172, 254, 0.3)",
-                  borderRadius: "50px",
-                  padding: { xs: "8px 16px", sm: "10px 20px" },
-                  width: "fit-content",
-                  mb: { xs: 1, sm: 2 }
-                }}
-              >
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    background: "linear-gradient(135deg, #4facfe, #00f2fe)",
-                    animation: "pulse 2s ease-in-out infinite",
-                    "@keyframes pulse": {
-                      "0%, 100%": { opacity: 1, transform: "scale(1)" },
-                      "50%": { opacity: 0.7, transform: "scale(1.2)" }
-                    }
-                  }}
-                />
-                <Typography
-                  sx={{
-                    fontSize: { xs: "0.75rem", sm: "0.875rem" },
-                    fontWeight: 600,
-                    color: "#4facfe",
-                    letterSpacing: "0.5px"
-                  }}
-                >
-                  AI-Powered Health Insights
-                </Typography>
-              </Box>
-
               {/* Main Headline */}
               <Typography 
                 variant="h1" 
@@ -177,7 +138,8 @@ const NewLanding = () => {
                   fontWeight: 400,
                   lineHeight: 1.6,
                   color: "rgba(255, 255, 255, 0.8)",
-                  maxWidth: "600px"
+                  maxWidth: { xs: "100%", md: "600px" },
+                  mx: { xs: "auto", md: 0 }
                 }}
               >
                 Real-time tracking, AI insights, and personalized guidance to prevent flare-ups and protect your spine.
@@ -186,7 +148,9 @@ const NewLanding = () => {
               {/* CTA Button */}
               <Box
                 sx={{
-                  mt: { xs: 2, sm: 3 }
+                  mt: { xs: 2, sm: 3 },
+                  display: "flex",
+                  justifyContent: { xs: "center", md: "flex-start" }
                 }}
               >
                 <Button
@@ -200,7 +164,9 @@ const NewLanding = () => {
                     padding: { xs: "14px 32px", sm: "16px 40px" },
                     borderRadius: "12px",
                     textTransform: "none",
-                    fontWeight: 600
+                    fontWeight: 600,
+                    width: { xs: "100%", sm: "auto" },
+                    maxWidth: { xs: "320px", sm: "none" }
                   }}
                 >
                   Get Started Free
@@ -212,13 +178,14 @@ const NewLanding = () => {
             <Box
               sx={{
                 position: "relative",
-                order: { xs: 1, md: 2 },
+                order: { xs: 2, md: 2 },
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                minHeight: { xs: "400px", sm: "500px", md: "600px" },
+                minHeight: { xs: "350px", sm: "450px", md: "600px" },
                 width: "100%",
-                padding: { xs: 2, md: 0 }
+                padding: { xs: 1, sm: 2, md: 0 },
+                mt: { xs: 2, md: 0 }
               }}
             >
               {/* Medical Dashboard Container */}
@@ -228,16 +195,16 @@ const NewLanding = () => {
                   width: "100%",
                   maxWidth: { xs: "100%", md: "600px", lg: "650px" },
                   height: "100%",
-                  minHeight: { xs: "400px", sm: "500px", md: "600px" },
+                  minHeight: { xs: "350px", sm: "450px", md: "600px" },
                   background: "linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%)",
                   backdropFilter: "blur(20px)",
-                  borderRadius: "24px",
+                  borderRadius: { xs: "16px", md: "24px" },
                   border: "1px solid rgba(79, 172, 254, 0.2)",
-                  boxShadow: "0 25px 80px rgba(0, 0, 0, 0.4), 0 0 60px rgba(79, 172, 254, 0.15)",
-                  padding: { xs: 3, sm: 4, md: 5 },
+                  boxShadow: { xs: "0 15px 40px rgba(0, 0, 0, 0.3), 0 0 30px rgba(79, 172, 254, 0.1)", md: "0 25px 80px rgba(0, 0, 0, 0.4), 0 0 60px rgba(79, 172, 254, 0.15)" },
+                  padding: { xs: 2, sm: 3, md: 5 },
                   display: "flex",
                   flexDirection: "column",
-                  gap: 3,
+                  gap: { xs: 2, sm: 2.5, md: 3 },
                   overflow: "hidden",
                   "&::before": {
                     content: '""',
