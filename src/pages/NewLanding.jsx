@@ -82,13 +82,6 @@ const NewLanding = () => {
     }
   ];
 
-  const steps = [
-    { number: "1", title: "Connect Wearable", description: "Link your Fitbit device for automatic data collection" },
-    { number: "2", title: "Log Symptoms", description: "Quick daily logs for pain, stiffness, and activity" },
-    { number: "3", title: "Get AI Insights", description: "Receive personalized, clinically-informed recommendations" },
-    { number: "4", title: "Track Progress", description: "Monitor your recovery trajectory and disc protection score" }
-  ];
-
   return (
     <Box className="new-landing-container">
       {/* Hero Section */}
@@ -107,13 +100,13 @@ const NewLanding = () => {
               Sphinic: AI-Powered Spine Health Tracking
             </Typography>
             <Typography variant="body1" className="hero-subtitle-new" sx={{ 
-              fontSize: { xs: "1rem", md: "1.125rem" },
-              maxWidth: "900px",
-              lineHeight: 1.8,
+              fontSize: { xs: "1rem", sm: "1.1rem", md: "1.2rem" },
+              maxWidth: "700px",
+              lineHeight: 1.7,
               color: "rgba(255, 255, 255, 0.85)",
               mt: 2
             }}>
-              Sphinic integrates self-reported symptom tracking, wearable data, and AI-powered analytics to help you monitor spine health trends, recognize flare-up patterns, and build healthier daily habits. The platform translates complex biomechanical and neurological concepts into practical, easy-to-understand insights for everyday spine care awareness.
+              Track your symptoms, connect your wearable, and get AI-powered insights to prevent flare-ups and protect your spine.
             </Typography>
             <Button
               variant="contained"
@@ -125,6 +118,330 @@ const NewLanding = () => {
             >
               Start Tracking Your Spine Health
             </Button>
+          </Box>
+        </Container>
+      </Box>
+
+      {/* Product Showcase - Visual Demo */}
+      <Box className="section-new section-showcase" sx={{ minHeight: "100vh" }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Box className="section-content animate-on-scroll" sx={{ width: "100%" }}>
+            <Typography 
+              variant="h2" 
+              className="section-title"
+              sx={{ 
+                mb: { xs: 3, sm: 4, md: 5, lg: 6 },
+                fontSize: { xs: "1.75rem", sm: "2.25rem", md: "2.75rem", lg: "3.5rem" },
+                lineHeight: { xs: 1.3, md: 1.2 },
+                px: { xs: 2, sm: 0 }
+              }}
+            >
+              See Sphinic In Action
+            </Typography>
+            <Typography 
+              variant="h6" 
+              className="section-description" 
+              sx={{ 
+                mb: { xs: 5, sm: 6, md: 7, lg: 8 }, 
+                fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.2rem", lg: "1.25rem" },
+                lineHeight: { xs: 1.6, md: 1.7 },
+                maxWidth: { xs: "100%", sm: "90%", md: "800px" },
+                mx: "auto",
+                px: { xs: 2, sm: 0 },
+                color: "rgba(255, 255, 255, 0.85)"
+              }}
+            >
+              Experience how Sphinic transforms your daily data into actionable spine health insights
+            </Typography>
+            
+            <Box sx={{ 
+              display: "grid", 
+              gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" }, 
+              gap: { xs: 3, sm: 4, md: 5, lg: 6 },
+              mt: { xs: 2, sm: 3, md: 4, lg: 6 },
+              px: { xs: 1, sm: 0 }
+            }}>
+              {/* Disc Protection Score Mockup */}
+              <Box className="product-mockup-card">
+                <Box sx={{ 
+                  background: "linear-gradient(135deg, rgba(79, 172, 254, 0.15) 0%, rgba(0, 242, 254, 0.15) 100%)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(79, 172, 254, 0.3)",
+                  borderRadius: "24px",
+                  padding: { xs: 3, md: 4 },
+                  textAlign: "center",
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background: "linear-gradient(90deg, transparent, rgba(79, 172, 254, 0.5), transparent)",
+                  }
+                }}>
+                  <Typography variant="h6" sx={{ 
+                    color: "rgba(255,255,255,0.9)", 
+                    mb: { xs: 2.5, sm: 3, md: 3.5 }, 
+                    fontWeight: 600,
+                    fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.2rem", lg: "1.25rem" }
+                  }}>
+                    Disc Protection Score
+                  </Typography>
+                  
+                  {/* Animated Score Circle */}
+                  <Box sx={{ 
+                    position: "relative", 
+                    display: "inline-flex", 
+                    mb: { xs: 2.5, sm: 3, md: 3.5 },
+                    width: { xs: 120, sm: 150, md: 160, lg: 180 },
+                    height: { xs: 120, sm: 150, md: 160, lg: 180 }
+                  }}>
+                    <Box
+                      sx={{
+                        position: "absolute",
+                        width: "100%",
+                        height: "100%",
+                        borderRadius: "50%",
+                        background: `conic-gradient(from 0deg, #4facfe 0%, #00f2fe 85%, rgba(255,255,255,0.1) 85%, rgba(255,255,255,0.1) 100%)`,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        animation: "scorePulse 3s ease-in-out infinite",
+                        "@keyframes scorePulse": {
+                          "0%, 100%": { transform: "scale(1)", opacity: 1 },
+                          "50%": { transform: "scale(1.05)", opacity: 0.9 },
+                        },
+                        "&::before": {
+                          content: '""',
+                          position: "absolute",
+                          width: "70%",
+                          height: "70%",
+                          borderRadius: "50%",
+                          background: "rgba(15, 15, 35, 0.8)",
+                          backdropFilter: "blur(10px)",
+                        }
+                      }}
+                    >
+                      <Typography 
+                        variant="h2" 
+                        sx={{
+                          position: "relative",
+                          zIndex: 1,
+                          fontWeight: 800,
+                          background: "linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)",
+                          WebkitBackgroundClip: "text",
+                          WebkitTextFillColor: "transparent",
+                          backgroundClip: "text",
+                          fontSize: { xs: "2.5rem", sm: "3rem", md: "3.5rem", lg: "4rem" }
+                        }}
+                      >
+                        85
+                      </Typography>
+                    </Box>
+                  </Box>
+                  
+                  <Typography variant="body2" sx={{ 
+                    color: "rgba(255,255,255,0.7)", 
+                    fontSize: { xs: "0.8rem", sm: "0.85rem", md: "0.9rem", lg: "0.95rem" },
+                    fontStyle: "italic",
+                    lineHeight: 1.5
+                  }}>
+                    Real-time tracking of your spine health
+                  </Typography>
+                </Box>
+              </Box>
+
+              {/* Dashboard Preview Mockup */}
+              <Box className="product-mockup-card">
+                <Box sx={{ 
+                  background: "linear-gradient(135deg, rgba(156, 39, 176, 0.15) 0%, rgba(123, 31, 162, 0.15) 100%)",
+                  backdropFilter: "blur(20px)",
+                  border: "1px solid rgba(156, 39, 176, 0.3)",
+                  borderRadius: "24px",
+                  padding: { xs: 3, md: 4 },
+                  position: "relative",
+                  overflow: "hidden",
+                  "&::before": {
+                    content: '""',
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    right: 0,
+                    height: "1px",
+                    background: "linear-gradient(90deg, transparent, rgba(156, 39, 176, 0.5), transparent)",
+                  }
+                }}>
+                  <Typography variant="h6" sx={{ 
+                    color: "rgba(255,255,255,0.9)", 
+                    mb: { xs: 2.5, sm: 3, md: 3.5 }, 
+                    fontWeight: 600,
+                    fontSize: { xs: "0.95rem", sm: "1.1rem", md: "1.2rem", lg: "1.25rem" },
+                    textAlign: "center"
+                  }}>
+                    AI-Powered Insights
+                  </Typography>
+                  
+                  {/* Mini Chart/Graph Mockup */}
+                  <Box sx={{ 
+                    height: { xs: 100, sm: 120, md: 140, lg: 150 },
+                    position: "relative",
+                    mb: { xs: 1.5, sm: 2 }
+                  }}>
+                    <Box sx={{
+                      position: "absolute",
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      height: "100%",
+                      display: "flex",
+                      alignItems: "flex-end",
+                      justifyContent: "space-around",
+                      gap: 1,
+                      padding: "0 8px"
+                    }}>
+                      {[65, 72, 68, 80, 75, 85, 88].map((height, index) => (
+                        <Box
+                          key={index}
+                          sx={{
+                            flex: 1,
+                            height: `${height}%`,
+                            background: "linear-gradient(180deg, #9c27b0 0%, #7b1fa2 100%)",
+                            borderRadius: "4px 4px 0 0",
+                            minWidth: "20px",
+                            animation: `barGrow 1s ease-out ${index * 0.1}s both`,
+                            "@keyframes barGrow": {
+                              "0%": { height: "0%" },
+                              "100%": { height: `${height}%` },
+                            },
+                            boxShadow: "0 2px 8px rgba(156, 39, 176, 0.4)",
+                          }}
+                        />
+                      ))}
+                    </Box>
+                    {/* Grid lines */}
+                    <Box sx={{
+                      position: "absolute",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      opacity: 0.1,
+                      backgroundImage: `
+                        linear-gradient(to bottom, rgba(255,255,255,0.1) 1px, transparent 1px),
+                        linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px)
+                      `,
+                      backgroundSize: "20px 20px",
+                      pointerEvents: "none"
+                    }} />
+                  </Box>
+                  
+                  <Box sx={{ 
+                    display: "flex", 
+                    justifyContent: "space-between", 
+                    alignItems: "center",
+                    mt: { xs: 1.5, sm: 2 },
+                    padding: { xs: "10px", sm: "12px" },
+                    background: "rgba(156, 39, 176, 0.1)",
+                    borderRadius: { xs: "10px", sm: "12px" },
+                    border: "1px solid rgba(156, 39, 176, 0.2)"
+                  }}>
+                    <Box>
+                      <Typography variant="caption" sx={{ 
+                        color: "rgba(255,255,255,0.6)", 
+                        display: "block",
+                        fontSize: { xs: "0.7rem", sm: "0.75rem" }
+                      }}>
+                        Trend
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#4caf50", 
+                        fontWeight: 600,
+                        fontSize: { xs: "0.8rem", sm: "0.875rem", md: "0.95rem" }
+                      }}>
+                        ↗ Improving
+                      </Typography>
+                    </Box>
+                    <Box sx={{ textAlign: "right" }}>
+                      <Typography variant="caption" sx={{ 
+                        color: "rgba(255,255,255,0.6)", 
+                        display: "block",
+                        fontSize: { xs: "0.7rem", sm: "0.75rem" }
+                      }}>
+                        Risk Level
+                      </Typography>
+                      <Typography variant="body2" sx={{ 
+                        color: "#4facfe", 
+                        fontWeight: 600,
+                        fontSize: { xs: "0.8rem", sm: "0.875rem", md: "0.95rem" }
+                      }}>
+                        Low
+                      </Typography>
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Feature Highlights Row */}
+            <Box sx={{ 
+              display: "grid", 
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" }, 
+              gap: { xs: 2.5, sm: 3, md: 4, lg: 5 },
+              mt: { xs: 4, sm: 5, md: 6, lg: 7 },
+              px: { xs: 1, sm: 0 }
+            }}>
+              {[
+                { icon: "📊", title: "Daily Tracking", desc: "Log symptoms in seconds" },
+                { icon: "🤖", title: "AI Analysis", desc: "Personalized insights" },
+                { icon: "📈", title: "Trend Analysis", desc: "See your progress" }
+              ].map((item, index) => (
+                <Box 
+                  key={index}
+                  sx={{
+                    textAlign: "center",
+                    padding: { xs: 2, sm: 2.5, md: 3, lg: 3.5 },
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    borderRadius: { xs: "12px", sm: "14px", md: "16px" },
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "translateY(-4px)",
+                      background: "rgba(255, 255, 255, 0.08)",
+                      borderColor: "rgba(102, 126, 234, 0.4)",
+                      boxShadow: "0 8px 24px rgba(102, 126, 234, 0.2)",
+                    }
+                  }}
+                >
+                  <Typography sx={{ 
+                    fontSize: { xs: "2rem", sm: "2.5rem", md: "2.75rem", lg: "3rem" }, 
+                    mb: { xs: 0.75, sm: 1 },
+                    lineHeight: 1
+                  }}>
+                    {item.icon}
+                  </Typography>
+                  <Typography variant="h6" sx={{ 
+                    color: "rgba(255,255,255,0.9)", 
+                    mb: { xs: 0.75, sm: 1 }, 
+                    fontWeight: 600,
+                    fontSize: { xs: "0.95rem", sm: "1rem", md: "1.1rem", lg: "1.125rem" },
+                    lineHeight: 1.3
+                  }}>
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ 
+                    color: "rgba(255,255,255,0.6)",
+                    fontSize: { xs: "0.8rem", sm: "0.85rem", md: "0.9rem", lg: "0.95rem" },
+                    lineHeight: 1.5
+                  }}>
+                    {item.desc}
+                  </Typography>
+                </Box>
+              ))}
+            </Box>
           </Box>
         </Container>
       </Box>
@@ -498,146 +815,6 @@ const NewLanding = () => {
         </Container>
       </Box>
 
-      {/* How It Works */}
-      <Box className="section-new section-alt">
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
-          <Box className="section-content animate-on-scroll">
-            <Typography variant="h2" className="section-title">
-              How It Works
-            </Typography>
-            <Box sx={{ mt: { xs: 3, md: 4 }, display: "flex", flexDirection: "column", gap: { xs: 4, md: 6 } }}>
-              {/* First Row */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Typography sx={{ 
-                      fontSize: { xs: "56px", md: "72px" }, 
-                      fontWeight: 700,
-                      color: "rgba(102, 126, 234, 0.9)",
-                      lineHeight: 1
-                    }}>
-                      {steps[0].number}
-                    </Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {steps[0].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {steps[0].description}
-                  </Typography>
-                </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Typography sx={{ 
-                      fontSize: { xs: "56px", md: "72px" }, 
-                      fontWeight: 700,
-                      color: "rgba(102, 126, 234, 0.9)",
-                      lineHeight: 1
-                    }}>
-                      {steps[1].number}
-                    </Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {steps[1].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {steps[1].description}
-                  </Typography>
-                </Box>
-              </Box>
-
-              {/* Second Row */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Typography sx={{ 
-                      fontSize: { xs: "56px", md: "72px" }, 
-                      fontWeight: 700,
-                      color: "rgba(102, 126, 234, 0.9)",
-                      lineHeight: 1
-                    }}>
-                      {steps[2].number}
-                    </Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {steps[2].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {steps[2].description}
-                  </Typography>
-                </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Typography sx={{ 
-                      fontSize: { xs: "56px", md: "72px" }, 
-                      fontWeight: 700,
-                      color: "rgba(102, 126, 234, 0.9)",
-                      lineHeight: 1
-                    }}>
-                      {steps[3].number}
-                    </Typography>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {steps[3].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {steps[3].description}
-                  </Typography>
-                </Box>
-              </Box>
-            </Box>
-          </Box>
-        </Container>
-      </Box>
-
       {/* Integration Showcase */}
       <Box className="section-new section-alt">
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
@@ -799,9 +976,9 @@ const NewLanding = () => {
       </Box>
 
       {/* Final CTA */}
-      <Box className="section-new cta-section">
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
-          <Box className="section-content animate-on-scroll">
+      <Box className="section-new cta-section section-cta-final" sx={{ minHeight: "100vh" }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <Box className="section-content animate-on-scroll" sx={{ width: "100%", textAlign: "center" }}>
             <Typography variant="h2" className="section-title">
               Ready to Take Control of Your Spine Health?
             </Typography>

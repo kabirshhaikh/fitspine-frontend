@@ -12,7 +12,7 @@ import {
   CircularProgress,
   useTheme,
 } from '@mui/material';
-import { HealthAndSafety, Visibility, VisibilityOff } from '@mui/icons-material';
+import { HealthAndSafety, Visibility, VisibilityOff, Home } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
 import '../auth/Auth.css'; // Import Auth-specific CSS
 
@@ -172,18 +172,28 @@ const Login = () => {
           sx={{
             display: 'inline-flex',
             alignItems: 'center',
-            color: 'rgba(255, 255, 255, 0.8)',
+            gap: 1,
+            color: 'rgba(255, 255, 255, 0.85)',
             textDecoration: 'none',
             fontSize: '0.95rem',
             mb: 3,
+            padding: '8px 16px',
+            borderRadius: '12px',
+            background: 'rgba(255, 255, 255, 0.05)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
             transition: 'all 0.3s ease',
             '&:hover': {
               color: 'white',
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
               transform: 'translateX(-4px)',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
             },
           }}
         >
-          ← Back to Home
+          <Home sx={{ fontSize: '1.1rem' }} />
+          Home
         </Link>
 
         <Box sx={{ textAlign: 'center', mb: 6 }}>
