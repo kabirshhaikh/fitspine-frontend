@@ -104,10 +104,16 @@ const NewLanding = () => {
                 maxWidth: "100%"
               }}
             >
-              AI-Powered Spine Health Tracking
+              Sphinic: AI-Powered Spine Health Tracking
             </Typography>
-            <Typography variant="h5" className="hero-subtitle-new">
-              Prevent flare-ups, understand your triggers, and get personalized, clinically-informed advice for your spine health.
+            <Typography variant="body1" className="hero-subtitle-new" sx={{ 
+              fontSize: { xs: "1rem", md: "1.125rem" },
+              maxWidth: "900px",
+              lineHeight: 1.8,
+              color: "rgba(255, 255, 255, 0.85)",
+              mt: 2
+            }}>
+              Sphinic integrates self-reported symptom tracking, wearable data, and AI-powered analytics to help you monitor spine health trends, recognize flare-up patterns, and build healthier daily habits. The platform translates complex biomechanical and neurological concepts into practical, easy-to-understand insights for everyday spine care awareness.
             </Typography>
             <Button
               variant="contained"
@@ -231,20 +237,6 @@ const NewLanding = () => {
                 </Box>
               </Box>
             </Box>
-          </Box>
-        </Container>
-      </Box>
-
-      {/* Solution Overview */}
-      <Box className="section-new section-alt">
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
-          <Box className="section-content animate-on-scroll">
-            <Typography variant="h2" className="section-title">
-              Sphinic: Your AI-Powered Spine Health Companion
-            </Typography>
-            <Typography variant="body1" className="section-description">
-              Sphinic integrates self-reported symptom tracking, wearable data, and AI-powered analytics to help users monitor spine health trends, recognize flare-up patterns, and build healthier daily habits. The platform translates complex biomechanical and neurological concepts into practical, easy-to-understand insights for everyday spine care awareness.
-            </Typography>
           </Box>
         </Container>
       </Box>
