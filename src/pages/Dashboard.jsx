@@ -32,6 +32,7 @@ import DailyLogModal from "../components/DailyLogModal";
 import dailyLogService from "../services/dailyLog.service";
 import insightsService from "../services/insights.service";
 import InsightsModal from "../components/InsightsModal";
+import OnboardingModal from "../components/OnboardingModal";
 import WeeklyGraphWidget from "../components/widgets/WeeklyGraphWidget";
 import api from "../services/api";
 
@@ -40,7 +41,7 @@ export default function Dashboard() {
     document.title = 'Dashboard - Sphinic';
   }, []);
 
-  const { user, isAuthenticated, loading, updateUserFromResponse } = useAuth();
+  const { user, isAuthenticated, loading, updateUserFromResponse, completeOnboarding } = useAuth();
   const navigate = useNavigate();
   const [connecting, setConnecting] = useState(false);
   const [revoking, setRevoking] = useState(false);
@@ -959,6 +960,13 @@ export default function Dashboard() {
           open={insightsModalOpen}
           onClose={() => setInsightsModalOpen(false)}
           insights={insights}
+        />
+
+        {/* Onboarding Modal (first-time users) */}
+        <OnboardingModal
+          open={!user?.hasOnBoardingCompleted}
+          onComplete={completeOnboarding}
+          onSkip={completeOnboarding}
         />
 
         {/* Full Dashboard Loading Overlay */}

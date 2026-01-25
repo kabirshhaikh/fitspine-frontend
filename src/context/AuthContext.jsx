@@ -88,6 +88,16 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('user', JSON.stringify(updatedUser));
   };
 
+  const completeOnboarding = async () => {
+    await authService.completeOnboarding();
+    setUser((prev) => {
+      if (!prev) return prev;
+      const updated = { ...prev, hasOnBoardingCompleted: true };
+      localStorage.setItem('user', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   const clearError = () => {
     setError(null);
   };
@@ -101,6 +111,7 @@ export const AuthProvider = ({ children }) => {
     logout,
     updateUser,
     updateUserFromResponse,
+    completeOnboarding,
     clearError,
     isAuthenticated: !!user,
   };

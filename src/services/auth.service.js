@@ -4,25 +4,27 @@ class AuthService {
   async login(email, password) {
     try {
       const { data } = await api.post('/api/user/login', { email, password });
-      // data = { token, email, fullName, profilePicture, id, isWearableConnected, wearableType }
-      const { 
-        token, 
-        email: em, 
-        fullName, 
-        profilePicture, 
+      // data = { token, email, fullName, profilePicture, id, isWearableConnected, wearableType, hasOnBoardingCompleted }
+      const {
+        token,
+        email: em,
+        fullName,
+        profilePicture,
         id,
         isWearableConnected,
-        wearableType
+        wearableType,
+        hasOnBoardingCompleted,
       } = data;
 
       // Build a user object for the app
-      const user = { 
-        email: em, 
-        fullName, 
-        profilePicture, 
+      const user = {
+        email: em,
+        fullName,
+        profilePicture,
         id,
         isWearableConnected,
-        wearableType
+        wearableType,
+        hasOnBoardingCompleted: hasOnBoardingCompleted ?? false,
       };
 
       if (token) localStorage.setItem('authToken', token);
@@ -38,25 +40,25 @@ class AuthService {
     try {
       const { data } = await api.post('/api/user/register', formData);
 
-      // Register endpoint returns user data but no token
-      // We need to extract the wearable connection info
-      const { 
-        id, 
-        email: em, 
-        fullName, 
-        profilePicture,
-        isWearableConnected,
-        wearableType
-      } = data;
-      
-      // Build user object (without token since register doesn't return one)
-      const user = { 
+      // Register endpoint returns user data but no token (UserResponseDto includes hasOnBoardingCompleted: false)
+      const {
         id,
-        email: em, 
-        fullName, 
+        email: em,
+        fullName,
         profilePicture,
         isWearableConnected,
-        wearableType
+        wearableType,
+        hasOnBoardingCompleted,
+      } = data;
+
+      const user = {
+        id,
+        email: em,
+        fullName,
+        profilePicture,
+        isWearableConnected,
+        wearableType,
+        hasOnBoardingCompleted: hasOnBoardingCompleted ?? false,
       };
 
       // Store user data (but no token since user needs to login)
@@ -107,6 +109,10 @@ class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  async completeOnboarding() {
+    await api.patch('/api/user/onboarding-complete');
   }
 
   async forgotPassword(email) {
