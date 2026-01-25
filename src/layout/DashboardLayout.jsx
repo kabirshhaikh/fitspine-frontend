@@ -87,7 +87,8 @@ export default function DashboardLayout({ children }) {
       <Container 
         maxWidth="lg" 
         sx={{ 
-          py: 3,
+          py: { xs: 0, sm: 2, md: 3 },
+          pt: { xs: 0, sm: 2, md: 3 },
           position: 'relative',
           zIndex: 2,
         }}

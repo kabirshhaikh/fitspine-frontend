@@ -345,7 +345,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <DashboardLayout>
-        <Container maxWidth="lg" sx={{ py: 3, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <Container maxWidth="lg" sx={{ py: { xs: 0, sm: 2, md: 3 }, pt: { xs: 1, sm: 2, md: 3 }, display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
           <Box display="flex" flexDirection="column" alignItems="center" gap={2}>
             <CircularProgress size={40} sx={{ color: '#4facfe' }} />
             <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.7)' }}>
@@ -359,7 +359,7 @@ export default function Dashboard() {
 
   return (
     <DashboardLayout>
-      <Container maxWidth="lg" sx={{ py: 3, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <Container maxWidth="lg" sx={{ py: { xs: 0, sm: 2, md: 3 }, pt: { xs: 1, sm: 2, md: 3 }, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* Fitbit Success Message */}
         {showSuccessMessage && (
           <Alert 
@@ -593,8 +593,8 @@ export default function Dashboard() {
           {/* Fitbit Connection Pill */}
           <Box sx={{ 
             flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 auto' },
-            minWidth: { xs: '100%', sm: '280px', md: '320px' },
-            maxWidth: { xs: '100%', md: '400px' },
+            minWidth: { xs: '100%', sm: '280px', md: '340px' },
+            maxWidth: { xs: '100%', md: '420px' },
             width: '100%'
           }}>
             <Box
@@ -659,7 +659,7 @@ export default function Dashboard() {
               </Box>
 
               {/* Title */}
-              <Box sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
+              <Box sx={{ flex: '1 1 auto', minWidth: { xs: 0, sm: '120px', md: '140px' }, overflow: 'hidden' }}>
                 <Typography 
                   variant="h6" 
                   sx={{ 
@@ -701,12 +701,12 @@ export default function Dashboard() {
                     sx={{
                       background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
                       borderRadius: '20px',
-                      px: { xs: 2, sm: 2.5 },
+                      px: { xs: 2, sm: 2, md: 2.5 },
                       py: { xs: 0.75, sm: 1 },
                       fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
                       fontWeight: 600,
                       textTransform: 'none',
-                      minWidth: { xs: 'auto', sm: '100px' },
+                      minWidth: { xs: 'auto', sm: '90px', md: '100px' },
                       whiteSpace: 'nowrap',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%)',
@@ -730,12 +730,12 @@ export default function Dashboard() {
                     sx={{
                       background: 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)',
                       borderRadius: '20px',
-                      px: { xs: 2, sm: 2.5 },
+                      px: { xs: 2, sm: 2, md: 2.5 },
                       py: { xs: 0.75, sm: 1 },
                       fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
                       fontWeight: 600,
                       textTransform: 'none',
-                      minWidth: { xs: 'auto', sm: '100px' },
+                      minWidth: { xs: 'auto', sm: '90px', md: '100px' },
                       whiteSpace: 'nowrap',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #d32f2f 0%, #f44336 100%)',

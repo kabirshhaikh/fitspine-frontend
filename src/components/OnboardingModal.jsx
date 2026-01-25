@@ -35,20 +35,20 @@ const STEPS = [
   {
     label: 'Daily Log',
     icon: Assessment,
-    title: 'Start with Daily Log',
+    title: 'Daily Log',
     body: "Log your pain, stiffness, and activity each day. This powers everything else—insights, trends, and recommendations.",
   },
   {
-    label: 'Fitbit',
+    label: 'Connect Fitbit',
     icon: FitnessCenter,
-    title: 'Connect Fitbit (optional)',
+    title: 'Connect Fitbit',
     body: 'Sync steps, sleep, and heart rate from your Fitbit for richer insights. You can skip this and log manually.',
   },
   {
-    label: 'AI Insights',
+    label: 'AI Spine Insights',
     icon: Psychology,
-    title: 'Get AI Insights',
-    body: "After you've logged, use 'Generate Insights' to get personalized spine health analysis and recommendations.",
+    title: 'AI Spine Insights',
+    body: "After you've logged, use 'Generate' to get personalized spine health analysis and recommendations.",
   },
 ];
 
@@ -163,13 +163,50 @@ export default function OnboardingModal({ open, onComplete, onSkip }) {
           sx={{
             mb: { xs: 2, sm: 3 },
             overflowX: 'auto',
-            '& .MuiStepLabel-label': {
-              color: 'rgba(255, 255, 255, 0.8)',
-              fontSize: { xs: '0.7rem', sm: '0.875rem' },
-              whiteSpace: 'normal',
-              textAlign: 'center',
+            '& .MuiStepLabel-root': {
+              '& .MuiStepLabel-label': {
+                color: 'rgba(255, 255, 255, 0.95)',
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+                fontWeight: 600,
+                whiteSpace: 'normal',
+                textAlign: 'center',
+                '&.Mui-active': {
+                  color: '#4facfe',
+                  fontWeight: 700,
+                },
+                '&.Mui-completed': {
+                  color: '#4caf50',
+                  fontWeight: 600,
+                },
+              },
             },
-            '& .MuiStepConnector-line': { borderColor: 'rgba(255,255,255,0.2)' },
+            '& .MuiStepIcon-root': {
+              color: 'rgba(255, 255, 255, 0.4)',
+              fontSize: { xs: '1.5rem', sm: '1.75rem' },
+              '&.Mui-active': {
+                color: '#4facfe',
+              },
+              '&.Mui-completed': {
+                color: '#4caf50',
+              },
+              '& .MuiStepIcon-text': {
+                fill: 'white',
+                fontWeight: 700,
+                fontSize: { xs: '0.75rem', sm: '0.875rem' },
+              },
+            },
+            '& .MuiStepConnector-root': {
+              '& .MuiStepConnector-line': {
+                borderColor: 'rgba(255,255,255,0.3)',
+                borderTopWidth: 2,
+              },
+              '&.Mui-active .MuiStepConnector-line': {
+                borderColor: '#4facfe',
+              },
+              '&.Mui-completed .MuiStepConnector-line': {
+                borderColor: '#4caf50',
+              },
+            },
           }}
         >
           {STEPS.map((s) => (
@@ -234,6 +271,10 @@ export default function OnboardingModal({ open, onComplete, onSkip }) {
           gap: { xs: 1.5, sm: 1 },
           flexDirection: { xs: 'column', sm: 'row' },
           flexWrap: 'wrap',
+          alignItems: 'stretch',
+          '& > *': {
+            width: { xs: '100%', sm: 'auto' },
+          },
         }}
       >
         <Button
@@ -245,11 +286,12 @@ export default function OnboardingModal({ open, onComplete, onSkip }) {
             textTransform: 'none',
             minHeight: 44,
             order: { xs: 1, sm: 0 },
+            width: { xs: '100%', sm: 'auto' },
           }}
         >
           Skip
         </Button>
-        <Box sx={{ flex: { xs: 'none', sm: 1 } }} />
+        {!isMobile && <Box sx={{ flex: 1 }} />}
         {activeStep > 0 && (
           <Button
             startIcon={<ArrowBack />}
@@ -261,6 +303,7 @@ export default function OnboardingModal({ open, onComplete, onSkip }) {
               textTransform: 'none',
               minHeight: 44,
               order: { xs: 2, sm: 0 },
+              width: { xs: '100%', sm: 'auto' },
             }}
           >
             Back
@@ -278,6 +321,7 @@ export default function OnboardingModal({ open, onComplete, onSkip }) {
             fontWeight: 600,
             minHeight: 44,
             order: { xs: 3, sm: 0 },
+            width: { xs: '100%', sm: 'auto' },
             '&:hover': { background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)' },
           }}
         >
