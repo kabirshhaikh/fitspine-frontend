@@ -964,7 +964,7 @@ export default function Dashboard() {
 
         {/* Onboarding Modal (first-time users) */}
         <OnboardingModal
-          open={!user?.hasOnBoardingCompleted}
+          open={!!user && !user.hasOnBoardingCompleted}
           onComplete={completeOnboarding}
           onSkip={completeOnboarding}
         />
