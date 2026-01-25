@@ -167,7 +167,7 @@ const Login = () => {
           filter: 'blur(1px)',
         }}
       />
-      <Container maxWidth="sm" sx={{ position: 'relative', zIndex: 2 }}>
+      <Container maxWidth="sm" className="auth-slide-from-top" sx={{ position: 'relative', zIndex: 2 }}>
         {/* Back to Home Link */}
         <Link
           component={RouterLink}

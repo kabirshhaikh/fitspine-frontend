@@ -38,6 +38,7 @@ import "../auth/Auth.css"; // Import Auth-specific CSS
 const Register = () => {
   useEffect(() => {
     document.title = 'Register - Sphinic';
+    window.scrollTo(0, 0);
   }, []);
 
   const GENDERS = ["MALE", "FEMALE", "OTHER"];
@@ -285,8 +286,10 @@ const Register = () => {
           linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%)
         `,
         display: "flex",
-        alignItems: "center",
+        alignItems: { xs: "flex-start", md: "center" },
+        justifyContent: { xs: "flex-start", md: "center" },
         py: 4,
+        pt: { xs: 2, md: 4 },
         position: "relative",
         overflow: "hidden",
       }}
@@ -353,7 +356,7 @@ const Register = () => {
           filter: "blur(1px)",
         }}
       />
-      <Container maxWidth="lg" sx={{ position: "relative", zIndex: 2 }}>
+      <Container maxWidth="lg" className="auth-slide-from-top" sx={{ position: "relative", zIndex: 2 }}>
         {/* Back to Home Link */}
         <Link
           component={RouterLink}
