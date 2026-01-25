@@ -11,7 +11,9 @@ import {
   Grid,
   CircularProgress,
   TextField,
-  Backdrop
+  Backdrop,
+  useMediaQuery,
+  useTheme
 } from "@mui/material";
 import { 
   FitnessCenter, 
@@ -41,6 +43,8 @@ export default function Dashboard() {
     document.title = 'Dashboard - Sphinic';
   }, []);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const { user, isAuthenticated, loading, updateUserFromResponse, completeOnboarding } = useAuth();
   const navigate = useNavigate();
   const [connecting, setConnecting] = useState(false);
@@ -76,6 +80,17 @@ export default function Dashboard() {
   const [logModalDate, setLogModalDate] = useState(null); // Date to pass to modal
   const location = useLocation();
   const hasProcessedFitbitConnection = useRef(false);
+
+  // Auto-dismiss error message after 3 seconds
+  useEffect(() => {
+    if (insightsError) {
+      const timer = setTimeout(() => {
+        setInsightsError(null);
+      }, 3000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [insightsError]);
 
   // Route guard - redirect unauthenticated users (only when not loading)
   useEffect(() => {
@@ -417,77 +432,123 @@ export default function Dashboard() {
           </Typography>
         </Box>
 
-        {/* Stats Grid */}
-        <Grid container spacing={3} sx={{ mb: 4, justifyContent: 'center' }}>
-          {/* AI Insights Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
+        {/* Floating Pill Badges */}
+        <Box 
+          sx={{ 
+            mb: 4, 
+            display: 'flex', 
+            flexDirection: { xs: 'column', md: 'row' },
+            gap: 2,
+            justifyContent: 'center',
+            alignItems: { xs: 'stretch', md: 'flex-start' },
+            flexWrap: 'wrap'
+          }}
+        >
+          {/* AI Insights Pill */}
+          <Box sx={{ 
+            flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 auto' },
+            minWidth: { xs: '100%', sm: '280px', md: '320px' },
+            maxWidth: { xs: '100%', md: '400px' },
+            width: '100%'
+          }}>
+            <Box
               sx={{
-                borderRadius: 4,
-                background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+                width: '100%',
+                borderRadius: '50px',
+                background: `linear-gradient(135deg, ${alpha('#4facfe', 0.15)}, ${alpha('#00f2fe', 0.1)})`,
                 backdropFilter: 'blur(20px)',
-                border: `1px solid ${alpha('#ffffff', 0.2)}`,
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                border: `1px solid ${alpha('#4facfe', 0.3)}`,
+                boxShadow: `0 8px 32px ${alpha('#4facfe', 0.2)}, 0 2px 8px ${alpha('#000000', 0.1)}`,
+                p: { xs: 2, sm: 2.5, md: 3 },
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 1.5, sm: 2, md: 2.5 },
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: `0 12px 40px ${alpha('#4facfe', 0.3)}, 0 4px 12px ${alpha('#000000', 0.15)}`,
+                  border: `1px solid ${alpha('#4facfe', 0.4)}`,
                 },
               }}
             >
-              <CardContent sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <Box sx={{ mb: 3 }}>
-                  <Psychology 
-                    sx={{ 
-                      fontSize: 48, 
-                      color: '#4facfe',
-                      filter: 'drop-shadow(0 0 8px rgba(79, 172, 254, 0.5))'
-                    }} 
-                  />
-                </Box>
-                <Typography variant="h6" sx={{ color: 'rgba(255, 255, 255, 0.9)', fontWeight: 500, mb: 2 }}>
+              {/* Icon */}
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: 40, sm: 44, md: 48 },
+                  height: { xs: 40, sm: 44, md: 48 },
+                  borderRadius: '50%',
+                  background: `linear-gradient(135deg, ${alpha('#4facfe', 0.3)}, ${alpha('#00f2fe', 0.2)})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: `1px solid ${alpha('#4facfe', 0.4)}`,
+                }}
+              >
+                <Psychology 
+                  sx={{ 
+                    fontSize: { xs: 24, sm: 26, md: 28 },
+                    color: '#4facfe',
+                    filter: 'drop-shadow(0 0 8px rgba(79, 172, 254, 0.6))'
+                  }} 
+                />
+              </Box>
+
+              {/* Title */}
+              <Box sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.95)', 
+                    fontWeight: 600, 
+                    mb: 0.5,
+                    fontSize: { xs: '0.95rem', sm: '1rem', md: '1.1rem' },
+                    lineHeight: 1.2,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
                   AI Spine Insights
                 </Typography>
-                
-                {insightsError ? (
-                  <Box sx={{ mb: 3, p: 2, background: alpha('#f44336', 0.1), borderRadius: 2, border: `1px solid ${alpha('#f44336', 0.3)}` }}>
-                    <Typography variant="body2" sx={{ color: '#f44336', mb: 0.5, fontWeight: 600 }}>
-                      Error
-                    </Typography>
-                    <Typography variant="caption" sx={{ color: 'rgba(255, 255, 255, 0.7)', display: 'block', lineHeight: 1.4 }}>
-                      {insightsError}
-                    </Typography>
-                  </Box>
-                ) : (
-                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.6)', mb: 3 }}>
-                    Generate personalized spine health insights
+                {!insightsError && (
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      color: 'rgba(255, 255, 255, 0.6)', 
+                      fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                      display: 'block',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      whiteSpace: 'nowrap'
+                    }}
+                  >
+                    Generate insights
                   </Typography>
                 )}
+              </Box>
 
+              {/* Action Button */}
+              <Box sx={{ flexShrink: 0 }}>
                 <Button
                   variant="contained"
-                  size="medium"
+                  size="small"
                   onClick={handleGenerateInsights}
                   disabled={loadingInsights}
-                  startIcon={loadingInsights ? <CircularProgress size={16} sx={{ color: 'white' }} /> : null}
+                  startIcon={loadingInsights ? <CircularProgress size={14} sx={{ color: 'white' }} /> : null}
                   sx={{
                     background: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
-                    borderRadius: '25px',
-                    px: 3,
-                    py: 1,
-                    fontSize: '0.9rem',
+                    borderRadius: '20px',
+                    px: { xs: 2, sm: 2.5 },
+                    py: { xs: 0.75, sm: 1 },
+                    fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
                     fontWeight: 600,
                     textTransform: 'none',
-                    position: 'relative',
+                    minWidth: { xs: 'auto', sm: '100px' },
+                    whiteSpace: 'nowrap',
                     '&:hover': {
                       background: 'linear-gradient(135deg, #00f2fe 0%, #4facfe 100%)',
-                      transform: 'translateY(-1px)',
+                      transform: 'scale(1.05)',
                     },
                     '&:disabled': {
                       background: 'rgba(255, 255, 255, 0.1)',
@@ -495,78 +556,166 @@ export default function Dashboard() {
                     }
                   }}
                 >
-                  {loadingInsights ? 'Generating Insights...' : 'Generate Insights'}
+                  {loadingInsights ? 'Generating...' : 'Generate'}
                 </Button>
-              </CardContent>
-            </Card>
-          </Grid>
+              </Box>
+            </Box>
+            
+            {/* Error Message Below Pill */}
+            {insightsError && (
+              <Box
+                sx={{
+                  mt: 1,
+                  p: { xs: 1.5, sm: 2 },
+                  borderRadius: '12px',
+                  background: alpha('#f44336', 0.1),
+                  border: `1px solid ${alpha('#f44336', 0.3)}`,
+                  width: '100%'
+                }}
+              >
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: '#f44336', 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                    display: 'block',
+                    lineHeight: 1.4,
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word'
+                  }}
+                >
+                  {insightsError}
+                </Typography>
+              </Box>
+            )}
+          </Box>
 
-          {/* Fitbit Connection Card */}
-          <Grid item xs={12} sm={6} md={4}>
-            <Card
+          {/* Fitbit Connection Pill */}
+          <Box sx={{ 
+            flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 auto' },
+            minWidth: { xs: '100%', sm: '280px', md: '320px' },
+            maxWidth: { xs: '100%', md: '400px' },
+            width: '100%'
+          }}>
+            <Box
               sx={{
-                borderRadius: 4,
-                background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+                width: '100%',
+                borderRadius: '50px',
+                background: isFitbitConnected 
+                  ? `linear-gradient(135deg, ${alpha('#4caf50', 0.15)}, ${alpha('#66bb6a', 0.1)})`
+                  : `linear-gradient(135deg, ${alpha('#ff6b6b', 0.15)}, ${alpha('#ee5a24', 0.1)})`,
                 backdropFilter: 'blur(20px)',
-                border: `1px solid ${alpha('#ffffff', 0.2)}`,
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                border: `1px solid ${isFitbitConnected ? alpha('#4caf50', 0.3) : alpha('#ff6b6b', 0.3)}`,
+                boxShadow: isFitbitConnected
+                  ? `0 8px 32px ${alpha('#4caf50', 0.2)}, 0 2px 8px ${alpha('#000000', 0.1)}`
+                  : `0 8px 32px ${alpha('#ff6b6b', 0.2)}, 0 2px 8px ${alpha('#000000', 0.1)}`,
+                p: { xs: 2, sm: 2.5, md: 3 },
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 1.5, sm: 2, md: 2.5 },
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: isFitbitConnected
+                    ? `0 12px 40px ${alpha('#4caf50', 0.3)}, 0 4px 12px ${alpha('#000000', 0.15)}`
+                    : `0 12px 40px ${alpha('#ff6b6b', 0.3)}, 0 4px 12px ${alpha('#000000', 0.15)}`,
+                  border: `1px solid ${isFitbitConnected ? alpha('#4caf50', 0.4) : alpha('#ff6b6b', 0.4)}`,
                 },
               }}
             >
-              <CardContent sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <Box sx={{ mb: 3 }}>
-                  {isFitbitConnected ? (
-                    <CheckCircle 
-                      sx={{ 
-                        fontSize: 48, 
-                        color: '#4caf50',
-                        filter: 'drop-shadow(0 0 8px rgba(76, 175, 80, 0.5))'
-                      }} 
-                    />
-                  ) : (
-                    <FitnessCenter 
-                      sx={{ 
-                        fontSize: 48, 
-                        color: '#ff6b6b',
-                        filter: 'drop-shadow(0 0 8px rgba(255, 107, 107, 0.5))'
-                      }} 
-                    />
-                  )}
-                </Box>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: isFitbitConnected ? '#4caf50' : '#ff6b6b' }}>
+              {/* Icon */}
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: 40, sm: 44, md: 48 },
+                  height: { xs: 40, sm: 44, md: 48 },
+                  borderRadius: '50%',
+                  background: isFitbitConnected
+                    ? `linear-gradient(135deg, ${alpha('#4caf50', 0.3)}, ${alpha('#66bb6a', 0.2)})`
+                    : `linear-gradient(135deg, ${alpha('#ff6b6b', 0.3)}, ${alpha('#ee5a24', 0.2)})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: `1px solid ${isFitbitConnected ? alpha('#4caf50', 0.4) : alpha('#ff6b6b', 0.4)}`,
+                }}
+              >
+                {isFitbitConnected ? (
+                  <CheckCircle 
+                    sx={{ 
+                      fontSize: { xs: 24, sm: 26, md: 28 },
+                      color: '#4caf50',
+                      filter: 'drop-shadow(0 0 8px rgba(76, 175, 80, 0.6))'
+                    }} 
+                  />
+                ) : (
+                  <FitnessCenter 
+                    sx={{ 
+                      fontSize: { xs: 24, sm: 26, md: 28 },
+                      color: '#ff6b6b',
+                      filter: 'drop-shadow(0 0 8px rgba(255, 107, 107, 0.6))'
+                    }} 
+                  />
+                )}
+              </Box>
+
+              {/* Title */}
+              <Box sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontWeight: 600, 
+                    mb: 0.5,
+                    color: isFitbitConnected ? '#4caf50' : '#ff6b6b',
+                    fontSize: { xs: '0.95rem', sm: '1rem', md: '1.1rem' },
+                    lineHeight: 1.2,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
                   {isFitbitConnected ? 'Fitbit Connected' : 'Connect Fitbit'}
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
-                  Track your daily activity
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.6)', 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                    display: 'block',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Track activity
                 </Typography>
+              </Box>
+
+              {/* Action Button */}
+              <Box sx={{ flexShrink: 0 }}>
                 {!isFitbitConnected ? (
                   <Button
                     variant="contained"
-                    size="medium"
+                    size="small"
                     onClick={handleConnectFitbit}
                     disabled={connecting}
                     sx={{
                       background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
-                      borderRadius: '25px',
-                      px: 3,
-                      py: 1,
-                      fontSize: '0.9rem',
+                      borderRadius: '20px',
+                      px: { xs: 2, sm: 2.5 },
+                      py: { xs: 0.75, sm: 1 },
+                      fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
                       fontWeight: 600,
                       textTransform: 'none',
+                      minWidth: { xs: 'auto', sm: '100px' },
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%)',
-                        transform: 'translateY(-1px)',
+                        transform: 'scale(1.05)',
                       },
+                      '&:disabled': {
+                        background: 'rgba(255, 255, 255, 0.1)',
+                        color: 'rgba(255, 255, 255, 0.5)',
+                      }
                     }}
                   >
                     {connecting ? 'Connecting...' : 'Connect'}
@@ -574,21 +723,23 @@ export default function Dashboard() {
                 ) : (
                   <Button
                     variant="contained"
-                    size="medium"
+                    size="small"
                     onClick={handleRevokeFitbit}
                     disabled={revoking}
-                    startIcon={revoking ? <CircularProgress size={16} sx={{ color: 'white' }} /> : <LinkOff />}
+                    startIcon={revoking ? <CircularProgress size={14} sx={{ color: 'white' }} /> : <LinkOff sx={{ fontSize: { xs: 14, sm: 16 } }} />}
                     sx={{
                       background: 'linear-gradient(135deg, #f44336 0%, #d32f2f 100%)',
-                      borderRadius: '25px',
-                      px: 3,
-                      py: 1,
-                      fontSize: '0.9rem',
+                      borderRadius: '20px',
+                      px: { xs: 2, sm: 2.5 },
+                      py: { xs: 0.75, sm: 1 },
+                      fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
                       fontWeight: 600,
                       textTransform: 'none',
+                      minWidth: { xs: 'auto', sm: '100px' },
+                      whiteSpace: 'nowrap',
                       '&:hover': {
                         background: 'linear-gradient(135deg, #d32f2f 0%, #f44336 100%)',
-                        transform: 'translateY(-1px)',
+                        transform: 'scale(1.05)',
                       },
                       '&:disabled': {
                         background: 'rgba(255, 255, 255, 0.1)',
@@ -599,72 +750,120 @@ export default function Dashboard() {
                     {revoking ? 'Disconnecting...' : 'Disconnect'}
                   </Button>
                 )}
-              </CardContent>
-            </Card>
-          </Grid>
+              </Box>
+            </Box>
+          </Box>
 
-          {/* Daily Log Card */}
-          <Grid item xs={12} sm={12} md={4}>
-            <Card
+          {/* Daily Log Pill */}
+          <Box sx={{ 
+            flex: { xs: '1 1 100%', sm: '1 1 calc(50% - 8px)', md: '1 1 auto' },
+            minWidth: { xs: '100%', sm: '280px', md: '320px' },
+            maxWidth: { xs: '100%', md: '400px' },
+            width: '100%'
+          }}>
+            <Box
               sx={{
-                borderRadius: 4,
-                background: `linear-gradient(135deg, ${alpha('#ffffff', 0.1)}, ${alpha('#ffffff', 0.05)})`,
+                width: '100%',
+                borderRadius: '50px',
+                background: `linear-gradient(135deg, ${alpha('#ff6b6b', 0.15)}, ${alpha('#ee5a24', 0.1)})`,
                 backdropFilter: 'blur(20px)',
-                border: `1px solid ${alpha('#ffffff', 0.2)}`,
-                height: '100%',
-                position: 'relative',
-                overflow: 'hidden',
-                '&::before': {
-                  content: '""',
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '1px',
-                  background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)',
+                border: `1px solid ${alpha('#ff6b6b', 0.3)}`,
+                boxShadow: `0 8px 32px ${alpha('#ff6b6b', 0.2)}, 0 2px 8px ${alpha('#000000', 0.1)}`,
+                p: { xs: 2, sm: 2.5, md: 3 },
+                display: 'flex',
+                alignItems: 'center',
+                gap: { xs: 1.5, sm: 2, md: 2.5 },
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: `0 12px 40px ${alpha('#ff6b6b', 0.3)}, 0 4px 12px ${alpha('#000000', 0.15)}`,
+                  border: `1px solid ${alpha('#ff6b6b', 0.4)}`,
                 },
               }}
             >
-              <CardContent sx={{ p: 4, textAlign: 'center', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
-                <Box sx={{ mb: 3 }}>
-                  <Assessment 
-                    sx={{ 
-                      fontSize: 48, 
-                      color: '#ff6b6b',
-                      filter: 'drop-shadow(0 0 8px rgba(255, 107, 107, 0.5))'
-                    }} 
-                  />
-                </Box>
-                <Typography variant="h6" sx={{ fontWeight: 600, mb: 2, color: '#ff6b6b' }}>
+              {/* Icon */}
+              <Box
+                sx={{
+                  flexShrink: 0,
+                  width: { xs: 40, sm: 44, md: 48 },
+                  height: { xs: 40, sm: 44, md: 48 },
+                  borderRadius: '50%',
+                  background: `linear-gradient(135deg, ${alpha('#ff6b6b', 0.3)}, ${alpha('#ee5a24', 0.2)})`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  border: `1px solid ${alpha('#ff6b6b', 0.4)}`,
+                }}
+              >
+                <Assessment 
+                  sx={{ 
+                    fontSize: { xs: 24, sm: 26, md: 28 },
+                    color: '#ff6b6b',
+                    filter: 'drop-shadow(0 0 8px rgba(255, 107, 107, 0.6))'
+                  }} 
+                />
+              </Box>
+
+              {/* Title */}
+              <Box sx={{ flex: '1 1 auto', minWidth: 0, overflow: 'hidden' }}>
+                <Typography 
+                  variant="h6" 
+                  sx={{ 
+                    fontWeight: 600, 
+                    mb: 0.5,
+                    color: '#ff6b6b',
+                    fontSize: { xs: '0.95rem', sm: '1rem', md: '1.1rem' },
+                    lineHeight: 1.2,
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
                   Daily Log
                 </Typography>
-                <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 3 }}>
-                  Track your spine health today
+                <Typography 
+                  variant="caption" 
+                  sx={{ 
+                    color: 'rgba(255, 255, 255, 0.6)', 
+                    fontSize: { xs: '0.7rem', sm: '0.75rem' },
+                    display: 'block',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    whiteSpace: 'nowrap'
+                  }}
+                >
+                  Track health today
                 </Typography>
+              </Box>
+
+              {/* Action Button */}
+              <Box sx={{ flexShrink: 0 }}>
                 <Button
                   variant="contained"
-                  size="medium"
+                  size="small"
                   onClick={() => setLogModalOpen(true)}
                   sx={{
                     background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
-                    borderRadius: '25px',
-                    px: 3,
-                    py: 1,
-                    fontSize: '0.9rem',
+                    borderRadius: '20px',
+                    px: { xs: 2, sm: 2.5 },
+                    py: { xs: 0.75, sm: 1 },
+                    fontSize: { xs: '0.75rem', sm: '0.8rem', md: '0.85rem' },
                     fontWeight: 600,
                     textTransform: 'none',
+                    minWidth: { xs: 'auto', sm: '100px' },
+                    whiteSpace: 'nowrap',
                     '&:hover': {
                       background: 'linear-gradient(135deg, #ee5a24 0%, #ff6b6b 100%)',
-                      transform: 'translateY(-1px)',
+                      transform: 'scale(1.05)',
                     },
                   }}
                 >
                   Start Logging
                 </Button>
-              </CardContent>
-            </Card>
-          </Grid>
-      </Grid>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
 
         {/* View Insights Section */}
         <Box sx={{ mb: 4, width: '100%' }}>
