@@ -76,6 +76,7 @@ const CompleteGoogleSignup = () => {
   const [formData, setFormData] = useState({
     age: "",
     gender: "",
+    profilePicture: null,
     surgeryHistory: false,
     isResearchOpt: false,
     acceptedTerms: false,
@@ -140,6 +141,9 @@ const CompleteGoogleSignup = () => {
       const fd = new FormData();
       fd.append("age", String(parseInt(formData.age, 10)));
       fd.append("gender", formData.gender);
+      if (formData.profilePicture) {
+        fd.append("profilePicture", formData.profilePicture);
+      }
       fd.append("surgeryHistory", String(formData.surgeryHistory));
       fd.append("isResearchOpt", String(formData.isResearchOpt));
       fd.append("acceptedTerms", String(formData.acceptedTerms));
@@ -215,6 +219,38 @@ const CompleteGoogleSignup = () => {
                 {errors.gender && <FormHelperText sx={{ color: "#f44336" }}>{errors.gender}</FormHelperText>}
               </FormControl>
               <TextField fullWidth label="Age" name="age" type="number" value={formData.age} onChange={handleChange} error={!!errors.age} helperText={errors.age} required autoComplete="age" sx={inputSx} />
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2, minHeight: 56 }}>
+                <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.7)", whiteSpace: "nowrap", minWidth: "fit-content" }}>
+                  Profile Picture (Optional)
+                </Typography>
+                <input
+                  accept="image/*"
+                  id="complete-profile-picture-upload"
+                  type="file"
+                  hidden
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setFormData((prev) => ({ ...prev, profilePicture: file }));
+                  }}
+                />
+                <Button
+                  variant="outlined"
+                  component="label"
+                  htmlFor="complete-profile-picture-upload"
+                  sx={{
+                    minHeight: 56,
+                    borderRadius: "12px",
+                    background: "rgba(255, 255, 255, 0.05)",
+                    backdropFilter: "blur(10px)",
+                    border: "1px solid rgba(255, 255, 255, 0.1)",
+                    color: "rgba(255, 255, 255, 0.9)",
+                    textTransform: "none",
+                    "&:hover": { background: "rgba(255, 255, 255, 0.1)", border: "1px solid rgba(79, 195, 247, 0.3)" },
+                  }}
+                >
+                  {formData.profilePicture ? formData.profilePicture.name : "Choose File"}
+                </Button>
+              </Box>
             </Box>
             <Divider sx={{ my: 4 }} />
             <Typography variant="h5" sx={sectionTitleSx}>Preferences</Typography>
