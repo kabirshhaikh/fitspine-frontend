@@ -139,6 +139,67 @@ class AuthService {
       throw new Error(errorMessage);
     }
   }
+
+  /**
+   * Register or sign in with Google. Sends the Google ID token to
+   * POST /api/user/auth/google/register. Backend returns LoginResponseDto and should
+   * set needsProfileCompletion: true when the user was just created (new Google user).
+   */
+  async registerWithGoogle(idToken) {
+    try {
+      const { data } = await api.post('/api/user/auth/google/register', { idToken });
+      if (!data.token) {
+        throw new Error('Google sign-in is not fully configured yet. Please use email and password.');
+      }
+      const needsProfileCompletion = !!data.needsProfileCompletion;
+      const user = data.user || {
+        id: data.id,
+        email: data.email,
+        fullName: data.fullName || data.name,
+        profilePicture: data.profilePicture || data.picture,
+        isWearableConnected: data.isWearableConnected ?? false,
+        wearableType: data.wearableType ?? null,
+        hasOnBoardingCompleted: data.hasOnBoardingCompleted ?? false,
+        needsProfileCompletion,
+      };
+      if (!data.user && needsProfileCompletion) {
+        user.needsProfileCompletion = true;
+      }
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(user));
+      return { token: data.token, user, needsProfileCompletion };
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message || 'Google sign-up failed');
+    }
+  }
+
+  /**
+   * Complete profile for a new Google user. Sends FormData to
+   * POST /api/user/auth/google/register-partial-user (Bearer token from Google register).
+   * Backend returns LoginResponseDto; overwrite stored token and user with new one.
+   */
+  async completeGoogleProfile(formData) {
+    try {
+      const { data } = await api.post('/api/user/auth/google/register-partial-user', formData);
+      if (!data.token) {
+        throw new Error('Profile update failed. Please try again.');
+      }
+      const user = {
+        id: data.id,
+        email: data.email,
+        fullName: data.fullName || data.name,
+        profilePicture: data.profilePicture || data.picture,
+        isWearableConnected: data.isWearableConnected ?? false,
+        wearableType: data.wearableType ?? null,
+        hasOnBoardingCompleted: data.hasOnBoardingCompleted ?? false,
+      };
+      localStorage.setItem('authToken', data.token);
+      localStorage.setItem('user', JSON.stringify(user));
+      return { token: data.token, user };
+    } catch (error) {
+      throw new Error(error.response?.data?.message || error.message || 'Could not complete profile');
+    }
+  }
 }
 
 export default new AuthService();

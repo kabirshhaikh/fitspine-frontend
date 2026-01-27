@@ -142,7 +142,50 @@ const Register = () => {
 
   const theme = useTheme();
   const navigate = useNavigate();
-  const { register, loading, error, clearError } = useAuth();
+  const { register, registerWithGoogle, loading, error, clearError } = useAuth();
+  const googleBtnRef = useRef(null);
+
+  // Initialize Google Sign-In button when script and client id are ready
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId || !googleBtnRef.current) return;
+
+    const initAndRender = () => {
+      if (!window.google?.accounts?.id || !googleBtnRef.current) return false;
+      try {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: async (res) => {
+            try {
+              const result = await registerWithGoogle(res.credential);
+              if (result?.needsProfileCompletion) {
+                navigate("/complete-google-signup", { replace: true, state: { fromGoogleRegister: true } });
+              } else {
+                navigate("/dashboard", { replace: true });
+              }
+            } catch (_) {
+              // error shown via AuthContext
+            }
+          },
+        });
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          type: "standard",
+          theme: "filled_black",
+          size: "large",
+          text: "signup_with",
+          width: 300,
+        });
+        return true;
+      } catch (e) {
+        console.warn("Google Sign-In init failed", e);
+        return false;
+      }
+    };
+
+    if (initAndRender()) return;
+    const id = setInterval(() => { if (initAndRender()) clearInterval(id); }, 100);
+    return () => clearInterval(id);
+  }, [registerWithGoogle, navigate]);
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -495,6 +538,20 @@ const Register = () => {
           )}
 
           <form onSubmit={handleSubmit}>
+            {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+              <Box sx={{ mb: 4, textAlign: "center" }}>
+                <Typography variant="body2" sx={{ color: "rgba(255, 255, 255, 0.8)", mb: 1.5 }}>
+                  Sign up using Google
+                </Typography>
+                <Box sx={{ display: "flex", justifyContent: "center", mb: 2 }}>
+                  <div ref={googleBtnRef} />
+                </Box>
+                <Divider sx={{ my: 2, "&::before, &::after": { borderColor: "rgba(255,255,255,0.2)" } }}>
+                  <Typography component="span" variant="body2" sx={{ color: "rgba(255,255,255,0.6)", px: 1 }}>or use the form below</Typography>
+                </Divider>
+              </Box>
+            )}
+
             {/* Personal Information Section */}
             <Box sx={{ mb: 4 }}>
               <Typography

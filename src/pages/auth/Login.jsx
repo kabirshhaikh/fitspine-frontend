@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link as RouterLink, useNavigate, useLocation } from 'react-router-dom';
 import {
   Box,
@@ -11,15 +11,19 @@ import {
   Alert,
   CircularProgress,
   useTheme,
+  Divider,
 } from '@mui/material';
 import { HealthAndSafety, Visibility, VisibilityOff, Home } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
 import '../auth/Auth.css'; // Import Auth-specific CSS
 
 const Login = () => {
+  const googleBtnRef = useRef(null);
+
   useEffect(() => {
     document.title = 'Login - Sphinic';
   }, []);
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -29,9 +33,51 @@ const Login = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loading, error, clearError } = useAuth();
+  const { login, registerWithGoogle, loading, error, clearError } = useAuth();
 
   const from = location.state?.from?.pathname || '/dashboard';
+
+  // Initialize Google Sign-In button when script and client id are ready
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId || !googleBtnRef.current) return;
+
+    const initAndRender = () => {
+      if (!window.google?.accounts?.id || !googleBtnRef.current) return false;
+      try {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: async (res) => {
+            try {
+              const result = await registerWithGoogle(res.credential);
+              if (result?.needsProfileCompletion) {
+                navigate('/complete-google-signup', { replace: true, state: { fromGoogleRegister: true } });
+              } else {
+                navigate(from, { replace: true });
+              }
+            } catch (_) {
+              // error shown via AuthContext
+            }
+          },
+        });
+        window.google.accounts.id.renderButton(googleBtnRef.current, {
+          type: 'standard',
+          theme: 'filled_black',
+          size: 'large',
+          text: 'signup_with',
+          width: 300,
+        });
+        return true;
+      } catch (e) {
+        console.warn('Google Sign-In init failed', e);
+        return false;
+      }
+    };
+
+    if (initAndRender()) return;
+    const id = setInterval(() => { if (initAndRender()) clearInterval(id); }, 100);
+    return () => clearInterval(id);
+  }, [registerWithGoogle, navigate, from]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -453,6 +499,21 @@ const Login = () => {
                   Sign up for free
                 </Link>
               </Typography>
+
+              {import.meta.env.VITE_GOOGLE_CLIENT_ID && (
+                <>
+                  <Divider sx={{ my: 2, '&::before, &::after': { borderColor: 'rgba(255,255,255,0.2)' } }}>
+                    <Typography component="span" variant="body2" sx={{ color: 'rgba(255,255,255,0.6)', px: 1 }}>or</Typography>
+                  </Divider>
+
+                  <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1.5 }}>
+                    Sign up using Google
+                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
+                    <div ref={googleBtnRef} />
+                  </Box>
+                </>
+              )}
               
               <Link
                 component={RouterLink}

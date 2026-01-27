@@ -67,6 +67,36 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const registerWithGoogle = async (idToken) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const { user: newUser, needsProfileCompletion } = await authService.registerWithGoogle(idToken);
+      setUser(newUser);
+      return { user: newUser, needsProfileCompletion };
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const completeGoogleProfile = async (formData) => {
+    try {
+      setError(null);
+      setLoading(true);
+      const { user: updatedUser } = await authService.completeGoogleProfile(formData);
+      setUser(updatedUser);
+      return updatedUser;
+    } catch (err) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
     setError(null);
@@ -108,12 +138,15 @@ export const AuthProvider = ({ children }) => {
     error,
     login,
     register,
+    registerWithGoogle,
+    completeGoogleProfile,
     logout,
     updateUser,
     updateUserFromResponse,
     completeOnboarding,
     clearError,
     isAuthenticated: !!user,
+    needsProfileCompletion: !!user?.needsProfileCompletion,
   };
 
   return (

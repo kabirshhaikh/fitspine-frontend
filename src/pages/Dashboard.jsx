@@ -92,12 +92,16 @@ export default function Dashboard() {
     }
   }, [insightsError]);
 
-  // Route guard - redirect unauthenticated users (only when not loading)
+  // Route guard - redirect unauthenticated users; redirect Google users who must complete profile
   useEffect(() => {
     if (!loading && !isAuthenticated) {
       navigate('/login', { replace: true });
+      return;
     }
-  }, [isAuthenticated, loading, navigate]);
+    if (!loading && user?.needsProfileCompletion) {
+      navigate('/complete-google-signup', { replace: true });
+    }
+  }, [isAuthenticated, loading, navigate, user?.needsProfileCompletion]);
 
   // Check for OAuth callback success
   useEffect(() => {

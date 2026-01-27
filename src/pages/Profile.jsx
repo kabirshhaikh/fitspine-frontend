@@ -118,6 +118,13 @@ const Profile = () => {
   const navigate = useNavigate();
   const { user, updateUserFromResponse } = useAuth();
 
+  // Redirect Google users who must complete profile first
+  useEffect(() => {
+    if (user?.needsProfileCompletion) {
+      navigate('/complete-google-signup', { replace: true });
+    }
+  }, [user?.needsProfileCompletion, navigate]);
+
   // Form state
   const [formData, setFormData] = useState({
     age: '',
