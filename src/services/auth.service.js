@@ -39,34 +39,32 @@ class AuthService {
   async register(formData) {
     try {
       const { data } = await api.post('/api/user/register', formData);
-
-      // Register endpoint returns user data but no token (UserResponseDto includes hasOnBoardingCompleted: false)
+      // Same response shape as login (LoginResponseDto) — persist exactly like login
       const {
-        id,
+        token,
         email: em,
         fullName,
         profilePicture,
+        id,
         isWearableConnected,
         wearableType,
         hasOnBoardingCompleted,
       } = data;
 
       const user = {
-        id,
         email: em,
         fullName,
         profilePicture,
+        id,
         isWearableConnected,
         wearableType,
         hasOnBoardingCompleted: hasOnBoardingCompleted ?? false,
       };
 
-      // Store user data (but no token since user needs to login)
+      if (token) localStorage.setItem('authToken', token);
       localStorage.setItem('user', JSON.stringify(user));
 
-      return { user };
-
-      // Note: User will need to login after registration to get token
+      return { token, user };
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Registration failed');
     }

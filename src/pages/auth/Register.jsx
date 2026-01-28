@@ -287,11 +287,11 @@ const Register = () => {
       await register(fd);
       setSnack({
         open: true,
-        message: "Account created successfully! Please sign in",
+        message: "Account created! Taking you to your dashboard.",
         severity: "success",
       });
 
-      timerRef.current = setTimeout(() => navigate("/login"), 1500);
+      timerRef.current = setTimeout(() => navigate("/dashboard", { replace: true }), 1500);
     } catch (err) {
       let apiMsg = "Registration failed. Please try again.";
       if (err.response) {
