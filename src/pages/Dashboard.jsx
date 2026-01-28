@@ -41,6 +41,7 @@ import api from "../services/api";
 export default function Dashboard() {
   useEffect(() => {
     document.title = 'Dashboard - Sphinic';
+    window.scrollTo(0, 0);
   }, []);
 
   const theme = useTheme();
