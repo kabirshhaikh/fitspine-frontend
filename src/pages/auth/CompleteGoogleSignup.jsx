@@ -197,10 +197,10 @@ const CompleteGoogleSignup = () => {
         <Box sx={{ textAlign: "center", mb: 4 }}>
           <HealthAndSafety sx={{ fontSize: 64, color: "#4fc3f7", mb: 2, filter: "drop-shadow(0 0 20px rgba(79, 195, 247, 0.5))" }} />
           <Typography variant="h4" sx={{ fontWeight: 700, mb: 1, background: "linear-gradient(135deg, #ffffff 0%, #a8edea 50%, #fed6e3 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>
-            Complete your profile
+            Tell us about your spine
           </Typography>
-          <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.8)" }}>
-            Add a few details so we can personalize your spine health experience.
+          <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.8)", maxWidth: 480, mx: "auto" }}>
+            Your age, injury history, and preferences help us tailor your dashboard, insights, and daily recommendations to you.
           </Typography>
         </Box>
         <Snackbar open={snack.open} autoHideDuration={4000} onClose={() => setSnack((s) => ({ ...s, open: false }))} anchorOrigin={{ vertical: "bottom", horizontal: "center" }}>
