@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link as RouterLink, useNavigate, useLocation } from "react-router-dom";
 import {
   Box,
@@ -86,6 +86,8 @@ const CompleteGoogleSignup = () => {
   });
   const [errors, setErrors] = useState({});
   const [snack, setSnack] = useState({ open: false, message: "", severity: "success" });
+  const completedRef = useRef(false);
+  const mountedAtRef = useRef(Date.now());
 
   useEffect(() => {
     document.title = "Complete your profile - Sphinic";
@@ -107,6 +109,35 @@ const CompleteGoogleSignup = () => {
       updateUser(effectiveUser);
     }
   }, [user, location.state?.fromGoogleRegister, navigate, updateUser]);
+
+  // Clear partial-registration localStorage when user leaves without completing (tab close, external nav, refresh).
+  useEffect(() => {
+    const clearIfNotCompleted = () => {
+      if (!completedRef.current) {
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+      }
+    };
+    window.addEventListener("beforeunload", clearIfNotCompleted);
+    window.addEventListener("pagehide", clearIfNotCompleted);
+    return () => {
+      window.removeEventListener("beforeunload", clearIfNotCompleted);
+      window.removeEventListener("pagehide", clearIfNotCompleted);
+    };
+  }, []);
+
+  // On in-app navigation away without completing, clear storage and send to login.
+  // Skip when unmounting very soon after mount (e.g. React Strict Mode double-mount) so we don't log out during the initial navigation.
+  useEffect(() => {
+    const mountedAt = mountedAtRef.current;
+    return () => {
+      const mountedMs = Date.now() - mountedAt;
+      if (mountedMs < 500) return;
+      if (!completedRef.current) {
+        authService.logout();
+      }
+    };
+  }, []);
 
   const handleChange = (e) => {
     const { name, value, checked, type } = e.target;
@@ -151,6 +182,7 @@ const CompleteGoogleSignup = () => {
       (formData.userSurgeries || []).forEach((v, i) => fd.append(`userSurgeries[${i}].surgeryType`, v));
       (formData.userDiscIssues || []).forEach((v, i) => fd.append(`userDiscIssues[${i}].discLevel`, v));
       await completeGoogleProfile(fd);
+      completedRef.current = true;
       setSnack({ open: true, message: "Profile completed. Taking you to the dashboard…", severity: "success" });
       setTimeout(() => navigate("/dashboard", { replace: true }), 1000);
     } catch (err) {
