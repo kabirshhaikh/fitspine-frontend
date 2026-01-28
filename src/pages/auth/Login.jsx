@@ -64,7 +64,7 @@ const Login = () => {
           type: 'standard',
           theme: 'filled_black',
           size: 'large',
-          text: 'signup_with',
+          text: 'continue_with',
           width: 300,
         });
         return true;
@@ -352,9 +352,9 @@ const Login = () => {
                 mb: 2,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "12px",
-                  background: "rgba(255, 255, 255, 0.05)",
+                  background: "rgba(255, 255, 255, 0.08)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
                   "& fieldset": {
                     border: "none",
                   },
@@ -366,10 +366,21 @@ const Login = () => {
                   },
                 },
                 "& .MuiInputLabel-root": {
-                  color: "rgba(255, 255, 255, 0.7)",
+                  color: "rgba(255, 255, 255, 0.95)",
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "rgba(255, 255, 255, 1)",
                 },
                 "& .MuiInputBase-input": {
-                  color: "white",
+                  color: "#ffffff",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "rgba(255, 255, 255, 0.85)",
+                  opacity: 1,
+                },
+                "& .MuiFormHelperText-root": {
+                  color: "rgba(255, 255, 255, 0.9)",
                 },
               }}
             />
@@ -394,9 +405,10 @@ const Login = () => {
                     sx={{
                       minWidth: 'auto',
                       p: 1,
-                      color: 'rgba(255, 255, 255, 0.7)',
+                      color: 'rgba(255, 255, 255, 0.95)',
                       '&:hover': {
                         backgroundColor: 'transparent',
+                        color: '#ffffff',
                       },
                     }}
                   >
@@ -408,9 +420,9 @@ const Login = () => {
                 mb: 3,
                 "& .MuiOutlinedInput-root": {
                   borderRadius: "12px",
-                  background: "rgba(255, 255, 255, 0.05)",
+                  background: "rgba(255, 255, 255, 0.08)",
                   backdropFilter: "blur(10px)",
-                  border: "1px solid rgba(255, 255, 255, 0.1)",
+                  border: "1px solid rgba(255, 255, 255, 0.15)",
                   "& fieldset": {
                     border: "none",
                   },
@@ -422,10 +434,21 @@ const Login = () => {
                   },
                 },
                 "& .MuiInputLabel-root": {
-                  color: "rgba(255, 255, 255, 0.7)",
+                  color: "rgba(255, 255, 255, 0.95)",
+                },
+                "& .MuiInputLabel-root.Mui-focused": {
+                  color: "rgba(255, 255, 255, 1)",
                 },
                 "& .MuiInputBase-input": {
-                  color: "white",
+                  color: "#ffffff",
+                  fontWeight: 500,
+                },
+                "& .MuiInputBase-input::placeholder": {
+                  color: "rgba(255, 255, 255, 0.85)",
+                  opacity: 1,
+                },
+                "& .MuiFormHelperText-root": {
+                  color: "rgba(255, 255, 255, 0.9)",
                 },
               }}
             />
@@ -507,7 +530,7 @@ const Login = () => {
                   </Divider>
 
                   <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)', mb: 1.5 }}>
-                    Sign up using Google
+                    Sign up or login using Google
                   </Typography>
                   <Box sx={{ display: 'flex', justifyContent: 'center', mb: 2 }}>
                     <div ref={googleBtnRef} />
