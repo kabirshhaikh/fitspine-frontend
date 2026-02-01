@@ -672,7 +672,7 @@ const NewLanding = () => {
             <Box
               sx={{
                 display: "grid",
-                gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
+                gridTemplateColumns: { xs: "repeat(2, 1fr)", sm: "repeat(2, 1fr)", md: "repeat(4, 1fr)" },
                 gap: { xs: 2, sm: 3, md: 4 },
                 mb: { xs: 3, md: 4 },
               }}
@@ -745,6 +745,21 @@ const NewLanding = () => {
                   </Typography>
                 </Box>
               </Box>
+
+              {/* Heart Rate Card */}
+              <Box className="metric-card">
+                <Box className="metric-card-header" sx={{ color: "#f87171" }}>
+                  <Box className="metric-dot" sx={{ background: "#f87171" }} />
+                  Heart Rate
+                </Box>
+                <Typography className="metric-value">62</Typography>
+                <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>bpm resting</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1 }}>
+                  <Typography variant="caption" sx={{ color: "#4ade80", fontWeight: 600 }}>
+                    Stable
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
 
             {/* AI Analysis Card - Full Width */}
@@ -770,7 +785,7 @@ const NewLanding = () => {
                     AI Analysis Active
                   </Typography>
                   <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.95)", lineHeight: 1.6 }}>
-                    Based on your patterns, light walking and gentle stretching on low-pain days helps reduce stiffness. Your sleep quality correlates with better next-day mobility.
+                    Your resting heart rate (62 bpm) and sleep quality are in sync with lower pain scores this week. When pain is low, keeping activity moderate—heart rate in a comfortable zone—along with light stretching tends to reduce stiffness without overloading your spine.
                   </Typography>
                 </Box>
               </Box>
