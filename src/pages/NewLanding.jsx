@@ -833,7 +833,7 @@ const NewLanding = () => {
               }}
             >
               {[
-                { icon: <Login />, step: "1", title: "Connect", desc: "Link your Fitbit or log manually. Your data, your control.", color: "#60a5fa" },
+                { icon: <Login />, step: "1", title: "Connect", desc: "Link your wearable or log manually. Your data, your control.", color: "#60a5fa" },
                 { icon: <EditNote />, step: "2", title: "Track", desc: "Log pain, sleep, activity in seconds. Build your baseline over time.", color: "#a78bfa" },
                 { icon: <Lightbulb />, step: "3", title: "Get Insights", desc: "AI spots patterns you’d miss. Personalized guidance every day.", color: "#4ade80" },
               ].map((item) => (
@@ -928,7 +928,7 @@ const NewLanding = () => {
               </Box>
               <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
                 <Watch sx={{ fontSize: { xs: 28, md: 36 }, color: "#60a5fa", mb: 1 }} />
-                <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Fitbit Sync</Typography>
+                <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Wearable Sync</Typography>
                 <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Steps, HR, sleep auto.</Typography>
               </Box>
 
