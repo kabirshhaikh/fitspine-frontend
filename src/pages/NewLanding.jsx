@@ -678,112 +678,182 @@ const NewLanding = () => {
         </Container>
       </Box>
 
-      {/* Problem Statement */}
+      {/* Live Dashboard Preview - Option C */}
       <Box className="section-new section-alt">
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
-          <Box className="section-content animate-on-scroll">
-            <Typography variant="h2" className="section-title">
-              Living with Spine Conditions is Challenging
-            </Typography>
-            <Box sx={{ mt: { xs: 4, md: 6 }, display: "flex", flexDirection: "column", gap: { xs: 4, md: 6 } }}>
-              {/* First Row */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <ErrorOutline sx={{ fontSize: { xs: 56, md: 72 }, color: "rgba(255, 87, 87, 0.9)" }} />
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #ff5757 0%, #ff8a80 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    Unexpected Flare-Ups
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    Pain can strike without warning, disrupting your life and recovery progress.
-                  </Typography>
+          <Box className="section-content animate-on-scroll" sx={{ width: "100%" }}>
+            <Box sx={{ textAlign: "center", mb: { xs: 3, sm: 4, md: 5 } }}>
+              <Typography variant="h2" className="section-title">
+                Your Spine Health, At a Glance
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "rgba(255,255,255,0.75)",
+                  fontSize: { xs: "1rem", md: "1.125rem" },
+                  maxWidth: 600,
+                  mx: "auto",
+                }}
+              >
+                Real-time metrics and AI insights—see what Sphinic delivers
+              </Typography>
+              <Typography
+                variant="body1"
+                sx={{
+                  color: "rgba(255,255,255,0.9)",
+                  fontSize: { xs: "1rem", md: "1.125rem" },
+                  maxWidth: 560,
+                  mx: "auto",
+                  mt: 2,
+                  lineHeight: 1.7,
+                  fontStyle: "italic",
+                }}
+              >
+                Flare-ups feel random. Triggers are unclear. Recovery feels like guesswork.{" "}
+                <Box component="span" sx={{ fontStyle: "normal", fontWeight: 600, color: "#4fc3f7" }}>
+                  Sphinic changes that.
                 </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <HelpOutline sx={{ fontSize: { xs: 56, md: 72 }, color: "rgba(255, 193, 7, 0.9)" }} />
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #ffc107 0%, #ffd54f 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    Uncertainty About Triggers
+              </Typography>
+            </Box>
+
+            {/* Metric Cards Grid */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
+                gap: { xs: 2, sm: 3, md: 4 },
+                mb: { xs: 3, md: 4 },
+              }}
+            >
+              {/* Pain Level Card */}
+              <Box className="metric-card">
+                <Box className="metric-card-header" sx={{ color: "#60a5fa" }}>
+                  <Box className="metric-dot" sx={{ background: "#60a5fa" }} />
+                  Pain Level
+                </Box>
+                <Typography className="metric-value">2/10</Typography>
+                <Box className="sparkline-wrap">
+                  <svg viewBox="0 0 100 24" preserveAspectRatio="none" className="sparkline-svg">
+                    <path
+                      d="M0,18 L20,14 L40,16 L60,10 L80,12 L100,6"
+                      fill="none"
+                      stroke="url(#painGrad)"
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      className="sparkline-path"
+                    />
+                    <defs>
+                      <linearGradient id="painGrad" x1="0" y1="0" x2="1" y2="0">
+                        <stop offset="0%" stopColor="#60a5fa" />
+                        <stop offset="100%" stopColor="#a78bfa" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                </Box>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1 }}>
+                  <Typography variant="caption" sx={{ color: "#4ade80", fontWeight: 600 }}>
+                    −23% ↓
                   </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    It's hard to know what activities or patterns lead to increased pain or inflammation.
+                  <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.6)" }}>
+                    this week
                   </Typography>
                 </Box>
               </Box>
 
-              {/* Second Row */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <PersonOff sx={{ fontSize: { xs: 56, md: 72 }, color: "rgba(156, 39, 176, 0.9)" }} />
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #9c27b0 0%, #ba68c8 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    Lack of Personalized Guidance
+              {/* Activity Card */}
+              <Box className="metric-card">
+                <Box className="metric-card-header" sx={{ color: "#4ade80" }}>
+                  <Box className="metric-dot" sx={{ background: "#4ade80" }} />
+                  Activity
+                </Box>
+                <Typography className="metric-value">8,247</Typography>
+                <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>steps today</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1 }}>
+                  <Typography variant="caption" sx={{ color: "#4ade80", fontWeight: 600 }}>
+                    +12% ↑
                   </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    Generic wellness tips don't address your specific condition, injury history, or recovery needs.
+                  <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.6)" }}>
+                    vs yesterday
                   </Typography>
                 </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Route sx={{ fontSize: { xs: 56, md: 72 }, color: "rgba(0, 188, 212, 0.9)" }} />
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #00bcd4 0%, #4dd0e1 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    No Clear Recovery Path
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    Without clear tracking and insights, it's difficult to know if you're making progress or what steps to take next in your recovery journey.
+              </Box>
+
+              {/* Sleep Card */}
+              <Box className="metric-card">
+                <Box className="metric-card-header" sx={{ color: "#a78bfa" }}>
+                  <Box className="metric-dot" sx={{ background: "#a78bfa" }} />
+                  Sleep
+                </Box>
+                <Typography className="metric-value">7.5h</Typography>
+                <Typography variant="caption" sx={{ color: "rgba(255,255,255,0.7)" }}>last night</Typography>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mt: 1 }}>
+                  <Typography variant="caption" sx={{ color: "#4ade80", fontWeight: 600 }}>
+                    Optimal
                   </Typography>
                 </Box>
+              </Box>
+            </Box>
+
+            {/* AI Analysis Card - Full Width */}
+            <Box className="ai-insight-card">
+              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+                <Box
+                  sx={{
+                    flexShrink: 0,
+                    width: 44,
+                    height: 44,
+                    borderRadius: "12px",
+                    background: "linear-gradient(135deg, rgba(102, 126, 234, 0.3) 0%, rgba(118, 75, 162, 0.3) 100%)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <SmartToy sx={{ color: "#a78bfa", fontSize: 24 }} />
+                </Box>
+                <Box sx={{ flex: 1 }}>
+                  <Typography variant="subtitle2" sx={{ color: "rgba(255,255,255,0.5)", mb: 0.5 }}>
+                    AI Analysis Active
+                  </Typography>
+                  <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.95)", lineHeight: 1.6 }}>
+                    Based on your patterns, light walking and gentle stretching on low-pain days helps reduce stiffness. Your sleep quality correlates with better next-day mobility.
+                  </Typography>
+                </Box>
+              </Box>
+            </Box>
+
+            {/* Risk Level Bar */}
+            <Box
+              sx={{
+                mt: { xs: 3, md: 4 },
+                p: { xs: 2, sm: 3 },
+                borderRadius: "16px",
+                background: "rgba(255,255,255,0.04)",
+                backdropFilter: "blur(12px)",
+                border: "1px solid rgba(255,255,255,0.08)",
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 2 }}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+                  <Box
+                    sx={{
+                      width: 10,
+                      height: 10,
+                      borderRadius: "50%",
+                      background: "#4ade80",
+                      boxShadow: "0 0 12px rgba(74, 222, 128, 0.6)",
+                      animation: "pulse-dot 2s ease-in-out infinite",
+                    }}
+                  />
+                  <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.95)", fontWeight: 600 }}>
+                    Risk Level: Low
+                  </Typography>
+                </Box>
+                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)" }}>
+                  All metrics stable — keep up your routine
+                </Typography>
               </Box>
             </Box>
           </Box>
