@@ -169,7 +169,7 @@ const NewLanding = () => {
                     maxWidth: { xs: "320px", sm: "none" }
                   }}
                 >
-                  Get Started Free
+                  Try for Free
                 </Button>
               </Box>
             </Box>
@@ -1224,7 +1224,7 @@ const NewLanding = () => {
               endIcon={<ArrowForward />}
               className="cta-button-new"
             >
-              Get Started Free
+              Try for Free
             </Button>
           </Box>
         </Container>

@@ -400,36 +400,66 @@ const Register = () => {
         }}
       />
       <Container maxWidth="lg" className="auth-slide-from-top" sx={{ position: "relative", zIndex: 2 }}>
-        {/* Back to Home Link */}
-        <Link
-          component={RouterLink}
-          to="/"
+        {/* Navigation Links */}
+        <Box
           sx={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: 1,
-            color: 'rgba(255, 255, 255, 0.85)',
-            textDecoration: 'none',
-            fontSize: '0.95rem',
+            display: 'flex',
+            flexDirection: { xs: 'column', sm: 'row' },
+            alignItems: { xs: 'flex-start', sm: 'center' },
+            gap: { xs: 1.5, sm: 2 },
             mb: 3,
-            padding: '8px 16px',
-            borderRadius: '12px',
-            background: 'rgba(255, 255, 255, 0.05)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            transition: 'all 0.3s ease',
-            '&:hover': {
-              color: 'white',
-              background: 'rgba(255, 255, 255, 0.1)',
-              borderColor: 'rgba(255, 255, 255, 0.2)',
-              transform: 'translateX(-4px)',
-              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
-            },
           }}
         >
-          <Home sx={{ fontSize: '1.1rem' }} />
-          Home
-        </Link>
+          {/* Back to Home Link */}
+          <Link
+            component={RouterLink}
+            to="/"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+              color: 'rgba(255, 255, 255, 0.85)',
+              textDecoration: 'none',
+              fontSize: '0.95rem',
+              padding: '8px 16px',
+              borderRadius: '12px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              backdropFilter: 'blur(10px)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                color: 'white',
+                background: 'rgba(255, 255, 255, 0.1)',
+                borderColor: 'rgba(255, 255, 255, 0.2)',
+                transform: 'translateX(-4px)',
+                boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)',
+              },
+            }}
+          >
+            <Home sx={{ fontSize: '1.1rem' }} />
+            Home
+          </Link>
+
+          {/* Back to Login Link */}
+          <Link
+            component={RouterLink}
+            to="/login"
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              color: 'rgba(255, 255, 255, 0.7)',
+              textDecoration: 'none',
+              fontSize: '0.9rem',
+              transition: 'all 0.3s ease',
+              '&:hover': {
+                color: '#4fc3f7',
+                transform: 'translateX(-4px)',
+              },
+            }}
+          >
+            ← Back to Login
+          </Link>
+        </Box>
 
         <Box sx={{ textAlign: "center", mb: 6 }}>
           <Box

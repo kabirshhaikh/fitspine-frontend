@@ -284,7 +284,7 @@ const ForgotPassword = () => {
                 },
               }}
             >
-              Password reset link and security code sent to your email. Please check your inbox and follow the instructions.
+              Password reset link and security code sent to your email. Please check your inbox (and junk/spam folder) and follow the instructions.
             </Alert>
           )}
 
