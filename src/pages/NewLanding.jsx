@@ -790,6 +790,7 @@ const NewLanding = () => {
                       color: "rgba(255,255,255,0.95)",
                       lineHeight: 1.6,
                       textAlign: { xs: "justify", sm: "left" },
+                      textJustify: "inter-word",
                       hyphens: "auto",
                     }}
                   >
@@ -871,6 +872,10 @@ const NewLanding = () => {
                     border: "1px solid rgba(255,255,255,0.08)",
                     backdropFilter: "blur(12px)",
                     transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: { xs: "center", sm: "flex-start" },
+                    textAlign: { xs: "center", sm: "left" },
                     "&:hover": {
                       transform: "translateY(-6px)",
                       borderColor: `${item.color}40`,
@@ -927,9 +932,11 @@ const NewLanding = () => {
                 sx={{
                   gridColumn: { xs: "1", sm: "1 / -1", md: "1 / -1" },
                   p: { xs: 3, md: 4 },
+                  alignItems: { xs: "center", sm: "flex-start" },
+                  textAlign: { xs: "center", sm: "left" },
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: { xs: 2, md: 3 } }}>
+                <Box sx={{ display: "flex", alignItems: { xs: "center", sm: "flex-start" }, gap: { xs: 2, md: 3 }, flexDirection: { xs: "column", sm: "row" } }}>
                   <Shield sx={{ fontSize: { xs: 36, md: 44 }, color: "#4fc3f7", flexShrink: 0 }} />
                   <Box>
                     <Typography variant="h6" sx={{ color: "white", fontWeight: 600, mb: 0.5, fontSize: { xs: "1.1rem", md: "1.35rem" } }}>Disc Protection Score</Typography>
@@ -939,17 +946,17 @@ const NewLanding = () => {
               </Box>
 
               {/* Row 2: Three equal cards */}
-              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
+              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 }, alignItems: { xs: "center", sm: "flex-start" }, textAlign: { xs: "center", sm: "left" } }}>
                 <Psychology sx={{ fontSize: { xs: 28, md: 36 }, color: "#a78bfa", mb: 1 }} />
                 <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>AI Insights</Typography>
                 <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Patterns & recovery trends.</Typography>
               </Box>
-              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
+              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 }, alignItems: { xs: "center", sm: "flex-start" }, textAlign: { xs: "center", sm: "left" } }}>
                 <Assessment sx={{ fontSize: { xs: 28, md: 36 }, color: "#4ade80", mb: 1 }} />
                 <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Symptom Tracking</Typography>
                 <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Pain, stiffness, flare-ups.</Typography>
               </Box>
-              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
+              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 }, alignItems: { xs: "center", sm: "flex-start" }, textAlign: { xs: "center", sm: "left" } }}>
                 <Watch sx={{ fontSize: { xs: 28, md: 36 }, color: "#60a5fa", mb: 1 }} />
                 <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Wearable Sync</Typography>
                 <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Steps, HR, sleep auto.</Typography>
@@ -963,11 +970,23 @@ const NewLanding = () => {
                   p: { xs: 3, md: 4 },
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "flex-start", gap: { xs: 2, md: 3 } }}>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: { xs: 2, md: 3 }, flexDirection: { xs: "column", sm: "row" } }}>
                   <SmartToy sx={{ fontSize: { xs: 28, md: 36 }, color: "#a78bfa", flexShrink: 0 }} />
-                  <Box>
+                  <Box sx={{ flex: 1, minWidth: 0, width: "100%" }}>
                     <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Personalized Guidance</Typography>
-                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontSize: { xs: "0.875rem", md: "1rem" } }}>Educational activity ideas based on your logged data—for wellness support only, not medical advice. Always consult your healthcare provider for treatment decisions.</Typography>
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "rgba(255,255,255,0.7)",
+                        lineHeight: 1.6,
+                        fontSize: { xs: "0.875rem", md: "1rem" },
+                        textAlign: { xs: "justify", sm: "left" },
+                        textJustify: "inter-word",
+                        hyphens: "auto",
+                      }}
+                    >
+                  Educational activity ideas based on your logged data—for wellness support only, not medical advice. Always consult your healthcare provider for treatment decisions.
+                </Typography>
                   </Box>
                 </Box>
               </Box>
