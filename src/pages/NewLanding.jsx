@@ -1240,33 +1240,13 @@ const NewLanding = () => {
             <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.6)", mb: 2, fontSize: { xs: "0.75rem", md: "0.875rem" }, lineHeight: 1.6 }}>
               Sphinic is an informational wellness and data-analysis platform. The content, insights, and outputs provided by Sphinic are for general informational purposes only and are not intended to diagnose, treat, cure, prevent, or manage any disease or medical condition. Sphinic is not a medical device and does not provide medical or clinical advice. Users should not rely on Sphinic for medical decisions and should always consult a qualified healthcare professional for medical concerns.
             </Typography>
-            <Box sx={{ mb: 2 }}>
-              <Link
-                component={RouterLink}
-                to="/feedback"
-                sx={{
-                  color: "rgba(255,255,255,0.7)",
-                  textDecoration: "none",
-                  fontSize: { xs: "0.75rem", md: "0.875rem" },
-                  "&:hover": {
-                    color: "#4facfe",
-                    textDecoration: "underline",
-                  },
-                }}
-              >
-                Share Feedback
-              </Link>
-            </Box>
             <Box sx={{ 
               display: "flex", 
-              flexWrap: "nowrap", 
+              flexWrap: "wrap", 
               justifyContent: "center", 
               gap: { xs: 0.75, sm: 1.5, md: 2 }, 
               alignItems: "center",
               width: "100%",
-              overflow: "visible",
-              whiteSpace: "nowrap",
-              flexShrink: 0
             }}>
               <Typography variant="body2" sx={{ 
                 color: "rgba(255,255,255,0.5)", 
@@ -1311,9 +1291,6 @@ const NewLanding = () => {
                   color: "rgba(255,255,255,0.7)",
                   textDecoration: "none",
                   fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" },
-                  whiteSpace: "nowrap",
-                  flexShrink: 0,
-                  overflow: "visible",
                   "&:hover": {
                     color: "#4facfe",
                     textDecoration: "underline",
@@ -1321,6 +1298,22 @@ const NewLanding = () => {
                 }}
               >
                 Terms of Service
+              </Link>
+              <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.5)", fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" } }}>|</Typography>
+              <Link
+                component={RouterLink}
+                to="/feedback"
+                sx={{
+                  color: "rgba(255,255,255,0.7)",
+                  textDecoration: "none",
+                  fontSize: { xs: "0.65rem", sm: "0.75rem", md: "0.875rem" },
+                  "&:hover": {
+                    color: "#4facfe",
+                    textDecoration: "underline",
+                  },
+                }}
+              >
+                Share Feedback
               </Link>
             </Box>
           </Box>
