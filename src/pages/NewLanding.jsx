@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useNavigate, Link as RouterLink } from "react-router-dom";
 import { Box, Container, Typography, Button, Grid, Card, Link } from "@mui/material";
-import { ArrowForward, Psychology, Shield, Assessment, Watch, TrendingUp, LocalHospital, SmartToy, Analytics, Warning, ErrorOutline, HelpOutline, PersonOff, Route } from "@mui/icons-material";
+import { ArrowForward, Psychology, Shield, Assessment, Watch, SmartToy, Login, EditNote, Lightbulb } from "@mui/icons-material";
 import "../styles/new-landing.css";
 
 const NewLanding = () => {
@@ -37,54 +37,6 @@ const NewLanding = () => {
   const handleGetStarted = () => {
     navigate("/login");
   };
-
-  const features = [
-    {
-      icon: <Psychology />,
-      title: "AI-Powered Daily Insights",
-      description: "Daily educational insights that analyze your activity patterns against a rolling 7-day baseline, highlighting recovery trends and behavioral signals for spine health awareness."
-    },
-    {
-      icon: <Shield />,
-      title: "Disc Protection Score",
-      description: "A daily informational score (0–100) reflecting spine-supportive habits based on activity, sleep, stress, and self-reported discomfort metrics."
-    },
-    {
-      icon: <Assessment />,
-      title: "Comprehensive Symptom Tracking",
-      description: "Track pain levels, flare-ups, numbness, stiffness, stress, activity, and sleep through detailed daily logs to better understand personal patterns over time."
-    },
-    {
-      icon: <Watch />,
-      title: "Wearable Device Integration",
-      description: "Seamless Fitbit integration with automatic collection of steps, heart rate, sleep quality, and activity data."
-    },
-    {
-      icon: <Warning />,
-      title: "Flare-Up Pattern Awareness",
-      description: "Highlights activity, sleep, and stress patterns commonly associated with flare-ups to support early awareness and habit adjustments."
-    },
-    {
-      icon: <TrendingUp />,
-      title: "Risk Awareness Indicators",
-      description: "Trend-based risk signals (0–10 scale) that categorize flare-up-related patterns into awareness levels such as Safe, Caution, Elevated, and High."
-    },
-    {
-      icon: <LocalHospital />,
-      title: "Personal Spine Profile",
-      description: "Track spine injuries, affected disc levels, and surgery history to personalize data visualization and insight context."
-    },
-    {
-      icon: <SmartToy />,
-      title: "Actionable Wellness Guidance",
-      description: "Daily spine-friendly activity suggestions with general timing and duration context, designed for education and habit support."
-    },
-    {
-      icon: <Analytics />,
-      title: "Comprehensive Dashboard",
-      description: "Weekly trend visualizations covering pain patterns, activity correlations, heart rate metrics, and sleep quality insights."
-    }
-  ];
 
   return (
     <Box className="new-landing-container">
@@ -860,256 +812,140 @@ const NewLanding = () => {
         </Container>
       </Box>
 
-      {/* Key Features */}
+      {/* How It Works + Key Capabilities */}
       <Box className="section-new">
         <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", display: "flex", alignItems: "center" }}>
-          <Box className="section-content animate-on-scroll">
+          <Box className="section-content animate-on-scroll" sx={{ width: "100%" }}>
             <Typography variant="h2" className="section-title">
-              Comprehensive Features for Spine Health
+              Simple. Powerful. Personalized.
             </Typography>
-            <Box sx={{ mt: { xs: 4, md: 6 }, display: "flex", flexDirection: "column", gap: { xs: 4, md: 6 } }}>
-              {/* Row 1 */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[0].icon}
-                    </Box>
+            <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.7)", textAlign: "center", mb: { xs: 4, md: 6 }, maxWidth: 560, mx: "auto" }}>
+              Three steps to understanding your spine health—and taking control.
+            </Typography>
+
+            {/* How It Works - 3 Steps */}
+            <Box
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+                gap: { xs: 3, sm: 4 },
+                mb: { xs: 6, md: 8 },
+              }}
+            >
+              {[
+                { icon: <Login />, step: "1", title: "Connect", desc: "Link your Fitbit or log manually. Your data, your control.", color: "#60a5fa" },
+                { icon: <EditNote />, step: "2", title: "Track", desc: "Log pain, sleep, activity in seconds. Build your baseline over time.", color: "#a78bfa" },
+                { icon: <Lightbulb />, step: "3", title: "Get Insights", desc: "AI spots patterns you’d miss. Personalized guidance every day.", color: "#4ade80" },
+              ].map((item) => (
+                <Box
+                  key={item.step}
+                  className="how-step-card"
+                  sx={{
+                    position: "relative",
+                    p: { xs: 3, md: 4 },
+                    borderRadius: "20px",
+                    background: "rgba(255,255,255,0.04)",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    backdropFilter: "blur(12px)",
+                    transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
+                    "&:hover": {
+                      transform: "translateY(-6px)",
+                      borderColor: `${item.color}40`,
+                      boxShadow: `0 20px 40px rgba(0,0,0,0.2), 0 0 30px ${item.color}20`,
+                    },
+                  }}
+                >
+                  <Box
+                    sx={{
+                      width: 48,
+                      height: 48,
+                      borderRadius: "14px",
+                      background: `${item.color}20`,
+                      border: `1px solid ${item.color}40`,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      mb: 2,
+                    }}
+                  >
+                    {React.cloneElement(item.icon, { sx: { fontSize: 24, color: item.color } })}
                   </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[0].title}
+                  <Typography variant="overline" sx={{ color: "rgba(255,255,255,0.5)", fontWeight: 700, letterSpacing: 1 }}>
+                    Step {item.step}
                   </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[0].description}
+                  <Typography variant="h5" sx={{ color: "white", fontWeight: 700, mb: 1, fontSize: { xs: "1.25rem", md: "1.5rem" } }}>
+                    {item.title}
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.75)", lineHeight: 1.6 }}>
+                    {item.desc}
                   </Typography>
                 </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[1].icon}
-                    </Box>
+              ))}
+            </Box>
+
+            {/* What You Get - Aligned Grid */}
+            <Typography variant="h3" sx={{ fontSize: { xs: "1.5rem", md: "1.9rem" }, fontWeight: 700, color: "white", textAlign: "center", mb: { xs: 3, md: 4 } }}>
+              What You Get
+            </Typography>
+            <Box
+              className="bento-grid"
+              sx={{
+                display: "grid",
+                gridTemplateColumns: { xs: "1fr", sm: "repeat(2, 1fr)", md: "repeat(3, 1fr)" },
+                gridAutoRows: { xs: "minmax(120px, auto)", md: "minmax(160px, auto)" },
+                alignItems: "stretch",
+                gap: { xs: 2, sm: 3, md: 4 },
+                width: "100%",
+              }}
+            >
+              {/* Row 1: Hero card - full width */}
+              <Box
+                className="bento-card bento-fullwidth"
+                sx={{
+                  gridColumn: { xs: "1", sm: "1 / -1", md: "1 / -1" },
+                  p: { xs: 3, md: 4 },
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: { xs: 2, md: 3 } }}>
+                  <Shield sx={{ fontSize: { xs: 36, md: 44 }, color: "#4fc3f7", flexShrink: 0 }} />
+                  <Box>
+                    <Typography variant="h6" sx={{ color: "white", fontWeight: 600, mb: 0.5, fontSize: { xs: "1.1rem", md: "1.35rem" } }}>Disc Protection Score</Typography>
+                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontSize: { xs: "0.875rem", md: "1rem" } }}>Daily 0–100 score based on activity, sleep, stress & pain—your spine health at a glance.</Typography>
                   </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[1].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[1].description}
-                  </Typography>
                 </Box>
               </Box>
 
-              {/* Row 2 */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[2].icon}
-                    </Box>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[2].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[2].description}
-                  </Typography>
-                </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[3].icon}
-                    </Box>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[3].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[3].description}
-                  </Typography>
-                </Box>
+              {/* Row 2: Three equal cards */}
+              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
+                <Psychology sx={{ fontSize: { xs: 28, md: 36 }, color: "#a78bfa", mb: 1 }} />
+                <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>AI Insights</Typography>
+                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Patterns & recovery trends.</Typography>
+              </Box>
+              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
+                <Assessment sx={{ fontSize: { xs: 28, md: 36 }, color: "#4ade80", mb: 1 }} />
+                <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Symptom Tracking</Typography>
+                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Pain, stiffness, flare-ups.</Typography>
+              </Box>
+              <Box className="bento-card bento-equal" sx={{ p: { xs: 3, md: 4 } }}>
+                <Watch sx={{ fontSize: { xs: 28, md: 36 }, color: "#60a5fa", mb: 1 }} />
+                <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Fitbit Sync</Typography>
+                <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.5, fontSize: { xs: "0.875rem", md: "1rem" } }}>Steps, HR, sleep auto.</Typography>
               </Box>
 
-              {/* Row 3 */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[4].icon}
-                    </Box>
+              {/* Row 3: Full width */}
+              <Box
+                className="bento-card bento-fullwidth"
+                sx={{
+                  gridColumn: { xs: "1", sm: "1 / -1", md: "1 / -1" },
+                  p: { xs: 3, md: 4 },
+                }}
+              >
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: { xs: 2, md: 3 } }}>
+                  <SmartToy sx={{ fontSize: { xs: 28, md: 36 }, color: "#a78bfa", flexShrink: 0 }} />
+                  <Box>
+                    <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Personalized Guidance</Typography>
+                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontSize: { xs: "0.875rem", md: "1rem" } }}>Spine-friendly activity suggestions tailored to your condition, injury history & recovery goals.</Typography>
                   </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[4].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[4].description}
-                  </Typography>
-                </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[5].icon}
-                    </Box>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[5].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[5].description}
-                  </Typography>
-                </Box>
-              </Box>
-
-              {/* Row 4 */}
-              <Box sx={{ display: "flex", flexDirection: { xs: "column", md: "row" }, justifyContent: "space-between", gap: { xs: 3, md: 4 } }}>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[6].icon}
-                    </Box>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[6].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[6].description}
-                  </Typography>
-                </Box>
-                <Box className="problem-item-new" sx={{ flex: 1, maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[7].icon}
-                    </Box>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[7].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[7].description}
-                  </Typography>
-                </Box>
-              </Box>
-
-              {/* Row 5 - Single item centered */}
-              <Box sx={{ display: "flex", justifyContent: "center" }}>
-                <Box className="problem-item-new" sx={{ maxWidth: { md: "48%" } }}>
-                  <Box className="problem-icon-new">
-                    <Box sx={{ fontSize: { xs: "56px", md: "72px" }, color: "rgba(102, 126, 234, 0.9)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                      {features[8].icon}
-                    </Box>
-                  </Box>
-                  <Typography variant="h4" sx={{ 
-                    mb: 2, 
-                    fontSize: { xs: "1.5rem", md: "2rem" }, 
-                    fontWeight: 700,
-                    background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-                    WebkitBackgroundClip: "text",
-                    WebkitTextFillColor: "transparent",
-                    backgroundClip: "text"
-                  }}>
-                    {features[8].title}
-                  </Typography>
-                  <Typography variant="body1" sx={{ 
-                    color: "rgba(255,255,255,0.85)", 
-                    fontSize: { xs: "1rem", md: "1.125rem" }, 
-                    lineHeight: 1.8
-                  }}>
-                    {features[8].description}
-                  </Typography>
                 </Box>
               </Box>
             </Box>

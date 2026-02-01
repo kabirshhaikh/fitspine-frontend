@@ -458,6 +458,41 @@
   box-shadow: 0 0 40px rgba(102, 126, 234, 0.2);
 }
 
+/* ===== How It Works + Bento Grid ===== */
+.how-step-card {
+  position: relative;
+}
+
+.bento-grid {
+  width: 100%;
+}
+
+.bento-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: clamp(20px, 3vw, 24px);
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bento-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(79, 195, 247, 0.25);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.bento-equal {
+  height: 100%;
+}
+
+.bento-fullwidth {
+  justify-content: center;
+}
+
 /* Testimonial Cards */
 .testimonial-card {
   text-align: left;
@@ -599,6 +634,14 @@
     padding: 18px;
   }
 
+  .bento-card {
+    padding: 18px;
+  }
+
+  .how-step-card {
+    padding: 20px;
+  }
+
   .metric-value {
     font-size: 1.6rem !important;
   }
@@ -696,6 +739,10 @@
   }
 
   .metric-card {
+    padding: 16px;
+  }
+
+  .bento-card {
     padding: 16px;
   }
 
