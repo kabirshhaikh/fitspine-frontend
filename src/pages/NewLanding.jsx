@@ -764,7 +764,7 @@ const NewLanding = () => {
 
             {/* AI Analysis Card - Full Width */}
             <Box className="ai-insight-card">
-              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2 }}>
+              <Box sx={{ display: "flex", alignItems: "flex-start", gap: 2, flexDirection: { xs: "column", sm: "row" } }}>
                 <Box
                   sx={{
                     flexShrink: 0,
@@ -780,11 +780,19 @@ const NewLanding = () => {
                 >
                   <SmartToy sx={{ color: "#a78bfa", fontSize: 24 }} />
                 </Box>
-                <Box sx={{ flex: 1 }}>
+                <Box sx={{ flex: 1, minWidth: 0, width: "100%" }}>
                   <Typography variant="subtitle2" sx={{ color: "rgba(255,255,255,0.5)", mb: 0.5 }}>
                     AI Analysis Active
                   </Typography>
-                  <Typography variant="body1" sx={{ color: "rgba(255,255,255,0.95)", lineHeight: 1.6 }}>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "rgba(255,255,255,0.95)",
+                      lineHeight: 1.6,
+                      textAlign: { xs: "justify", sm: "left" },
+                      hyphens: "auto",
+                    }}
+                  >
                     Your resting heart rate (62 bpm) and sleep quality are in sync with lower pain scores this week. When pain is low, keeping activity moderate—heart rate in a comfortable zone—along with light stretching tends to reduce stiffness without overloading your spine.
                   </Typography>
                 </Box>
@@ -959,7 +967,7 @@ const NewLanding = () => {
                   <SmartToy sx={{ fontSize: { xs: 28, md: 36 }, color: "#a78bfa", flexShrink: 0 }} />
                   <Box>
                     <Typography variant="subtitle1" sx={{ color: "white", fontWeight: 600, fontSize: { xs: "1rem", md: "1.15rem" } }}>Personalized Guidance</Typography>
-                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontSize: { xs: "0.875rem", md: "1rem" } }}>Spine-friendly activity suggestions tailored to your condition, injury history & recovery goals.</Typography>
+                    <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)", lineHeight: 1.6, fontSize: { xs: "0.875rem", md: "1rem" } }}>Educational activity ideas based on your logged data—for wellness support only, not medical advice. Always consult your healthcare provider for treatment decisions.</Typography>
                   </Box>
                 </Box>
               </Box>
