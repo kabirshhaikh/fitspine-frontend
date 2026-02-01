@@ -1155,25 +1155,80 @@ const NewLanding = () => {
         </Container>
       </Box>
 
-      {/* Final CTA */}
-      <Box className="section-new cta-section section-cta-final" sx={{ minHeight: "100vh" }}>
-        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <Box className="section-content animate-on-scroll" sx={{ width: "100%", textAlign: "center" }}>
-            <Typography variant="h2" className="section-title">
-              Ready to Take Control of Your Spine Health?
-            </Typography>
-            <Typography variant="h6" className="section-description" sx={{ mt: { xs: 2, md: 3 }, mb: 4, fontSize: { xs: "1rem", md: "1.25rem" } }}>
-              Start your journey to better spine health. Understand your patterns, get personalized AI-powered insights, and prevent flare-ups proactively.
-            </Typography>
-            <Button
-              variant="contained"
-              size="large"
-              onClick={handleGetStarted}
-              endIcon={<ArrowForward />}
-              className="cta-button-new"
+      {/* Final CTA - Split Editorial Design */}
+      <Box className="section-new cta-section section-cta-final" sx={{ minHeight: "100vh", position: "relative" }}>
+        <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3, md: 4 }, height: "100%", minHeight: "100vh", display: "flex", alignItems: "center" }}>
+          <Box
+            className="section-content animate-on-scroll"
+            sx={{
+              width: "100%",
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", lg: "1fr 1fr" },
+              gap: { xs: 4, lg: 8 },
+              alignItems: "center",
+            }}
+          >
+            {/* Left: Headline + subtext */}
+            <Box>
+              <Typography
+                variant="h1"
+                sx={{
+                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem", lg: "3.25rem" },
+                  fontWeight: 800,
+                  lineHeight: 1.15,
+                  letterSpacing: "-0.02em",
+                  color: "white",
+                  mb: 2,
+                }}
+              >
+                Ready to Take Control of Your Spine Health?
+              </Typography>
+              <Typography sx={{ color: "rgba(255,255,255,0.75)", fontSize: { xs: "1rem", md: "1.125rem" }, lineHeight: 1.75 }}>
+                Start your journey. Understand your patterns, get AI-powered insights, and prevent flare-ups proactively.
+              </Typography>
+            </Box>
+
+            {/* Right: Benefits + CTA */}
+            <Box
+              sx={{
+                p: { xs: 3, md: 4 },
+                borderRadius: "20px",
+                border: "1px solid rgba(255,255,255,0.08)",
+                background: "rgba(255,255,255,0.03)",
+              }}
             >
-              Try for Free
-            </Button>
+              {["Track patterns", "AI insights", "Prevent flare-ups"].map((label, i) => (
+                <Box
+                  key={label}
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 2,
+                    py: 1.5,
+                    borderBottom: i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none",
+                  }}
+                >
+                  <Box sx={{ width: 6, height: 6, borderRadius: "50%", background: "#4fc3f7", flexShrink: 0 }} />
+                  <Typography sx={{ color: "rgba(255,255,255,0.95)", fontWeight: 500, fontSize: "1rem" }}>
+                    {label}
+                  </Typography>
+                </Box>
+              ))}
+              <Button
+                variant="contained"
+                fullWidth
+                onClick={handleGetStarted}
+                endIcon={<ArrowForward />}
+                className="cta-button-new"
+                sx={{
+                  mt: 3,
+                  py: 1.75,
+                  fontSize: "1.1rem",
+                }}
+              >
+                Try for Free
+              </Button>
+            </Box>
           </Box>
         </Container>
       </Box>
