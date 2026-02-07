@@ -176,6 +176,14 @@ class AuthService {
    * POST /api/user/auth/google/register-partial-user (Bearer token from Google register).
    * Backend returns LoginResponseDto; overwrite stored token and user with new one.
    */
+  /**
+   * Unsubscribe from daily reminder emails. Token comes from the unsubscribe link in the email.
+   * POST /api/user/unsubscribe?token=xxx
+   */
+  async unsubscribeFromEmails(token) {
+    await api.post(`/api/user/unsubscribe?token=${encodeURIComponent(token)}`);
+  }
+
   async completeGoogleProfile(formData) {
     try {
       const { data } = await api.post('/api/user/auth/google/register-partial-user', formData);

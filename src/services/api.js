@@ -6,7 +6,7 @@ const api = axios.create({
   timeout: 60000, // Increased to 60 seconds for AI insights
 });
 
-const AUTH_WHITELIST = ['/api/user/login', '/api/user/register'];
+const AUTH_WHITELIST = ['/api/user/login', '/api/user/register', '/api/user/unsubscribe'];
 
 api.interceptors.request.use((config) => {
   // Don't add Authorization on auth endpoints
@@ -38,10 +38,11 @@ api.interceptors.response.use(
   },
   (error) => {
     if (error.response?.status === 401) {
-      // Don't redirect to login for feedback endpoint or login endpoint (allows non-authenticated access or shows error on login page)
+      // Don't redirect to login for these endpoints (let the page handle the error, e.g. expired unsubscribe link)
       const isFeedbackEndpoint = (error.config?.url || '').startsWith('/api/feedback');
       const isLoginEndpoint = (error.config?.url || '').startsWith('/api/user/login');
-      if (!isFeedbackEndpoint && !isLoginEndpoint) {
+      const isUnsubscribeEndpoint = (error.config?.url || '').includes('/api/user/unsubscribe');
+      if (!isFeedbackEndpoint && !isLoginEndpoint && !isUnsubscribeEndpoint) {
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
         window.location.href = '/login';

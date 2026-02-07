@@ -19,6 +19,7 @@ import NewLanding from "./pages/NewLanding";
 import Feedback from "./pages/Feedback";
 import Terms from "./pages/Terms";
 import Privacy from "./pages/Privacy";
+import Unsubscribe from "./pages/Unsubscribe";
 
 // Create a simple theme
 const theme = createTheme({
@@ -56,6 +57,7 @@ function App() {
             <Route path="/feedback" element={<Feedback />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
+            <Route path="/unsubscribe" element={<Unsubscribe />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </Router>
